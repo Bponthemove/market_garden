@@ -1,20 +1,14 @@
 import {
   Box,
   Card,
-  Container,
   keyframes,
-  Toolbar,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import React, { useEffect, useState } from "react";
 import { categories } from "../constants/products";
-import { useAuthContext } from "../context/AuthContext";
-import heroImg from "../images/garden4.webp";
+
 
 const Home = () => {
-  const { currentUser } = useAuthContext();
-  console.log(currentUser, 'user in home')
   const keyframeFilter = keyframes`
       from {
         opacity: 1;
@@ -29,7 +23,7 @@ const Home = () => {
         <Grid
           sx={{
             margin: "2rem 0",
-            backgroundImage: `url(${heroImg})`,
+            backgroundImage: `url(./images/garden4.webp)`,
             height: "60vh",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -53,22 +47,16 @@ const Home = () => {
       <Grid
         item
         container
-        xs={8}
-        alignSelf="center"
+        xs={12}
         my={4}
-        gap={4}
-        display="flex"
-        justifyContent="center"
+        gap={2}
       >
         {categories.map(({ label, image }) => (
-          <Grid item xs={10} md={5} key={label}>
+          <Grid item xs={12} md={6} key={label}>
             <Card
               sx={(theme) => ({
                 backgroundColor: theme.palette.primary.main,
                 boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-                // minWidth: "200px",
-                width: "340px",
-                height: "340px",
                 margin: "auto",
                 textAlign: "center",
                 cursor: "pointer",
@@ -81,8 +69,10 @@ const Home = () => {
               <Box
                 sx={{
                   display: "flex",
-                  width: "auto",
-                  height: "100%",
+                  minWidth: "15rem",
+                  minHeight: "15rem",
+                  maxWidth: "25rem",
+                  maxHeight: "25rem",
                   overflow: "hidden",
                   justifyContent: "center",
                   alignItems: "center",

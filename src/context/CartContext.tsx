@@ -1,14 +1,19 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
-import { products } from "../constants/products";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { IProduct } from "../types/IProduct";
+import { IGetProduct } from "../types/allTypes";
 
 type CartProviderProps = {
   children: ReactNode;
 };
 
-export type ICartItem = {
-  id: number;
+export interface ICartItem extends IGetProduct {  
   quantity: number;
 };
 
@@ -19,12 +24,12 @@ type CartContextTypes = {
   cartQuantity: number;
   cartTotal: number;
   cartItems: ICartItem[];
-  getItemQuantity: (id: number) => number;
-  increaseCartQuantity: (id: number) => void;
-  decreaseCartQuantity: (id: number) => void;
-  removeFromCart: (id: number) => void;
+  getItemQuantity: (id: string) => number;
+  increaseCartQuantity: (product: IGetProduct) => void;
+  decreaseCartQuantity: (id: string) => void;
+  removeFromCart: (id: string) => void;
   cartIsOpen: boolean;
-  setCartIsOpen: Dispatch<SetStateAction<boolean>>
+  setCartIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const CartContext = createContext({} as CartContextTypes);
@@ -34,29 +39,31 @@ export function useCartContext() {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
-  const [cartItems, setCartItems] = useLocalStorage<ICartItem[]>('shopping-cart', []);
+  const [cartItems, setCartItems] = useLocalStorage<ICartItem[]>(
+    "shopping-cart",
+    []
+  );
   const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
 
-  const cartQuantity = cartItems.reduce(
-    (a, c) => c.quantity + a,
-    0
-  );
+  const cartQuantity = cartItems.reduce((a, c) => c.quantity + a, 0);
 
-  const cartTotal = cartItems.reduce(
-    (a, c) => (products.find((itemToFind: IProduct) => itemToFind.id === c.id)?.price ?? 0) * c.quantity + a, 0
-  )
+  const cartTotal = cartItems.length
+    ? cartItems.reduce((a, c) => (c.price || 0) * c.quantity + a, 0)
+    : 0;
 
-  function getItemQuantity(id: number) {
+  function getItemQuantity(id: string) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
   }
 
-  function increaseCartQuantity(id: number) {
+  console.log({cartTotal})
+
+  function increaseCartQuantity(product: IGetProduct) {    
     setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id) == null) {
-        return [...currItems, { id, quantity: 1 }];
+      if (currItems.find((item) => item.id === product.id) == null) {
+        return [...currItems, { ...product, quantity: 1 }];
       } else {
         return currItems.map((item) => {
-          if (item.id === id) {
+          if (item.id === product.id) {
             return { ...item, quantity: item.quantity + 1 };
           } else {
             return item;
@@ -66,7 +73,7 @@ export function CartProvider({ children }: CartProviderProps) {
     });
   }
 
-  function decreaseCartQuantity(id: number) {
+  function decreaseCartQuantity(id: string) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id)?.quantity === 1) {
         return currItems.filter((item) => item.id !== id);
@@ -82,7 +89,7 @@ export function CartProvider({ children }: CartProviderProps) {
     });
   }
 
-  function removeFromCart(id: number) {
+  function removeFromCart(id: string) {
     setCartItems((currItems) => currItems.filter((item) => item.id !== id));
   }
 
@@ -95,7 +102,7 @@ export function CartProvider({ children }: CartProviderProps) {
   }
 
   function clearCart() {
-    setCartItems([])
+    setCartItems([]);
   }
 
   return (
@@ -107,7 +114,7 @@ export function CartProvider({ children }: CartProviderProps) {
         getItemQuantity,
         closeCart,
         openCart,
-        cartItems, 
+        cartItems,
         cartQuantity,
         cartTotal,
         cartIsOpen,

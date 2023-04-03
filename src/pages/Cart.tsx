@@ -1,20 +1,30 @@
 import {
   Box,
-  ButtonBase,
+  Button,
   Grid,
   Table,
+  TableBody,
   TableCell,
   TableRow,
   Typography,
 } from "@mui/material";
 import { CartItem } from "../components/CartItem";
 import { useCartContext } from "../context/CartContext";
-import logo from "../images/logo.png";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { CheckOut } from "./checkOut";
 
 export function Cart() {
-  const { cartItems, setCartIsOpen, cartTotal, clearCart } = useCartContext();
+  const [maxHeight, setMaxHeight] = useState<"auto" | 0>(0);
+  const { cartItems, setCartIsOpen, cartTotal, clearCart, cartQuantity } =
+    useCartContext();
+  const navigate = useNavigate();
+
+  const handleClickOrder = () => {
+    setMaxHeight((prev) => (prev === "auto" ? 0 : "auto"));
+  };
 
   return (
     <Box
@@ -25,19 +35,19 @@ export function Cart() {
       }}
     >
       <img
-        src={logo}
+        src="./images/logo.png"
         alt="gg"
         style={{
           opacity: "0.06",
-          position: "absolute",
+          position: "fixed",
           left: "0",
           top: "0",
           width: "40%",
           height: "auto",
         }}
       />
-      <Grid container position="relative">
-        <Grid item xs={2}>
+      <Grid container position="relative" justifyContent='center'>
+        <Grid item xs={12}>
           <Grid
             position="fixed"
             display="flex"
@@ -54,8 +64,8 @@ export function Cart() {
               onClick={() => setCartIsOpen(false)}
               sx={(theme) => ({
                 backgroundColor: theme.palette.primary.main,
-                width: "5rem",
-                height: "5rem",
+                width: "2rem",
+                height: "2rem",
                 borderRadius: "50%",
                 cursor: "pointer",
                 ": hover": {
@@ -64,7 +74,7 @@ export function Cart() {
                 },
               })}
             >
-              <CloseIcon fontSize="large" color="action" />
+              <CloseIcon fontSize="medium" color="action" />
             </Box>
             <Box
               display="flex"
@@ -73,8 +83,8 @@ export function Cart() {
               onClick={() => clearCart()}
               sx={(theme) => ({
                 backgroundColor: theme.palette.primary.main,
-                width: "5rem",
-                height: "5rem",
+                width: "2rem",
+                height: "2rem",
                 borderRadius: "50%",
                 cursor: "pointer",
                 ": hover": {
@@ -83,30 +93,61 @@ export function Cart() {
                 },
               })}
             >
-              <ClearAllIcon fontSize="large" color="action" />
+              <ClearAllIcon fontSize="medium" color="action" />
             </Box>
           </Grid>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={10} md={8}>
           <Box pt={20} display="flex" flexDirection="column">
             <Table>
-              {cartItems.map((item, idx) => (
-                <CartItem {...item} />
-              ))}
-              <TableRow>
-                <TableCell />
-                <TableCell />
-                <TableCell />
-                <TableCell>
-                  <Typography variant="h5">total</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="h5">=</Typography>
-                </TableCell>
-                <TableCell>{cartTotal}</TableCell>
-              </TableRow>
+              <TableBody>
+                {cartItems.map((item, idx) => (
+                  <CartItem item={item} key={idx} />
+                ))}
+                <TableRow>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell>
+                    <Typography variant="h5">total</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">=</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">{cartTotal.toFixed(2)}</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
             </Table>
+            <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
+              {maxHeight === 0 && (
+                <Button
+                  disabled={!cartQuantity}
+                  variant="contained"
+                  onClick={handleClickOrder}
+                >
+                  Proceed to checkout
+                </Button>
+              )}
+            </Box>
           </Box>
+        </Grid>
+        <Grid item xs={10} md={8} maxHeight={maxHeight}>
+          {maxHeight === "auto" && (
+            <>
+              <CheckOut />
+              <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
+                <Button
+                  disabled={!cartQuantity}
+                  variant="contained"
+                  onClick={handleClickOrder}
+                >
+                  I do not want to checkout yet.
+                </Button>
+              </Box>
+            </>
+          )}
         </Grid>
       </Grid>
     </Box>

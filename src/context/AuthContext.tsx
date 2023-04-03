@@ -1,38 +1,69 @@
 import {
   createContext,
-  Dispatch,
   ReactNode,
-  SetStateAction,
   useContext,
   useEffect,
   useState,
 } from "react";
-import firebase from "firebase/compat";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { useFirebase } from "../hooks/useFirebase";
+import { useToast } from "../hooks/useToast";
+import { useMutation } from "@tanstack/react-query";
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
-export type IUser = {
-  user: firebase.User | null,
+export interface IUser {
+  user: User | null;
   superUser: boolean;
 };
 
-const superUsers = ['bpvanzalk@hotmail.com'];
+export interface IAuthSignIn {
+  email: string;
+  password: string;
+};
+
+export interface IAuthSignUp {
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  firstName: string;
+  lastName: string;
+  postcode: string;
+  addressLine1: string;
+  addressLine2: string;
+  town: string;
+};
+
+export interface IUserDetails {
+  uid: string;
+  firstName: string;
+  lastName: string;
+  postcode: string;
+  addressLine1: string;
+  addressLine2: string;
+  town: string;
+}
+
+export const superUsers = ["bpvanzalk@hotmail.com"];
+
+export const defaultNoUser = {
+  user: null,
+  superUser: false,
+}
 
 type AuthContextTypes = {
   currentUser: IUser;
-  signUp: (email: string, password: string) => Promise<any>;
+  setCurrentUser: React.Dispatch<React.SetStateAction<IUser>>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, postcode: string, addressLine1: string, addressLine2: string, town: string) => Promise<any>;
   logOut: () => void;
-  signIn: (email: string, password: string) => Promise<any>; 
+  signIn: (email: string, password: string) => Promise<any>;
+  error: string | undefined;
+  loading: boolean;
 };
-
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
 
 const AuthContext = createContext({} as AuthContextTypes);
 
@@ -41,72 +72,109 @@ export function useAuthContext() {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [stateChange, setStateChange] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<IUser>({
-    user: null,
-    superUser: false,
-  });
+  const [error, setError] = useState<string | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<IUser>(defaultNoUser);
   const navigate = useNavigate();
+  const { addUserDetails } = useFirebase();
+  const {
+    mutateAsync,
+    isLoading,
+    isError
+  } = useMutation((user: IUserDetails) => addUserDetails(user));
+  const toast = useToast();
 
-  function signUp(email: string, password: string) {
-    setStateChange(false);
-    return new Promise((resolve, reject) => {
-      const res = auth.createUserWithEmailAndPassword(email, password);
-      if (res) {
-        setStateChange(true);
-        resolve(res)
-      } else {
-        reject('error')
-      }      
-    })        
+  async function signUp(
+    email: string, 
+    password: string, 
+    firstName: string,
+    lastName: string,
+    postcode: string, 
+    addressLine1: string, 
+    addressLine2: string, 
+    town: string
+  ) {
+    setLoading(true)
+    setError(undefined)
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      const user = auth.currentUser;
+      const uid = user?.uid;
+      if (!uid) throw new Error(`No uid returned for ${user}`)
+      await mutateAsync({uid, firstName, lastName, postcode, addressLine1, addressLine2, town});
+    } catch (err) {
+      setError(`Sign up credentials are not correct.`)
+      console.error(`Error signing in : ${err}`)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  function logOut() {
-    setCurrentUser({
-      user: null,
-      superUser: false,
-    });
-    navigate("/");
+  async function logOut() {
+    setLoading(true)
+    setError(undefined)
+    try {
+      await auth.signOut()
+      setCurrentUser({
+        user: null,
+        superUser: false,
+      });
+      toast.info('You have successfully logged out!')
+      navigate("/");
+    } catch (err) {
+      console.error('Error with signing out')
+      setError(`Error signing out`)
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function signIn(email: string, password: string) {
-    setStateChange(false);
-    return new Promise((resolve, reject) => {
-      const res = auth.signInWithEmailAndPassword(email, password);
-      if (res) {
-        setStateChange(true)
-        console.log({res})
-        resolve(res)
-      } else {
-        reject('error')
-      }      
-    })
+  async function signIn(email: string, password: string) {
+    setLoading(true)
+    setError(undefined)
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      const user = auth.currentUser;
+      console.log({user})
+      setCurrentUser({
+        user,
+        superUser: superUsers.includes(user?.email?.toLowerCase() ?? "")
+      })
+    } catch (err) {
+      setError(`Sign up credentials are not correct.`)
+      console.error(`Error signing in : ${err}`)
+    } finally {
+      setLoading(false)
+    }
   }
-console.log('outside')
+  
   useEffect(() => {
-    if (stateChange) {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        console.log('inside', user)
+    if (!loading) {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        console.log("inside", user);
         if (user) {
           setCurrentUser({
             user,
-            superUser: superUsers.includes(user?.email?.toLowerCase() ?? ''),
+            superUser: superUsers.includes(user?.email?.toLowerCase() ?? ""),
           });
         }
       });
-      console.log('useEffect in AuthContext', { currentUser });
-  
+      console.log("useEffect in AuthContext", { currentUser });
+
       return unsubscribe;
     }
-  }, [stateChange]);
+  }, [loading]);
 
   return (
     <AuthContext.Provider
       value={{
         currentUser,
+        setCurrentUser,
         signUp,
         logOut,
-        signIn,        
+        signIn,
+        loading,
+        error
       }}
     >
       {children}

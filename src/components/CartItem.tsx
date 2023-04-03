@@ -1,19 +1,14 @@
 import { Box, Grid, Table, TableRow, Typography } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
-import { products } from "../constants/products";
+//import { products } from "../constants/products";
 import { ICartItem, useCartContext } from "../context/CartContext";
-import { IProduct } from "../types/IProduct";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
-export function CartItem({ id, quantity }: ICartItem) {
-  const item: IProduct | undefined = products.find(
-    (product) => product.id === id
-  );
+export function CartItem({ item }: { item: ICartItem }) {
+  const { decreaseCartQuantity, increaseCartQuantity } = useCartContext();
 
-  const { decreaseCartQuantity, increaseCartQuantity } = useCartContext()
-
-  const { label, price } = item ?? {};
+  const { label, price, quantity, id } = item;
 
   return (
     <TableRow>
@@ -21,7 +16,7 @@ export function CartItem({ id, quantity }: ICartItem) {
         <Grid container>
           <AddCircleIcon
             color="primary"
-            onClick={() => increaseCartQuantity(id)}
+            onClick={() => increaseCartQuantity(item)}
             sx={{
               cursor: "pointer",
             }}
@@ -36,7 +31,7 @@ export function CartItem({ id, quantity }: ICartItem) {
         </Grid>
       </TableCell>
       <TableCell>
-        <Typography variant="h3">{label ?? "-"}</Typography>
+        <Typography variant="h5">{label ?? "-"}</Typography>
       </TableCell>
       <TableCell>
         <Typography variant="h5">X</Typography>

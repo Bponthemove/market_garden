@@ -5,10 +5,15 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@firebase/auth-types": "^0.12.0",
+    "@firebase/firestore-types": "^2.5.1",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.11",
     "@reduxjs/toolkit": "^1.9.3",
-    "@stripe/stripe-js": "^1.48.0",
+    "@stripe/react-stripe-js": "^2.1.0",
+    "@stripe/stripe-js": "^1.52.0",
+    "@tanstack/react-query": "^4.28.0",
+    "@tanstack/react-query-devtools": "^4.28.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -16,9 +21,10 @@
     "@types/node": "^16.18.13",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "firebase": "^9.17.2",
+    "firebase": "^9.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-firebase-hooks": "^5.1.1",
     "react-hook-form": "^7.43.5",
     "react-router-dom": "^6.8.2",
     "react-scripts": "5.0.1",
@@ -50,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "@hookform/devtools": "^4.3.1",
     "file-loader": "^6.2.0"
   }
 }

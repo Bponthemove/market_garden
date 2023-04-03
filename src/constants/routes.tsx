@@ -1,11 +1,14 @@
 import About from "../pages/about";
 import Admin from "../pages/admin";
+import { CheckOut } from "../pages/checkOut";
 import Contact from "../pages/contact";
 import Home from "../pages/home";
+import LogOut from "../pages/logOut";
 import Herbs from "../pages/shop/herbs";
 import Shop from "../pages/shop/shop";
 import Vegetables from "../pages/shop/vegetables";
 import SignInSide from "../pages/signIn";
+import SignUp from "../pages/signUp";
 
 interface IChildrenRoute {
   childPath: string
@@ -58,16 +61,28 @@ export const routes: {[key: string]: IRoute} = {
     component: <Contact />,
     superUser: false
   },
+  CHECK_OUT: {
+    path: "/checkout",
+    label: "",
+    component: <CheckOut />,
+    superUser: false
+  },
   SIGN_IN: {
     path: "/signin",
     label: 'Sign in',
     component: <SignInSide />,
     superUser: false
   },
+  SIGN_UP: {
+    path: "/signup",
+    label: 'Sign up',
+    component: <SignUp />,
+    superUser: false
+  },
   LOG_OUT: {
     path: "/logout",
     label: 'Log out',
-    component: <SignInSide />,
+    component: <LogOut />,
     superUser: false
   },
   ADMIN: {

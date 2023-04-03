@@ -1,18 +1,11 @@
 import {
   Box,
   Grid,
-  ImageList,
-  ImageListItem,
-  ListSubheader,
-  Typography,
 } from "@mui/material";
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Link from "../../components/nav/Link";
-import ProductTile from "../../components/ProductTile";
-import { products } from "../../constants/products";
 import { routes } from "../../constants/routes";
-import Vegetables from "./vegetables";
 
 const Shop = () => {
 

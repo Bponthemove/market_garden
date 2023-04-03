@@ -1,138 +1,172 @@
-import pepperRed from '../images/pepper_red.jpg';
-import onions from '../images/onions.jfif';
-import basil from '../images/basil.jfif';
-import parsley from '../images/parsley.jfif';
-import carrots from '../images/carrots.jfif';
-import leeks from '../images/leeks.jfif';
-import potatoes from '../images/potatoes.jfif';
-import beetroot from '../images/beetroot.jfif';
-import vegetables from '../images/vegetables.jfif';
-import herbs from '../images/herbs.jfif';
-import meat from '../images/meat.jfif';
-import cheese from '../images/cheese.jfif';
+//import pepperRed from '../images/pepper_red.jpg';
+//import onions from '../images/onions.jfif';
+//import basil from '../images/basil.jfif';
+//import parsley from '../images/parsley.jfif';
+//import carrots from '../images/carrots.jfif';
+//import leeks from '../images/leeks.jfif';
+//import potatoes from '../images/potatoes.jfif';
+//import beetroot from '../images/beetroot.jfif';
+//import vegetables from '../images/vegetables.jfif';
+//import herbs from '../images/herbs.jfif';
+//import meat from '../images/meat.jfif';
+//import cheese from '../images/cheese.jfif';
 
-export const products = [
-  {
-    id: 1,
-    category: 'vegetable',
-    dataKey: 'pepperRed',
-    label: 'Pepper Red',
-    price: 0.80,
-    isOffer: false,
-    perItem: true,
-    image: pepperRed,
-    description: 'blablabla',
-    soldOut: false,
-  },
-  {
-    id: 2,
-    category: 'vegetable',
-    dataKey: 'onions',
-    label: 'Onions',
-    price: 50,
-    isOffer: false,
-    perItem: false,
-    image: onions,
-    description: 'description',
-    soldOut: false
-  },
-  {
-    id: 3,
-    category: 'herb',
-    dataKey: 'basil',
-    label: 'Basil',
-    price: 0.99,
-    isOffer: false,
-    perItem: true,
-    image: basil,
-    description: 'description',
-    soldOut: false,
-  },
-  {
-    id: 4,
-    category: 'herb',
-    dataKey: 'parsley',
-    label: 'Parsley',
-    price: 1.25,
-    isOffer: false,
-    perItem: false,
-    image: parsley,
-    description: 'description',
-    soldOut: false,
-  },
-  {
-    id: 5,
-    category: 'vegetable',
-    dataKey: 'carrots',
-    label: 'carrots',
-    price: 1.40,
-    isOffer: false,
-    perItem: false,
-    image: carrots,
-    description: 'description',
-    soldOut: false,
-  },
-  {
-    id: 6,
-    category: 'vegetable',
-    dataKey: 'leeks',
-    label: 'Leeks',
-    price: 1.75,
-    isOffer: false,
-    perItem: false,
-    image: leeks,
-    description: 'description',
-    soldOut: false,
-  },
-  {
-    id: 7,
-    category: 'vegetable',
-    dataKey: 'potatoes',
-    label: 'Potatoes',
-    price: 0.80,
-    isOffer: false,
-    perItem: true,
-    image: potatoes,
-    description: 'description',
-    soldOut: false,
-  },
-  {
-    id: 8,
-    category: 'vegetable',
-    dataKey: 'beetroot',
-    label: 'Beetroot',
-    price: 1.25,
-    isOffer: false,
-    perItem: false,
-    image: beetroot,
-    description: 'description',
-    soldOut: false,
-  }
-];
+// import { IProduct } from "../types/allTypes";
+
+// export const products: IProduct[] = [
+//   {
+//     id: 1,
+//     category: 'vegetables',
+//     label: 'Pepper Red',
+//     price: 0.80,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/pepper_red.jpg',
+//     description: 'blablabla',
+//   },
+//   {
+//     id: 2,
+//     category: 'vegetables',
+//     label: 'Onions',
+//     price: 0.50,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/onions.jfif',
+//     description: 'description',
+//   },
+//   {
+//     id: 3,
+//     category: 'herbs',
+//     label: 'Basil',
+//     price: 0.99,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/basil.jfif',
+//     description: 'description',
+//   },
+//   {
+//     id: 4,
+//     category: 'herbs',
+//     label: 'Parsley',
+//     price: 1.25,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/parsley.jfif',
+//     description: 'description',
+//   },
+//   {
+//     id: 5,
+//     category: 'vegetables',
+//     label: 'carrots',
+//     price: 1.40,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/carrots.jfif',
+//     description: 'description',
+//   },
+//   {
+//     id: 6,
+//     category: 'vegetables',
+//     label: 'Leeks',
+//     price: 1.75,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/leeks.jfif',
+//     description: 'description',
+//   },
+//   {
+//     id: 7,
+//     category: 'vegetables',
+//     label: 'Potatoes',
+//     price: 0.80,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/potatoes.jfif',
+//     description: 'description',
+//   },
+//   {
+//     id: 8,
+//     category: 'vegetables',
+//     label: 'Beetroot',
+//     price: 1.25,
+//     eachOrWeigth: 'each',
+//     isOffer: false,
+//     stillGrowing: false,
+//     soldOut: false,
+//     inSeason: false,
+//     sellingFast: false,
+//     popular: false,
+//     comingSoon: false,
+//     image: './images/beetroot.jfif',
+//     description: 'description',
+//   }
+// ];
 
 export const categories = [
   {
     id: 1,    
     dataKey: 'vegetables',
     label: 'Vegetables',
-    image: vegetables,
+    image: './images/vegetables.jfif',
   },
   {
     id: 2,    
     dataKey: 'herbs',
     label: 'Herbs',
-    image: herbs,
+    image: './images/herbs.jfif',
   },
   {
     id: 3,    
     dataKey: 'meat',
     label: 'Meat',
-    image: meat,
+    image: './images/meat.jfif',
   },
   {
     id: 4,    
     dataKey: 'cheese',
     label: 'Cheese',
-    image: cheese,
+    image: './images/cheese.jfif',
   },
 ];

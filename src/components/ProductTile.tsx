@@ -10,25 +10,29 @@ import {
   Grid,
 } from "@mui/material";
 import { useCartContext } from "../context/CartContext";
-import { IProduct } from "../types/IProduct";
+import { IProduct } from "../types/allTypes";
 import InfoIcon from "@mui/icons-material/Info";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import ButtonBase from "@mui/material/ButtonBase";
 
-function ProductTile({ product }: { product: IProduct }) {
+function ProductTile(props: {product: any}) {
   const {
-    id,
-    category,
-    dataKey,
-    label,
-    price,
-    isOffer,
-    perItem,
-    image,
-    description,
-    soldOut,
-  } = product;
+      id,
+      category,
+      label,
+      description,
+      price,
+      eachOrWeigth,
+      isOffer,
+      stillGrowing,
+      soldOut,
+      inSeason,
+      sellingFast,
+      popular,
+      comingSoon,
+      image,
+  } = props.product ;
 
   const {
     removeFromCart,
@@ -50,7 +54,7 @@ function ProductTile({ product }: { product: IProduct }) {
     >
       <ImageListItem
         sx={{
-          height: 'inherit !important'
+          height: "inherit !important",
         }}
       >
         <Box
@@ -68,7 +72,7 @@ function ProductTile({ product }: { product: IProduct }) {
             color: theme.palette.primary.light,
           })}
         >
-          {getItemQuantity(id)}
+          {id ? getItemQuantity(id) : 0}
         </Box>
         <img
           src={image}
@@ -85,16 +89,16 @@ function ProductTile({ product }: { product: IProduct }) {
             <>
               <AddCircleIcon
                 color="primary"
-                onClick={() => increaseCartQuantity(id)}
+                onClick={() => increaseCartQuantity(props.product)}
                 sx={{
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
               />
               <RemoveCircleIcon
-                color={getItemQuantity(id) === 0 ? "disabled" : "primary"}
-                onClick={() => decreaseCartQuantity(id)}
+                color={id && getItemQuantity(id) === 0 ? "disabled" : "primary"}
+                onClick={id ? () => decreaseCartQuantity(id) : () => null}
                 sx={{
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
               />
             </>
