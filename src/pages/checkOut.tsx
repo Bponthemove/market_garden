@@ -92,8 +92,23 @@ export const CheckOut = () => {
       return;
     }
     console.log({stripePromise})
-    const sessions = await stripePromise;
-    console.log({sessions})
+    fetch('/api/stripe', {
+      method: 'POST',
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(session) {
+      return session?.redirectToCheckout({ sessionId: session.id });
+    })
+    .then(function(result) {
+      // If `redirectToCheckout` fails due to a browser or network
+      // error, you should display the localized error message to your
+      // customer using `error.message`.
+      if (result.error) {
+        alert(result.error.message);
+      }
+    });
     // const response = sessions?.redirectToCheckout({
     //     line_items: [{ price: cartTotal.toFixed(2), quantity: 1 }],
     //     mode: "payment",
