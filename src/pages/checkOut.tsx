@@ -2,7 +2,6 @@ import { BaseSyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
 import { IUserDetails } from "../context/AuthContext";
-import getStripe from "../stripe";
 import Grid from "@mui/material/Grid";
 import { Typography, TextField, Box, Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
@@ -10,7 +9,7 @@ import { auth } from "../firebase";
 import { useQuery } from "@tanstack/react-query";
 import { useFirebase } from "../hooks/useFirebase";
 import { DevTool } from "@hookform/devtools";
-import { PaymentElement } from "@stripe/react-stripe-js";
+import getStripe from "../stripe";
 
 const stripePromise = getStripe();
 
@@ -75,8 +74,6 @@ export const CheckOut = () => {
     }
   );
 
-  console.log({ user, stripePromise });
-
   const { control, handleSubmit, getValues } = useForm<ICheckOut>({
     defaultValues,
     reValidateMode: "onBlur",
@@ -87,33 +84,11 @@ export const CheckOut = () => {
     event?: BaseSyntheticEvent<object, any, any>
   ) => {
     event?.preventDefault();
-    console.log({data})
-    if (!stripePromise) {
-      return;
-    }
-    console.log({stripePromise})
-    fetch('/api/stripe', {
-      method: 'POST',
-    })
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(session) {
-      return session?.redirectToCheckout({ sessionId: session.id });
-    })
-    .then(function(result) {
-      // If `redirectToCheckout` fails due to a browser or network
-      // error, you should display the localized error message to your
-      // customer using `error.message`.
-      if (result.error) {
-        alert(result.error.message);
-      }
+
+    const payCart = await fetch(".netlify/functions/stripePayCart", {
+      method: "POST",
     });
-    // const response = sessions?.redirectToCheckout({
-    //     line_items: [{ price: cartTotal.toFixed(2), quantity: 1 }],
-    //     mode: "payment",
-    //     customer_email: getValues("email"),
-    // })
+    console.log({payCart})
   };
 
   const handleValidateEmail = (event: {
@@ -141,7 +116,7 @@ export const CheckOut = () => {
   };
 
   return (
-    <Grid container xs={8}>
+    <Grid container>
       <Grid
         item
         container

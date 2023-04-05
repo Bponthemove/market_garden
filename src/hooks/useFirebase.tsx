@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { IUserDetails, superUsers } from "../context/AuthContext";
 import { auth, database, db } from "../firebase";
 import { IAddProduct, IGetProduct } from "../types/allTypes";
-import { query, where, addDoc, getDocs, collection } from "firebase/firestore";
+import { query, where, addDoc, getDocs, collection, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import getStripe from "../stripe";
+
+const stripePromise = getStripe();
 
 export const useFirebase = () => {
   const [firebaseLoading, setFirebaseLoading] = useState<boolean>(false);
@@ -15,8 +18,13 @@ export const useFirebase = () => {
   const addProduct = async (
     product: IAddProduct
   ) => {
+    const {label, price} = product;
     const addedProductRef = await addDoc(collection(db, "product"), product);
     console.log("Document written with ID: ", addedProductRef.id);
+    const addProductToStripe = await fetch(`.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`, {
+      method: "POST",
+    });
+    console.log({addProductToStripe})
   };
 
   // get all products in category
@@ -24,8 +32,10 @@ export const useFirebase = () => {
     context: QueryFunctionContext
   ): Promise<IGetProduct[] | undefined> => {
     const [queryKey] = context.queryKey;
-    const q = query(database.products, where("category", "==", queryKey));
+    const productRef = collection(db, 'product');
+    const q = query(productRef, where("category", "==", queryKey));
     const querySnapShot = await getDocs(q);
+    console.log({querySnapShot})
     return querySnapShot?.docs.map(
       (doc: { id: string; data: () => any }) => ({
         id: doc.id,
@@ -50,14 +60,35 @@ export const useFirebase = () => {
   };
 
   //update product
-  // const updateById = async (
-  //   context: QueryFunctionContext
-  // ): Promise<IGetProduct[]> => {
-  //   const [, id, toUpdate] = context.queryKey;
-  //   const productRef = doc(db, 'products', id )
-  //   const querySnapShot = await database.products.where("id", "==", id);
-  //   return querySnapShot.update
-  // };
+  const updateProduct = async (
+    context: QueryFunctionContext
+  ): Promise<void> => {
+    const [, id, toUpdate] = context.queryKey;
+    const updating = toUpdate ?? {};
+    const toUpdateRef = doc(db, "product", `${id}`);
+    const firebaseResp = await updateDoc(toUpdateRef, {
+      ...updating
+    });
+    let stripeResp;
+    if (Object.keys(updating).includes('label' || 'price')){
+      stripeResp = await fetch(`.netlify/functions/stripeUpdateProduct?id=${id}&product=${toUpdate}`, {
+        method: "POST",
+      });
+    }
+    console.log({firebaseResp, stripeResp})
+  };
+
+  //delete product
+  const deleteProduct = async (
+    context: QueryFunctionContext
+    ): Promise<void> => {
+    const [, id] = context.queryKey;
+    const firebaseResp = await deleteDoc(doc(db, "product", `${id}`));
+    const stripeResp = await fetch(`.netlify/functions/stripeDeleteProduct?id=${id}`, {
+      method: "POST",
+    });
+    console.log({firebaseResp, stripeResp})
+  };
 
   //-----------------USER--------------//
 
@@ -101,6 +132,8 @@ export const useFirebase = () => {
     addProduct,
     getProducts,
     getProductById,
+    updateProduct,
+    deleteProduct,
     addUserDetails,
     getUserDetails,
   };

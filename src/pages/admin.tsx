@@ -127,6 +127,7 @@ export default function Admin() {
     try {
       const data = await mutateAsync(product)
       console.log({ data });
+      //add product to stripe
       reset();
       setImageURL("");
       setFile("");

@@ -7,14 +7,16 @@ import { IGetProduct } from "../../types/allTypes";
 export default function Herbs() {
   const { getProducts } = useFirebase();
   const {
-    data: herbs,
+    data,
     isLoading,
     error,
   } = useQuery<IGetProduct[] | undefined>(["herbs"], getProducts);
 
+  const herbs = data || [];
+
   return (
     <>
-      {herbs ? (
+      {herbs.length ? (
         herbs.map((herb: IGetProduct) => (
           <ProductTile product={herb} key={herb.id} />
         ))

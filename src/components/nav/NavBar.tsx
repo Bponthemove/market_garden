@@ -57,6 +57,7 @@ function NavBar() {
                   (!currentUser.user && route.label === "Log out") ||
                   (currentUser.user && route.label === "Sign in") ||
                   (!currentUser.superUser && route.label === "Admin") ||
+                  (!currentUser.superUser && route.label === "Orders") ||
                   route.label === "Sign up" ||
                   route.path === '/checkout'
                 ) {

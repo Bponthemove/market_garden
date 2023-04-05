@@ -4,6 +4,7 @@ import { CheckOut } from "../pages/checkOut";
 import Contact from "../pages/contact";
 import Home from "../pages/home";
 import LogOut from "../pages/logOut";
+import { Orders } from "../pages/orders";
 import Herbs from "../pages/shop/herbs";
 import Shop from "../pages/shop/shop";
 import Vegetables from "../pages/shop/vegetables";
@@ -90,5 +91,11 @@ export const routes: {[key: string]: IRoute} = {
     label: 'Admin',
     component: <Admin />,
     superUser: true
-  }  
+  },
+  ORDERS: {
+    path: "/orders`",
+    label: 'Orders',
+    component: <Orders />,
+    superUser: true
+  } 
 };

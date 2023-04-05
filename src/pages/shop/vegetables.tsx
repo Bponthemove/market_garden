@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import ProductTile from "../../components/ProductTile";
 import { useFirebase } from "../../hooks/useFirebase";
@@ -7,14 +7,22 @@ import { IGetProduct } from "../../types/allTypes";
 export default function Vegetables() {
   const { getProducts } = useFirebase();
   const {
-    data: vegetables,
+    data,
     isLoading,
-    error,
+    isError,
   } = useQuery<IGetProduct[] | undefined>(["vegetables"], getProducts);
+
+  const vegetables = data || [];
 
   return (
     <>
-      {vegetables ? (
+      {isLoading ? (
+        <CircularProgress />
+      )
+      : isError ? (
+        <Box>Error loading</Box>
+      )
+      : vegetables.length ? (
         vegetables.map((vegetable) => (
           <ProductTile product={vegetable} key={vegetable.id} />
         ))
