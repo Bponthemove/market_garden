@@ -45,8 +45,7 @@ export const CheckOut = () => {
     event?: BaseSyntheticEvent<object, any, any>
   ) => {
     event?.preventDefault();
-console.log(currentUser)
-console.log(getValues('email'))
+    const email = getValues('email')
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify(
@@ -55,7 +54,7 @@ console.log(getValues('email'))
             id: item.id,
             quantity: item.quantity,
             price: item.price,
-            email: getValues('email')
+            email
           }))
         }
       )

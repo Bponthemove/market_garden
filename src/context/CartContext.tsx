@@ -55,8 +55,6 @@ export function CartProvider({ children }: CartProviderProps) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
   }
 
-  console.log({cartTotal})
-
   function increaseCartQuantity(product: IGetProduct) {    
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === product.id) == null) {

@@ -1,36 +1,25 @@
-import {
-  Box,
-  Grid,
-} from "@mui/material";
-import React from "react";
-import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Box, Grid } from "@mui/material";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Link from "../../components/nav/Link";
 import { routes } from "../../constants/routes";
 
 const Shop = () => {
-  const navigate = useNavigate();
-  const { pathname} = useLocation();
+  const { pathname } = useLocation();
 
-  useEffect(() => {
-    if (pathname === '/shop') navigate('/shop/vegetables')
-  }, [pathname])
-
-  return (
+  return pathname === "/shop" ? (
+    <Navigate to={"/shop/vegetables"} />
+  ) : (
     <Box>
       <Grid container mb={4}>
-        { routes['SHOP']?.childrenRoutes?.map(({childPath: path, childLabel: label}) => <Link key={label} path={path} label={label} navbar={false}/>) }
+        {routes["SHOP"]?.childrenRoutes?.map(
+          ({ childPath: path, childLabel: label }) => (
+            <Link key={label} path={path} label={label} navbar={false} />
+          )
+        )}
       </Grid>
-      <Grid
-        container                
-        columnGap={4}
-        rowGap={7}
-        justifyContent='center'
-      >        
+      <Grid container columnGap={4} rowGap={7} justifyContent="center">
         <Outlet />
       </Grid>
-      
-      
     </Box>
     // <Grid
     //   container

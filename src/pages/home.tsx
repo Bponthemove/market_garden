@@ -1,18 +1,11 @@
 import { ButtonBase } from "@mui/material";
-import { Box, Card, keyframes, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import { categories } from "../constants/products";
 
 const Home = () => {
   const navigate = useNavigate();
-  const keyframeFilter = keyframes`
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0.2;
-      }`;
 
   return (
     <Grid container flexDirection="column">

@@ -7,8 +7,8 @@ import {
   IAuthSignIn,
   useAuthContext,
 } from "../context/AuthContext";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { Box } from "@mui/material";
 import { auth } from "../firebase";
@@ -26,7 +26,7 @@ function SignInSide() {
   const [passwordValid, setPasswordValid] = useState<boolean | null>(null);
   const [uid, setUid] = useState<string>("");
 
-  const { isLoading, error } = useQuery<IUserDetails[] | undefined>(
+  const { isLoading } = useQuery<IUserDetails[] | undefined>(
     ["uid", uid],
     getUserDetails,
     {
@@ -95,13 +95,9 @@ function SignInSide() {
   //   handleValidatePassword()
   // }, [])
 
-  useEffect(() => {
-    if (currentUser.user) {
-      navigate("/logout");
-    }
-  }, []);
-
-  return (
+  return currentUser.user ? (
+    <Navigate to={"/logout"} />
+  ) : (
     <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
       <Grid
         item
@@ -195,7 +191,7 @@ function SignInSide() {
             type="submit"
             color="primary"
             variant="contained"
-            disabled={loading}
+            disabled={isLoading}
           >
             Sign In
           </Button>

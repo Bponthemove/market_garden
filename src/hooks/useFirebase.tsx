@@ -21,6 +21,8 @@ export const useFirebase = () => {
   const [firebaseError, setFirebaseError] = useState<string>("");
   const [authenticated, setAuthenticated] = useState<boolean>(false);
 
+  console.log({authenticated})
+
   const {cartItems, cartTotal} = useCartContext();
   const {currentUser} = useAuthContext();
   const {orderNr} = useOrderContext();
@@ -49,7 +51,6 @@ export const useFirebase = () => {
     const productRef = collection(db, "product");
     const q = query(productRef, where("category", "==", queryKey));
     const querySnapShot = await getDocs(q);
-    console.log({ querySnapShot });
     return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
       id: doc.id,
       ...doc.data(),
@@ -71,21 +72,28 @@ export const useFirebase = () => {
 
   //update product
   const updateProduct = async (toUpdate: IUpdateProduct) => {
+    setFirebaseLoading(true)
     let firebaseResp, stripeResp;
     const { id } = toUpdate;
-    if (id) {
-      firebaseResp = await updateDoc(doc(db, "product", id), {
-        ...toUpdate,
-      });
-      if (Object.keys(toUpdate).includes("label" || "price")) {
-        const {label, price} = toUpdate;
-        stripeResp = await fetch(
-          `.netlify/functions/stripeUpdateProduct?id=${id}&name=${label || ''}&price=${price || ''}`,
-          {
-            method: "POST",
-          }
-        );
+    try {
+      if (id) {
+        firebaseResp = await updateDoc(doc(db, "product", id), {
+          ...toUpdate,
+        });
+        if (Object.keys(toUpdate).includes("label" || "price")) {
+          const {label, price} = toUpdate;
+          stripeResp = await fetch(
+            `.netlify/functions/stripeUpdateProduct?id=${id}&name=${label || ''}&price=${price || ''}`,
+            {
+              method: "POST",
+            }
+          );
+        }
       }
+    } catch (err) {
+      setFirebaseError(`Error updating product: id ${id}`)
+    } finally {
+      setFirebaseLoading(false)
     }
     console.log({ firebaseResp, stripeResp });
   };
@@ -118,7 +126,6 @@ export const useFirebase = () => {
     const [, uid] = context.queryKey;
     const q = query(database.users, where("uid", "==", uid));
     const querySnapShot = await getDocs(q);
-    console.log({ querySnapShot });
     return querySnapShot.docs.map((doc: { id: string; data: () => any }) => ({
       id: doc.id,
       ...doc.data(),

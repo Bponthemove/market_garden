@@ -1,6 +1,7 @@
 import { Box, Table, TableBody, TableRow, Typography } from "@mui/material";
 import { TableHead, TableCell } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import { Fragment } from "react";
 import { useFirebase } from "../hooks/useFirebase";
 
 const TableCellStyled = ({
@@ -21,9 +22,9 @@ const TableCellStyled = ({
 );
 
 export function Orders() {
-  const { getOrders, setOrdersToProcessed } = useFirebase();
+  const { getOrders } = useFirebase();
 
-  const { data, isLoading, isError } = useQuery(["getOrders"], getOrders);
+  const { data } = useQuery(["getOrders"], getOrders);
 
   const orders = data || [];
 
@@ -61,31 +62,31 @@ export function Orders() {
                 <TableCellStyled head={false}>
                   {order.order.map(
                     (product: { label: string; quantity: number }) => (
-                      <>
+                      <Fragment key={product.label}>
                         <Typography
-                          key={product.label}
+                          
                           variant="caption"
                           color="inherit"
                         >
                           {`${product.label} x ${product.quantity} `}
                         </Typography>
                         <br />
-                      </>
+                      </Fragment>
                     )
                   )}
                 </TableCellStyled>
                 <TableCellStyled head={false}>
                   {splitOrderNr.map((stringBit: string) => (
-                    <>
+                    <Fragment  key={stringBit}>
                       <Typography
-                        key={stringBit}
+                       
                         variant="caption"
                         color="inherit"
                       >
                         {stringBit}
                       </Typography>
                       <br />
-                    </>
+                    </Fragment>
                   ))}
                 </TableCellStyled>
               </TableRow>

@@ -11,18 +11,8 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 function ProductTile(props: {product: any}) {
   const {
       id,
-      category,
       label,
       description,
-      price,
-      eachOrWeigth,
-      isOffer,
-      stillGrowing,
-      soldOut,
-      inSeason,
-      sellingFast,
-      popular,
-      comingSoon,
       image,
   } = props.product ;
 

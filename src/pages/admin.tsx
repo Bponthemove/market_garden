@@ -29,6 +29,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Divider from "@mui/material/Divider";
 import { useToast } from "../hooks/useToast";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 
 const defaultValues: IAddProduct = {
   category: "vegetables",
@@ -66,6 +68,8 @@ export default function Admin() {
     IGetProduct | undefined
   >();
   const [query, setQuery] = useState("");
+
+  console.log({percent})
 
   const { control, handleSubmit, reset, formState, getValues } =
     useForm<IAddProduct>({
@@ -105,6 +109,10 @@ export default function Admin() {
   } = useMutation(({ id }: { id: string }) => deleteProduct(id));
 
   // Handle file upload event and update state
+  const isLoading =
+    isLoadingMutateAdd || isLoadingMutateDelete || isLoadingMutateUpdate;
+  const isError =
+    isErrorMutateAdd || isErrorMutateDelete || isErrorMutateUpdate;
 
   const products = getData ?? [];
 
@@ -215,12 +223,13 @@ export default function Admin() {
     event: React.MouseEvent<HTMLElement>,
     value: "add" | "update" | "delete"
   ) => {
+    if (!value) return;
     setUpdateAddDelete(value);
     setShowProduct({
       id: "",
       ...defaultValues,
-    })
-    setItemToUpdateOrDelete(undefined)
+    });
+    setItemToUpdateOrDelete(undefined);
     reset({
       ...itemToUpdateOrDelete,
       image: "",
@@ -252,7 +261,13 @@ export default function Admin() {
     }
   };
 
-  return (
+  return isError ? (
+    <Typography variant="subtitle1">{`Error query ${updateAddDelete}`}</Typography>
+  ) : isErrorGet ? (
+    <Typography variant="subtitle1">Error loading products</Typography>
+  ) : isLoadingGet ? (
+    <CircularProgress />
+  ) : (
     <Grid
       container
       display="flex"
@@ -706,7 +721,9 @@ export default function Admin() {
                   disabled={
                     (updateAddDelete === "add" && !imageURL) ||
                     (updateAddDelete === "update" &&
-                      (Object.keys(formState.dirtyFields).length > 0 || !query))
+                      (Object.keys(formState.dirtyFields).length > 0 ||
+                        !query)) ||
+                    isLoading
                   }
                 >
                   {updateAddDelete === "add"

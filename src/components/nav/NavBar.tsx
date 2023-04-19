@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 
 function NavBar() {
   const theme = useTheme();
-  const { currentUser, logOut } = useAuthContext();
+  const { currentUser } = useAuthContext();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { pathname } = useLocation();
 
@@ -74,7 +74,7 @@ function NavBar() {
                   route.path === "/checkout" ||
                   route.path === "/afterstripe"
                 ) {
-                  return;
+                  return null;
                 }
                 return <Link key={route.label} {...route} />;
               })}

@@ -94,14 +94,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const {
     mutateAsync: mutateAsyncAddUser,
-    isLoading: isLoadingAddUser,
-    isError: isErrorAddUser
   } = useMutation((user: IUserDetails) => addUserDetails(user));
 
   const { 
     data: userDetails,
-    isLoading: isLoadingGetUser, 
-    isError: isErrorGetUser, 
   } = useQuery<IUserDetails[]>(
     ["userDetails", currentUser?.user?.uid],
     getUserDetails,
@@ -164,7 +160,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
-      console.log({user})
       setCurrentUser(prevUser => ({
         ...prevUser,
         user,
@@ -181,7 +176,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     if (!loading) {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
-        console.log("inside", user);
         if (user && userDetails) {
           setCurrentUser({
             user,
@@ -190,10 +184,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
           });
         }
       });
-      console.log("useEffect in AuthContext", { currentUser });
 
       return unsubscribe;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, userDetails]);
 
   return (

@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/material";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
@@ -13,27 +13,21 @@ export const AfterStripe = () => {
   const { cartItems, clearCart } = useCartContext();
   const { addOrder } = useFirebase();
 
-  //if (result === 'failed') setOrderNr('')
-console.log({orderNr})
-
-  useEffect(() => {
-    if (!orderNr) return
-    const addOrderToDB = async () => {
+  const addOrderToDB = useCallback(async() => {
+    try {
       await addOrder();
-    };
-
-    if (result === "success" && cartItems.length > 0) {
-      //we can add the order to the db here
-      try {
-        addOrderToDB();
-      } catch (err) {
-        console.log(`Error adding order to db, orderNr: ${orderNr}`);
-      }
+    } catch (err) {
+      console.log(`Error adding order to db, orderNr: ${orderNr}`);
     }
-
-    clearCart()
-    setOrderNr('')
-  }, [orderNr]);
+  }, [orderNr, addOrder]);
+  
+  useEffect(() => {
+    if (orderNr && cartItems.length > 0) {
+      addOrderToDB()
+      clearCart();
+      setOrderNr("");
+    }
+  }, [addOrderToDB, clearCart, setOrderNr, cartItems.length, orderNr]);
 
   return (
     <Box>

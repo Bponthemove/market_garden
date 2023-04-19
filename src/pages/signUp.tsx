@@ -4,12 +4,12 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { IAuthSignUp, useAuthContext } from "../context/AuthContext";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Box } from "@mui/material";
 import { useToast } from "../hooks/useToast";
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -122,14 +122,9 @@ function SignUp() {
     }
   };
 
-  useEffect(() => {
-    console.log(currentUser, "sign in");
-    if (currentUser.user) {
-      navigate("/logout");
-    }
-  }, []);
-
-  return (
+  return currentUser.user ? (
+    <Navigate to={"/logout"} />
+  ) : (
     <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
       <Grid item xs={0} md={1} />
       <Grid
@@ -347,7 +342,7 @@ function SignUp() {
               color="primary"
               variant="contained"
               disabled={loading}
-              startIcon={<AssignmentTurnedInIcon/>}
+              startIcon={<AssignmentTurnedInIcon />}
             >
               Sign Up
             </Button>
