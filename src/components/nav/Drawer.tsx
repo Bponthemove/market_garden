@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Drawer,
@@ -29,7 +29,7 @@ function DrawerComponent() {
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <List>
           {Object.values(routes).map(({ path, label }) => (
-            <ListItem onClick={() => setOpenDrawer(false)}>
+            <ListItem key={label} onClick={() => setOpenDrawer(false)}>
               <ListItemText>
                 <Box sx={{ ...linkStyles }}>
                   <NavLink to={path}>{label}</NavLink>

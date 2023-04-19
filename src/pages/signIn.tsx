@@ -1,9 +1,12 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { IUserDetails, IAuthSignIn, IUser, useAuthContext } from "../context/AuthContext";
+import {
+  IUserDetails,
+  IAuthSignIn,
+  useAuthContext,
+} from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
@@ -21,21 +24,20 @@ function SignInSide() {
 
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
   const [passwordValid, setPasswordValid] = useState<boolean | null>(null);
-  const [uid, setUid] = useState<string>('');
+  const [uid, setUid] = useState<string>("");
 
-  const {
-    isLoading,
-    error,
-  } = useQuery<IUserDetails[] | undefined>(
-    ["uid", uid], 
+  const { isLoading, error } = useQuery<IUserDetails[] | undefined>(
+    ["uid", uid],
     getUserDetails,
-    { 
+    {
       enabled: !!uid,
       onSuccess: (data) => {
         const user = data || [];
-        toast.success(`Hi ${user[0]?.firstName}, you have successfully logged in!`)
-        navigate('/')
-      } 
+        toast.success(
+          `Hi ${user[0]?.firstName}, you have successfully logged in!`
+        );
+        navigate("/");
+      },
     }
   );
 
@@ -77,12 +79,12 @@ function SignInSide() {
     if (password && email) {
       try {
         await signIn(email as string, password as string);
-        const user = auth.currentUser;  
-        const uid = user?.uid || '';
-        setUid(uid)      
+        const user = auth.currentUser;
+        const uid = user?.uid || "";
+        setUid(uid);
       } catch (err) {
-        console.error(err)
-        toast.error('Error logging in, please try again!')
+        console.error(err);
+        toast.error("Error logging in, please try again!");
       }
     }
   };
@@ -101,7 +103,6 @@ function SignInSide() {
 
   return (
     <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
-      <Grid item xs={0} md={1} />
       <Grid
         item
         container
@@ -113,8 +114,8 @@ function SignInSide() {
         justifyContent="center"
         onSubmit={handleSubmit(handleOnSubmit)}
       >
-        <Grid item xs={12}>
-          <Typography component="h1" variant="h5">
+        <Grid item xs={8}>
+          <Typography component="h1" variant="h3">
             Sign In
           </Typography>
         </Grid>
@@ -124,12 +125,19 @@ function SignInSide() {
           container
           sx={{ display: "flex", justifyContent: "center" }}
         >
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 1}}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
             <Typography variant="caption">Don't have an account?</Typography>
             <Link to="/signup">Sign Up</Link>
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="email"
             control={control}
@@ -156,7 +164,7 @@ function SignInSide() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="password"
             control={control}
@@ -182,25 +190,23 @@ function SignInSide() {
             )}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          container
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-          <Box sx={{ display: "flex", justifyContent: "center", gap: 4 }}>
-            <Button type="submit" color="primary" variant="contained" disabled={loading}>
-              Sign In
-            </Button>
-          </Box>
+        <Grid item xs={8}>
+          <Button
+            type="submit"
+            color="primary"
+            variant="contained"
+            disabled={loading}
+          >
+            Sign In
+          </Button>
         </Grid>
       </Grid>
-      <Grid item xs={0} md={1} />
       <Grid
         item
         flexGrow="1"
         sx={{
-          backgroundImage: "url(https://source.unsplash.com/random)",
+          backgroundImage:
+            "url(https://firebasestorage.googleapis.com/v0/b/marketgarden-dev.appspot.com/o/files%2Fgarden1.jfif?alt=media&token=e44d8a9c-192e-45fc-a427-956974c79724)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"

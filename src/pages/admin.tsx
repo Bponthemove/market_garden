@@ -5,7 +5,6 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   TextField,
@@ -13,18 +12,23 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import Input from "@mui/material/Input";
-import React, { ChangeEventHandler, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import ProductTile from "../components/ProductTile";
-import { IProduct, IAddProduct, IGetProduct } from "../types/allTypes";
+import {
+  IProduct,
+  IAddProduct,
+  IGetProduct,
+  IUpdateProduct,
+} from "../types/allTypes";
 import { storage } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
+import { useToast } from "../hooks/useToast";
 
 const defaultValues: IAddProduct = {
   category: "vegetables",
@@ -45,7 +49,7 @@ const defaultValues: IAddProduct = {
 //Still need to add a patch request when updating;
 
 export default function Admin() {
-  const [showProduct, setShowProduct] = useState<IProduct>({
+  const [showProduct, setShowProduct] = useState<IProduct | IGetProduct>({
     id: "",
     ...defaultValues,
   });
@@ -54,31 +58,52 @@ export default function Admin() {
   // progress
   const [percent, setPercent] = useState(0);
   const [imageURL, setImageURL] = useState("");
-  const [updateAdd, setUpdateAdd] = useState<"add" | "update">("add");
+  const [updateAddDelete, setUpdateAddDelete] = useState<
+    "add" | "update" | "delete"
+  >("add");
   const [category, setCategory] = useState<string>("vegetables");
-  const [itemToUpdate, setItemToUpdate] = useState<IGetProduct | undefined>();
+  const [itemToUpdateOrDelete, setItemToUpdateOrDelete] = useState<
+    IGetProduct | undefined
+  >();
   const [query, setQuery] = useState("");
 
-  const { control, handleSubmit, reset } = useForm<IAddProduct>({
-    defaultValues,
-    reValidateMode: "onBlur",
-  });
+  const { control, handleSubmit, reset, formState, getValues } =
+    useForm<IAddProduct>({
+      defaultValues,
+      reValidateMode: "onBlur",
+    });
 
-  const { addProduct, getProducts } = useFirebase();
+  const { addProduct, getProducts, deleteProduct, updateProduct } =
+    useFirebase();
+  const toast = useToast();
 
   const {
     data: getData,
     isLoading: isLoadingGet,
     isError: isErrorGet,
+    refetch: refetchGet,
   } = useQuery([category], getProducts, {
-    enabled: updateAdd === "update",
+    enabled: updateAddDelete !== "add",
   });
 
-  const { 
-    mutateAsync, 
-    isLoading: isLoadingMutate, 
-    isError: isErrorMutate
+  const {
+    mutateAsync: mutateAsyncAdd,
+    isLoading: isLoadingMutateAdd,
+    isError: isErrorMutateAdd,
   } = useMutation((product: IAddProduct) => addProduct(product));
+
+  const {
+    mutateAsync: mutateAsyncUpdate,
+    isLoading: isLoadingMutateUpdate,
+    isError: isErrorMutateUpdate,
+  } = useMutation((product: IUpdateProduct) => updateProduct(product));
+
+  const {
+    mutateAsync: mutateAsyncDelete,
+    isLoading: isLoadingMutateDelete,
+    isError: isErrorMutateDelete,
+  } = useMutation(({ id }: { id: string }) => deleteProduct(id));
+
   // Handle file upload event and update state
 
   const products = getData ?? [];
@@ -124,19 +149,41 @@ export default function Admin() {
       ...values,
       image: imageURL,
     };
-    try {
-      const data = await mutateAsync(product)
-      console.log({ data });
-      //add product to stripe
-      reset();
-      setImageURL("");
-      setFile("");
-      setShowProduct({
-        id: "",
-        ...defaultValues,
-      });
-    } catch (err) {
-      console.log(`Error adding product: ${err}`)
+    if (updateAddDelete === "update" && itemToUpdateOrDelete) {
+      // we want to update
+      //call mutate with object filled with id and dirty fields
+      try {
+        const dirtyFieldsWithValues = Object.keys(formState.dirtyFields).map(
+          (fieldKey: any) => ({
+            fieldKey: getValues(fieldKey),
+          })
+        );
+
+        const productToUpdate: IUpdateProduct = {
+          id: itemToUpdateOrDelete.id,
+          ...dirtyFieldsWithValues[0],
+        };
+        const resp = await mutateAsyncUpdate(productToUpdate);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        const data = await mutateAsyncAdd(product);
+        console.log({ data });
+        //add product to stripe
+        reset(defaultValues);
+        setImageURL("");
+        setFile("");
+        setShowProduct({
+          id: "",
+          ...defaultValues,
+        });
+        window.scrollTo(0, 0);
+        toast.info("Product succesfully added.");
+      } catch (err) {
+        console.log(`Error adding product: ${err}`);
+      }
     }
   };
 
@@ -166,26 +213,44 @@ export default function Admin() {
 
   const handleChangeToggle = (
     event: React.MouseEvent<HTMLElement>,
-    value: "add" | "update"
+    value: "add" | "update" | "delete"
   ) => {
-    setUpdateAdd(value);
-    reset();
-    setImageURL("");
-    setFile("");
+    setUpdateAddDelete(value);
     setShowProduct({
       id: "",
       ...defaultValues,
+    })
+    setItemToUpdateOrDelete(undefined)
+    reset({
+      ...itemToUpdateOrDelete,
+      image: "",
     });
   };
 
-  useEffect(() => {
-    if (itemToUpdate) {
-      reset({
-        ...itemToUpdate,
-        image: "",
-      });
+  const handleDeleteItem = async () => {
+    if (!itemToUpdateOrDelete) {
+      return;
+    } else {
+      try {
+        const response = await mutateAsyncDelete(itemToUpdateOrDelete);
+        console.log(response);
+        setItemToUpdateOrDelete(undefined);
+        reset(defaultValues);
+        setImageURL("");
+        setFile("");
+        setQuery("");
+        setShowProduct({
+          id: "",
+          ...defaultValues,
+        });
+        window.scrollTo(0, 0);
+        toast.info("Product successfully deleted.");
+        refetchGet();
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }, [itemToUpdate]);
+  };
 
   return (
     <Grid
@@ -209,16 +274,17 @@ export default function Admin() {
         <Grid item>
           <ToggleButtonGroup
             color="primary"
-            value={updateAdd}
+            value={updateAddDelete}
             exclusive
             onChange={handleChangeToggle}
             aria-label="Platform"
           >
             <ToggleButton value="update">Update</ToggleButton>
             <ToggleButton value="add">Add</ToggleButton>
+            <ToggleButton value="delete">Delete</ToggleButton>
           </ToggleButtonGroup>
         </Grid>
-        {updateAdd === "update" && (
+        {updateAddDelete !== "add" && (
           <>
             <Grid item alignSelf="stretch">
               <Select
@@ -253,13 +319,27 @@ export default function Admin() {
               />
               <Button
                 disabled={!query}
-                onClick={() =>
-                  setItemToUpdate(
-                    products.find((p) => p.label.toLowerCase() === query)
-                  )
-                }
+                onClick={() => {
+                  const productFound = products.find(
+                    (p) => p.label.toLowerCase() === query
+                  );
+                  if (productFound) {
+                    setItemToUpdateOrDelete(productFound);
+                    setShowProduct(productFound);
+                  }
+                }}
               >
-                Update
+                {updateAddDelete}
+              </Button>
+              <Button
+                disabled={!query}
+                onClick={() => {
+                  setItemToUpdateOrDelete(undefined);
+                  setQuery("");
+                  reset(defaultValues);
+                }}
+              >
+                Clear
               </Button>
             </Grid>
           </>
@@ -268,326 +348,7 @@ export default function Admin() {
 
       <Divider flexItem sx={{ margin: "2rem 0" }} />
 
-      <Grid
-        item
-        container
-        gap={1}
-        component="form"
-        display="flex"
-        justifyContent="center"
-        onSubmit={handleSubmit(handleOnSubmit)}
-      >
-        <Grid
-          item
-          container
-          display="flex"
-          flexDirection="column"
-          xs={12}
-          md={6}
-        >
-          <Grid item>
-            <Controller
-              control={control}
-              name="category"
-              render={({ field, formState, fieldState }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel id="area-label">Category</InputLabel>
-                  <Select
-                    {...field}
-                    fullWidth
-                    label="Category"
-                    required
-                    onBlur={handleOnBlur}
-                  >
-                    <MenuItem value="herbs">Herbs</MenuItem>
-                    <MenuItem value="vegetables">Vegetables</MenuItem>
-                    {/* <MenuItem value="fruit">Fruit</MenuItem>
-                  <MenuItem value="mushrooms">Mushrooms</MenuItem>
-                  <MenuItem value="cheese">Cheese</MenuItem> */}
-                  </Select>
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item mt={2}>
-            <Controller
-              name="label"
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  onBlur={handleOnBlur}
-                  required
-                  fullWidth
-                  type="text"
-                  label="Label"
-                  error={!!fieldState.error?.message}
-                  helperText={fieldState.error?.message}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item mt={2}>
-            <Controller
-              name="price"
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  onBlur={handleOnBlur}
-                  required
-                  fullWidth
-                  type="number"
-                  label="Price"
-                  error={!!fieldState.error?.message}
-                  helperText={fieldState.error?.message}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item mt={2}>
-            <Controller
-              name="eachOrWeigth"
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  onBlur={handleOnBlur}
-                  required
-                  fullWidth
-                  type="text"
-                  label="Each or Weigth"
-                  error={!!fieldState.error?.message}
-                  helperText={fieldState.error?.message}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item mt={2}>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  onBlur={handleOnBlur}
-                  required
-                  fullWidth
-                  type="text"
-                  label="Description"
-                  error={!!fieldState.error?.message}
-                  helperText={fieldState.error?.message}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item mt={2}>
-            <Controller
-              control={control}
-              name="isOffer"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    Is offer?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="isOffer"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="stillGrowing"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    Still growing?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="stillGrowing"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="soldOut"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    Sold out?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="soldOut"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="inSeason"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    In season?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="inSeason"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="sellingFast"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    Selling fast?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="sellingFast"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="popular"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    Popular?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="popular"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="comingSoon"
-              render={({
-                field: { onChange, value },
-                formState,
-                fieldState,
-              }) => (
-                <FormControl fullWidth error={!!fieldState.error?.message}>
-                  <InputLabel shrink={false} id="area-label">
-                    Coming soon?
-                  </InputLabel>
-                  <Checkbox
-                    onBlur={handleOnBlur}
-                    onChange={onChange}
-                    checked={value}
-                    name="comingSoon"
-                    sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-        </Grid>
-        <Divider flexItem sx={{ margin: "0 2rem" }} orientation="vertical" />
-        <Grid
-          item
-          container
-          display="flex"
-          flexDirection="column"
-          md={5}
-          gap={6}
-        >
-          <Grid item mt={2}>
-            <Controller
-              name="image"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  onChange={handleChangeImage}
-                  fullWidth
-                  type="file"
-                  //error={!imageURL}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleUpload}
-              disabled={!file}
-            >
-              Upload image
-            </Button>
-          </Grid>
-          <Grid item>
-            <ProductTile product={showProduct} />
-          </Grid>
-        </Grid>
+      {updateAddDelete === "delete" ? (
         <Grid
           item
           container
@@ -596,18 +357,370 @@ export default function Admin() {
         >
           <Box sx={{ display: "flex", justifyContent: "center", gap: 4 }}>
             <Button
-              type="submit"
               color="primary"
               variant="contained"
-              disabled={!imageURL}
+              disabled={!itemToUpdateOrDelete}
+              onClick={handleDeleteItem}
             >
-              Add Product
+              Delete Product
             </Button>
           </Box>
         </Grid>
-      </Grid>
-
-      <DevTool control={control} />
+      ) : (
+        <>
+          <Grid
+            item
+            container
+            gap={1}
+            component="form"
+            display="flex"
+            justifyContent="center"
+            onSubmit={handleSubmit(handleOnSubmit)}
+          >
+            <Grid
+              item
+              container
+              display="flex"
+              flexDirection="column"
+              xs={12}
+              md={6}
+            >
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="category"
+                  render={({ field, formState, fieldState }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel id="area-label">Category</InputLabel>
+                      <Select
+                        {...field}
+                        fullWidth
+                        label="Category"
+                        required
+                        onBlur={handleOnBlur}
+                      >
+                        <MenuItem value="herbs">Herbs</MenuItem>
+                        <MenuItem value="vegetables">Vegetables</MenuItem>
+                        {/* <MenuItem value="fruit">Fruit</MenuItem>
+                  <MenuItem value="mushrooms">Mushrooms</MenuItem>
+                  <MenuItem value="cheese">Cheese</MenuItem> */}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item mt={2}>
+                <Controller
+                  name="label"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      onBlur={handleOnBlur}
+                      required
+                      fullWidth
+                      type="text"
+                      label="Label"
+                      error={!!fieldState.error?.message}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item mt={2}>
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      onBlur={handleOnBlur}
+                      required
+                      fullWidth
+                      type="number"
+                      label="Price"
+                      error={!!fieldState.error?.message}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item mt={2}>
+                <Controller
+                  name="eachOrWeigth"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      onBlur={handleOnBlur}
+                      required
+                      fullWidth
+                      type="text"
+                      label="Each or Weigth"
+                      error={!!fieldState.error?.message}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item mt={2}>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      onBlur={handleOnBlur}
+                      required
+                      fullWidth
+                      type="text"
+                      label="Description"
+                      error={!!fieldState.error?.message}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item mt={2}>
+                <Controller
+                  control={control}
+                  name="isOffer"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        Is offer?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="isOffer"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="stillGrowing"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        Still growing?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="stillGrowing"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="soldOut"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        Sold out?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="soldOut"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="inSeason"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        In season?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="inSeason"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="sellingFast"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        Selling fast?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="sellingFast"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="popular"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        Popular?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="popular"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Controller
+                  control={control}
+                  name="comingSoon"
+                  render={({
+                    field: { onChange, value },
+                    formState,
+                    fieldState,
+                  }) => (
+                    <FormControl fullWidth error={!!fieldState.error?.message}>
+                      <InputLabel shrink={false} id="area-label">
+                        Coming soon?
+                      </InputLabel>
+                      <Checkbox
+                        onBlur={handleOnBlur}
+                        onChange={onChange}
+                        checked={value}
+                        name="comingSoon"
+                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+            </Grid>
+            <Divider
+              flexItem
+              sx={{ margin: "0 2rem" }}
+              orientation="vertical"
+            />
+            <Grid
+              item
+              container
+              display="flex"
+              flexDirection="column"
+              md={5}
+              gap={6}
+            >
+              <Grid item mt={2}>
+                <Controller
+                  name="image"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Input
+                      {...field}
+                      onChange={handleChangeImage}
+                      fullWidth
+                      type="file"
+                      //error={!imageURL}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleUpload}
+                  disabled={!file}
+                >
+                  Upload image
+                </Button>
+              </Grid>
+              <Grid item>
+                <ProductTile product={showProduct} />
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              container
+              mt={2}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 4 }}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  disabled={
+                    (updateAddDelete === "add" && !imageURL) ||
+                    (updateAddDelete === "update" &&
+                      (Object.keys(formState.dirtyFields).length > 0 || !query))
+                  }
+                >
+                  {updateAddDelete === "add"
+                    ? "Add Product"
+                    : updateAddDelete === "update"
+                    ? "Update Product"
+                    : ""}
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+          <DevTool control={control} />
+        </>
+      )}
     </Grid>
   );
 }

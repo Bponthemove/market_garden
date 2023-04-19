@@ -1,17 +1,12 @@
 import { BaseSyntheticEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
-import { IUserDetails } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 import Grid from "@mui/material/Grid";
 import { Typography, TextField, Box, Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { auth } from "../firebase";
-import { useQuery } from "@tanstack/react-query";
-import { useFirebase } from "../hooks/useFirebase";
 import { DevTool } from "@hookform/devtools";
 import getStripe from "../stripe";
-
-const stripePromise = getStripe();
+import { useOrderContext } from "../context/OrderContext";
 
 interface ICheckOut {
   firstName: string;
@@ -23,56 +18,22 @@ interface ICheckOut {
   town: string;
 }
 
-// let defaultValues = {
-//   firstName: "",
-//   lastName: "",
-//   email: "",
-//   postcode: "",
-//   addressLine1: "",
-//   addressLine2: "",
-//   town: "",
-// };
-
 export const CheckOut = () => {
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
   const [postcodeValid, setPostcodeValid] = useState<boolean | null>(null);
-  const [defaultValues, setDefaultValues] = useState<ICheckOut>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    postcode: "",
-    addressLine1: "",
-    addressLine2: "",
-    town: "",
-  });
-  const { cartQuantity, cartTotal } = useCartContext();
-  const { getUserDetails } = useFirebase();
-  const navigate = useNavigate();
-  const user = auth.currentUser;
-  const uid = user?.uid;
-
-  const { isLoading, error } = useQuery<IUserDetails[] | undefined>(
-    ["uid", uid],
-    getUserDetails,
-    {
-      enabled: !!uid,
-      onSuccess: (data) => {
-        console.log({ data });
-        const [
-          { firstName, lastName, postcode, addressLine1, addressLine2, town },
-        ] = data || [];
-        setDefaultValues({
-          firstName,
-          lastName,
-          email: user?.email ?? "",
-          postcode,
-          addressLine1,
-          addressLine2,
-          town,
-        });
-      },
-    }
-  );
+  const { cartItems } = useCartContext();
+  const {currentUser} = useAuthContext(); 
+  const {setOrderNr} = useOrderContext();
+  
+  const defaultValues = {
+    firstName: currentUser.userDetails[0].firstName ?? "",
+    lastName: currentUser.userDetails[0].lastName ?? '',
+    email: currentUser.user?.email ?? "",
+    postcode: currentUser.userDetails[0].postcode ?? '',
+    addressLine1: currentUser.userDetails[0].addressLine1 ?? '',
+    addressLine2: currentUser.userDetails[0].addressLine2 ?? '',
+    town: currentUser.userDetails[0].town ?? '',
+  };
 
   const { control, handleSubmit, getValues } = useForm<ICheckOut>({
     defaultValues,
@@ -84,11 +45,36 @@ export const CheckOut = () => {
     event?: BaseSyntheticEvent<object, any, any>
   ) => {
     event?.preventDefault();
-
-    const payCart = await fetch(".netlify/functions/stripePayCart", {
+console.log(currentUser)
+console.log(getValues('email'))
+    await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
-    });
-    console.log({payCart})
+      body: JSON.stringify(
+        {
+          items: cartItems.map(item => ({
+            id: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            email: getValues('email')
+          }))
+        }
+      )
+    })
+      .then(res => res.json())
+      .then(async(session) => {
+        const stripe = await getStripe()
+        setOrderNr(session.id)
+        return await stripe?.redirectToCheckout({sessionId: session.id})
+      })
+      .then(result => {
+        if (result?.error) {
+          setOrderNr('')
+          console.log(result?.error)
+        } 
+      })
+    
+    
+    //succesful then add order to db
   };
 
   const handleValidateEmail = (event: {
@@ -135,7 +121,7 @@ export const CheckOut = () => {
           <Controller
             name="email"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <TextField
                 {...field}
                 required

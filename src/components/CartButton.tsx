@@ -3,7 +3,7 @@ import { useCartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export default function CartButton() {
-  const { cartIsOpen, setCartIsOpen, cartTotal } = useCartContext();
+  const { setCartIsOpen, cartTotal } = useCartContext();
 
   return (
     <ButtonBase
@@ -12,8 +12,8 @@ export default function CartButton() {
         position: "fixed",
         width: "5rem",
         height: "5rem",
-        bottom: "4rem",
-        right: "4rem",
+        bottom: {xs: "10rem", md: "5rem"},
+        right: {xs: "0.75rem", md: "3.5rem"},
       }}
     >
       <Box

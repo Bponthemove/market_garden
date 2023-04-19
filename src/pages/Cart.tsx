@@ -12,7 +12,6 @@ import { CartItem } from "../components/CartItem";
 import { useCartContext } from "../context/CartContext";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { CheckOut } from "./checkOut";
 
@@ -20,7 +19,6 @@ export function Cart() {
   const [maxHeight, setMaxHeight] = useState<"auto" | 0>(0);
   const { cartItems, setCartIsOpen, cartTotal, clearCart, cartQuantity } =
     useCartContext();
-  const navigate = useNavigate();
 
   const handleClickOrder = () => {
     setMaxHeight((prev) => (prev === "auto" ? 0 : "auto"));

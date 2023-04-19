@@ -1,20 +1,12 @@
 import {
-  Card,
   Box,
-  Typography,
-  IconButton,
-  ImageList,
   ImageListItem,
   ImageListItemBar,
-  ListSubheader,
   Grid,
 } from "@mui/material";
 import { useCartContext } from "../context/CartContext";
-import { IProduct } from "../types/allTypes";
-import InfoIcon from "@mui/icons-material/Info";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import ButtonBase from "@mui/material/ButtonBase";
 
 function ProductTile(props: {product: any}) {
   const {
@@ -35,7 +27,6 @@ function ProductTile(props: {product: any}) {
   } = props.product ;
 
   const {
-    removeFromCart,
     increaseCartQuantity,
     decreaseCartQuantity,
     getItemQuantity,

@@ -1,9 +1,9 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js'
 
-let stripePromise: Promise<Stripe | null>;
-const getStripe = () => {
+let stripePromise: Stripe | null;
+const getStripe = async() => {
   if (!stripePromise) {
-    stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_SECRET_KEY!}`);
+    stripePromise = await loadStripe(`${process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!}`);
   }
   return stripePromise;
 };

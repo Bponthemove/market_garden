@@ -7,10 +7,8 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { ToastProvider } from "./hooks/useToast";
-import { ThemeProvider } from "@emotion/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { appTheme } from "./themes/standard";
-import { CssBaseline } from "@mui/material";
+import { OrderProvider } from "./context/OrderContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -23,7 +21,9 @@ root.render(
         <ToastProvider>
           <AuthProvider>
             <CartProvider>
-              <App/>
+              <OrderProvider>
+                <App />
+              </OrderProvider>
             </CartProvider>
           </AuthProvider>
         </ToastProvider>

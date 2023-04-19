@@ -10,15 +10,27 @@ import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
+export interface IUserDetails {
+  uid: string;
+  firstName: string;
+  lastName: string;
+  postcode: string;
+  addressLine1: string;
+  addressLine2: string;
+  town: string;
+}
+
 export interface IUser {
   user: User | null;
   superUser: boolean;
+  userDetails: IUserDetails[];
 };
 
 export interface IAuthSignIn {
@@ -38,21 +50,20 @@ export interface IAuthSignUp {
   town: string;
 };
 
-export interface IUserDetails {
-  uid: string;
-  firstName: string;
-  lastName: string;
-  postcode: string;
-  addressLine1: string;
-  addressLine2: string;
-  town: string;
-}
-
 export const superUsers = ["bpvanzalk@hotmail.com"];
 
 export const defaultNoUser = {
   user: null,
   superUser: false,
+  userDetails: [{
+    uid: '',
+    firstName: '',
+    lastName: '',
+    postcode: '',
+    addressLine1: '',
+    addressLine2: '',
+    town: '',
+  }],
 }
 
 type AuthContextTypes = {
@@ -74,14 +85,31 @@ export function useAuthContext() {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<IUser>(defaultNoUser);
+  const [currentUser, setCurrentUser] = useLocalStorage<IUser>(
+    "user",
+    defaultNoUser
+  );;
   const navigate = useNavigate();
-  const { addUserDetails } = useFirebase();
+  const { addUserDetails, getUserDetails } = useFirebase();
+
   const {
-    mutateAsync,
-    isLoading,
-    isError
+    mutateAsync: mutateAsyncAddUser,
+    isLoading: isLoadingAddUser,
+    isError: isErrorAddUser
   } = useMutation((user: IUserDetails) => addUserDetails(user));
+
+  const { 
+    data: userDetails,
+    isLoading: isLoadingGetUser, 
+    isError: isErrorGetUser, 
+  } = useQuery<IUserDetails[]>(
+    ["userDetails", currentUser?.user?.uid],
+    getUserDetails,
+    {
+      enabled: !!currentUser.user,
+    }
+  ); 
+
   const toast = useToast();
 
   async function signUp(
@@ -101,7 +129,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const user = auth.currentUser;
       const uid = user?.uid;
       if (!uid) throw new Error(`No uid returned for ${user}`)
-      await mutateAsync({uid, firstName, lastName, postcode, addressLine1, addressLine2, town});
+      await mutateAsyncAddUser({uid, firstName, lastName, postcode, addressLine1, addressLine2, town});
     } catch (err) {
       setError(`Sign up credentials are not correct.`)
       console.error(`Error signing in : ${err}`)
@@ -118,6 +146,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setCurrentUser({
         user: null,
         superUser: false,
+        userDetails: [],
       });
       toast.info('You have successfully logged out!')
       navigate("/");
@@ -136,10 +165,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       console.log({user})
-      setCurrentUser({
+      setCurrentUser(prevUser => ({
+        ...prevUser,
         user,
         superUser: superUsers.includes(user?.email?.toLowerCase() ?? "")
-      })
+      }))
     } catch (err) {
       setError(`Sign up credentials are not correct.`)
       console.error(`Error signing in : ${err}`)
@@ -152,10 +182,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!loading) {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         console.log("inside", user);
-        if (user) {
+        if (user && userDetails) {
           setCurrentUser({
             user,
             superUser: superUsers.includes(user?.email?.toLowerCase() ?? ""),
+            userDetails,
           });
         }
       });
@@ -163,7 +194,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       return unsubscribe;
     }
-  }, [loading]);
+  }, [loading, userDetails]);
 
   return (
     <AuthContext.Provider

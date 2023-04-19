@@ -1,72 +1,96 @@
-import {
-  Box,
-  Button,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import { CartItem } from "../components/CartItem";
-import { useCartContext } from "../context/CartContext";
-import CloseIcon from "@mui/icons-material/Close";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { CheckOut } from "./checkOut";
-import { TableHead } from "@mui/material";
+import { Box, Table, TableBody, TableRow, Typography } from "@mui/material";
+import { TableHead, TableCell } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useFirebase } from "../hooks/useFirebase";
 
-const orders = [
-  {
-    name: 'Bob Dylan',
-    email: 'bobD@dd.com',
-    address: 'roundfield 49, upper Bucklebury, RG8 9YY',
-    price: 24.49,
-    products: 'red pepper 2, leek 3, mushrooms 1, coriander 1'
-  },
-  {
-    name: 'Susie Loovie',
-    email: 'ss@dd.com',
-    address: 'roundfield 76, Bucklebury, RG8 6lY',
-    price: 35.49,
-    products: 'red pepper 8, leek 1, mushrooms 4, coriander 2'
-  }
-]
+const TableCellStyled = ({
+  children,
+  head,
+}: {
+  children: React.ReactElement | string | React.ReactElement[];
+  head: boolean;
+}) => (
+  <TableCell sx={{ verticalAlign: "top" }}>
+    <Typography
+      color={head ? "primary" : "black"}
+      variant={head ? "subtitle2" : "caption"}
+    >
+      {children}
+    </Typography>
+  </TableCell>
+);
 
 export function Orders() {
+  const { getOrders, setOrdersToProcessed } = useFirebase();
+
+  const { data, isLoading, isError } = useQuery(["getOrders"], getOrders);
+
+  const orders = data || [];
+
+  const parsed = orders.map((eachOrder) => ({
+    ...eachOrder,
+    order: JSON.parse(eachOrder.order),
+  }));
+
   return (
     <Box>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell><Typography variant="h5">Name</Typography></TableCell>
-            <TableCell><Typography variant="h5">Email</Typography></TableCell>
-            <TableCell><Typography variant="h5">Address</Typography></TableCell>
-            <TableCell><Typography variant="h5">Price</Typography></TableCell>
-            <TableCell><Typography variant="h5">Products</Typography></TableCell>
+            <TableCellStyled head>Name</TableCellStyled>
+            <TableCellStyled head>Email</TableCellStyled>
+            <TableCellStyled head>Address</TableCellStyled>
+            <TableCellStyled head>Price</TableCellStyled>
+            <TableCellStyled head>Products</TableCellStyled>
+            <TableCellStyled head>Order Nr</TableCellStyled>
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders.map((order, idx) => (
-            <TableRow>
-              <TableCell>
-                <Typography variant="h6">{order.name}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{order.email}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{order.address}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{order.price}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{order.products}</Typography>
-              </TableCell>
-            </TableRow>
-          ))}
+          {parsed.map((order, idx) => {
+            const splitOrderNr = order.orderNr.match(/.{1,14}/g) ?? [];
+            return (
+              <TableRow key={idx}>
+                <TableCellStyled head={false}>{order.name}</TableCellStyled>
+                <TableCellStyled head={false}>{order.email}</TableCellStyled>
+                <TableCellStyled head={false}>
+                  {`${order.addressLineOne} ${order.addressLineTwo} ${order.town} ${order.postcode}`}
+                </TableCellStyled>
+                <TableCellStyled head={false}>
+                  {order.price.toFixed(2)}
+                </TableCellStyled>
+                <TableCellStyled head={false}>
+                  {order.order.map(
+                    (product: { label: string; quantity: number }) => (
+                      <>
+                        <Typography
+                          key={product.label}
+                          variant="caption"
+                          color="inherit"
+                        >
+                          {`${product.label} x ${product.quantity} `}
+                        </Typography>
+                        <br />
+                      </>
+                    )
+                  )}
+                </TableCellStyled>
+                <TableCellStyled head={false}>
+                  {splitOrderNr.map((stringBit: string) => (
+                    <>
+                      <Typography
+                        key={stringBit}
+                        variant="caption"
+                        color="inherit"
+                      >
+                        {stringBit}
+                      </Typography>
+                      <br />
+                    </>
+                  ))}
+                </TableCellStyled>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Box>

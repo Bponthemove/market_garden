@@ -3,11 +3,18 @@ import {
   Grid,
 } from "@mui/material";
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Link from "../../components/nav/Link";
 import { routes } from "../../constants/routes";
 
 const Shop = () => {
+  const navigate = useNavigate();
+  const { pathname} = useLocation();
+
+  useEffect(() => {
+    if (pathname === '/shop') navigate('/shop/vegetables')
+  }, [pathname])
 
   return (
     <Box>

@@ -1,5 +1,6 @@
 import About from "../pages/about";
 import Admin from "../pages/admin";
+import { AfterStripe } from "../pages/afterStripe";
 import { CheckOut } from "../pages/checkOut";
 import Contact from "../pages/contact";
 import Home from "../pages/home";
@@ -97,5 +98,11 @@ export const routes: {[key: string]: IRoute} = {
     label: 'Orders',
     component: <Orders />,
     superUser: true
-  } 
+  },
+  AFTER_STRIPE: {
+    path: "/afterstripe/:result",
+    label: '',
+    component: <AfterStripe />,
+    superUser: false
+  }  
 };

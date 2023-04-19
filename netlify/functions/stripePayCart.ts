@@ -1,34 +1,44 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
-const stripe = require("stripe")(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripe = require("stripe")(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
-const handler: Handler = async (
+const handler = async (
   event: HandlerEvent,
   context: HandlerContext
 ) => {
-  let session;
-  try {
-    session = await stripe.checkout.sessions.create({
-      lineItems: [{ price: "11", quantity: 2 }],
-      successUrl: "http://localhost:3000/home",
-      cancelUrl: "http://localhost:3000/home",
-      mode: "payment",
-    });
+  const checkOut = JSON.parse(event.body ?? '');
+  let session: any;
+  let status: number;
+  if (checkOut.items) {
+    const modifiedLineItems = checkOut.items.map((item: { quantity: number; id: string; price: number; }) => ({
+      price_data:{
+        product: item.id,
+        currency: 'gbp',
+        unit_amount_decimal: Number(item.price) * 100
+      },
+      quantity: item.quantity
+    }))
+    try {
+      session = await stripe.checkout.sessions.create({
+        line_items: modifiedLineItems,
+        success_url: "http://localhost:8888/afterstripe/success",
+        cancel_url: "http://localhost:8888/afterstripe/failed",
+        mode: "payment",
+        customer_email: checkOut.email,
+      });
+      status = 200;      
+    } catch (err) {
+      console.log(err);
+      status = 400
+      session = {
+        message: err
+      }
+    }
     return {
-      statusCode: 200,
-      body: JSON.stringify({
-        id: "topId",
-      }),
+      statusCode: status, 
+      body: JSON.stringify(session),
     };
-  } catch (err) {
-    console.log(err);
   }
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      id: "bottomId",
-    }),
-  };
 };
 
 export { handler };

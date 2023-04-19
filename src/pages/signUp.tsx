@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 
 import TextField from "@mui/material/TextField";
@@ -10,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Box } from "@mui/material";
 import { useToast } from "../hooks/useToast";
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -143,12 +143,12 @@ function SignUp() {
         justifyContent="center"
         onSubmit={handleSubmit(handleOnSubmit)}
       >
-        <Grid item xs={12}>
-          <Typography component="h1" variant="h5">
+        <Grid item xs={8} my={2}>
+          <Typography component="h1" variant="h4">
             Sign Up
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="email"
             control={control}
@@ -174,7 +174,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="password"
             control={control}
@@ -199,7 +199,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="passwordConfirmation"
             control={control}
@@ -224,7 +224,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="firstName"
             control={control}
@@ -241,7 +241,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="lastName"
             control={control}
@@ -258,7 +258,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="postcode"
             control={control}
@@ -283,7 +283,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="addressLine1"
             control={control}
@@ -300,7 +300,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="addressLine2"
             control={control}
@@ -317,7 +317,7 @@ function SignUp() {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Controller
             name="town"
             control={control}
@@ -337,6 +337,7 @@ function SignUp() {
         <Grid
           item
           xs={12}
+          my={2}
           container
           sx={{ display: "flex", justifyContent: "center" }}
         >
@@ -346,6 +347,7 @@ function SignUp() {
               color="primary"
               variant="contained"
               disabled={loading}
+              startIcon={<AssignmentTurnedInIcon/>}
             >
               Sign Up
             </Button>

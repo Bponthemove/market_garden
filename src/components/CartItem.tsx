@@ -1,4 +1,4 @@
-import { Box, Grid, Table, TableRow, Typography } from "@mui/material";
+import { Grid, TableRow, Typography } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 //import { products } from "../constants/products";
 import { ICartItem, useCartContext } from "../context/CartContext";
