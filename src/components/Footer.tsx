@@ -1,5 +1,4 @@
 import {
-  useTheme,
   AppBar,
   Toolbar,
   Typography,
@@ -21,7 +20,6 @@ const iconStyles = {
 }
 
 function Footer() {
-  const theme = useTheme();
 
   return (
     <AppBar position="static">

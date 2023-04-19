@@ -171,7 +171,7 @@ export default function Admin() {
           id: itemToUpdateOrDelete.id,
           ...dirtyFieldsWithValues[0],
         };
-        const resp = await mutateAsyncUpdate(productToUpdate);
+        await mutateAsyncUpdate(productToUpdate);
       } catch (err) {
         console.log(err);
       }
