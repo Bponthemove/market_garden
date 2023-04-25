@@ -10,6 +10,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { Box } from "@mui/material";
 import { useToast } from "../hooks/useToast";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import { DevTool } from "@hookform/devtools";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ function SignUp() {
 
   const { control, handleSubmit } = useForm<IAuthSignUp>({
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: "",
       password: "",
       passwordConfirmation: "",
@@ -125,6 +128,7 @@ function SignUp() {
   return currentUser.user ? (
     <Navigate to={"/logout"} />
   ) : (
+    <>
     <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
       <Grid item xs={0} md={1} />
       <Grid
@@ -154,7 +158,6 @@ function SignUp() {
                 fullWidth
                 type="email"
                 label="Email Address"
-                name="email"
                 disabled={loading}
                 onBlur={handleValidateEmail}
                 error={emailValid === false}
@@ -180,6 +183,7 @@ function SignUp() {
                 fullWidth
                 name="password"
                 onBlur={handleValidatePassword}
+                focused={!!passwordValid}
                 color={passwordValid ? "success" : "primary"}
                 error={passwordValid === false}
                 disabled={loading}
@@ -203,9 +207,9 @@ function SignUp() {
                 {...field}
                 required
                 fullWidth
-                name="passwordConfirmation"
                 onBlur={handlePasswordConfirmation}
-                color={passwordMatch ? "success" : "primary"}
+                focused={!!passwordMatch && !!passwordValid}
+                color={passwordMatch && passwordValid ? "success" : "primary"}
                 error={passwordMatch === false}
                 disabled={loading}
                 helperText={
@@ -262,7 +266,6 @@ function SignUp() {
                 {...field}
                 required
                 fullWidth
-                name="postcode"
                 onBlur={handleValidatePostcode}
                 color={postcodeValid ? "success" : "primary"}
                 error={postcodeValid === false}
@@ -365,6 +368,8 @@ function SignUp() {
         }}
       />
     </Grid>
+    <DevTool control={control}/>
+    </>
   );
 }
 

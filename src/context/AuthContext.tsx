@@ -52,18 +52,20 @@ export interface IAuthSignUp {
 
 export const superUsers = ["bpvanzalk@hotmail.com"];
 
+const defaultUserDetails = [{
+  uid: '',
+  firstName: '',
+  lastName: '',
+  postcode: '',
+  addressLine1: '',
+  addressLine2: '',
+  town: '',
+}];
+
 export const defaultNoUser = {
   user: null,
   superUser: false,
-  userDetails: [{
-    uid: '',
-    firstName: '',
-    lastName: '',
-    postcode: '',
-    addressLine1: '',
-    addressLine2: '',
-    town: '',
-  }],
+  userDetails: defaultUserDetails,
 }
 
 type AuthContextTypes = {
@@ -73,6 +75,7 @@ type AuthContextTypes = {
   logOut: () => void;
   signIn: (email: string, password: string) => Promise<any>;
   error: string | undefined;
+  setError: React.Dispatch<React.SetStateAction<string | undefined>>;
   loading: boolean;
 };
 
@@ -166,21 +169,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
         superUser: superUsers.includes(user?.email?.toLowerCase() ?? "")
       }))
     } catch (err) {
-      setError(`Sign up credentials are not correct.`)
-      console.error(`Error signing in : ${err}`)
+      if (err && typeof err === 'object' && 'code' in err) {
+        console.error(`Error signing in : ${err.code}`)
+        setError(err.code as string)
+      }      
     } finally {
       setLoading(false)
     }
   }
   
   useEffect(() => {
+    console.log(1)
     if (!loading) {
+      console.log(2)
       const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user && userDetails) {
+        console.log(3, user, auth, userDetails, currentUser.user)
+        if (user) {
+          console.log(4, userDetails)
           setCurrentUser({
             user,
             superUser: superUsers.includes(user?.email?.toLowerCase() ?? ""),
-            userDetails,
+            userDetails: userDetails ?? defaultUserDetails,
           });
         }
       });
@@ -199,7 +208,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logOut,
         signIn,
         loading,
-        error
+        error,
+        setError,
       }}
     >
       {children}

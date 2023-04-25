@@ -7,7 +7,7 @@ import {
   IAuthSignIn,
   useAuthContext,
 } from "../context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { Box } from "@mui/material";
@@ -19,14 +19,14 @@ import { useQuery } from "@tanstack/react-query";
 function SignInSide() {
   const navigate = useNavigate();
   const { getUserDetails } = useFirebase();
-  const { currentUser, signIn, loading } = useAuthContext();
+  const { currentUser, signIn, loading, error, setError } = useAuthContext();
   const toast = useToast();
 
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
   const [passwordValid, setPasswordValid] = useState<boolean | null>(null);
   const [uid, setUid] = useState<string>("");
 
-  const { isLoading } = useQuery<IUserDetails[] | undefined>(
+  useQuery<IUserDetails[] | undefined>(
     ["uid", uid],
     getUserDetails,
     {
@@ -88,6 +88,13 @@ function SignInSide() {
       }
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+      setError('')
+    }
+  }, [error, toast, setError])
 
   // useEffect(() => {
   //   //password or email autocomplete on first load
@@ -191,7 +198,7 @@ function SignInSide() {
             type="submit"
             color="primary"
             variant="contained"
-            disabled={isLoading}
+            disabled={loading || !passwordValid}
           >
             Sign In
           </Button>
