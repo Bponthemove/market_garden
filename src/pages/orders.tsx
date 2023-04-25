@@ -1,7 +1,7 @@
 import { Box, Table, TableBody, TableRow, Typography } from "@mui/material";
 import { TableHead, TableCell } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { useFirebase } from "../hooks/useFirebase";
 
 const TableCellStyled = ({
@@ -28,10 +28,13 @@ export function Orders() {
 
   const orders = data || [];
 
-  const parsed = orders.map((eachOrder) => ({
-    ...eachOrder,
-    order: JSON.parse(eachOrder.order),
-  }));
+  const parsed = orders.length ? orders.map((eachOrder) => {
+    console.log('parsing', orders)
+    return ({
+      ...eachOrder,
+      order: eachOrder.order ? JSON.parse(eachOrder.order) : '',
+    });
+  }) : [];
 
   return (
     <Box>
@@ -47,7 +50,7 @@ export function Orders() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {parsed.map((order, idx) => {
+          {parsed && parsed.length && parsed.filter(order => order.order).map((order, idx) => {
             const splitOrderNr = order.orderNr.match(/.{1,14}/g) ?? [];
             return (
               <TableRow key={idx}>
@@ -57,10 +60,10 @@ export function Orders() {
                   {`${order.addressLineOne} ${order.addressLineTwo} ${order.town} ${order.postcode}`}
                 </TableCellStyled>
                 <TableCellStyled head={false}>
-                  {order.price.toFixed(2)}
+                  {order?.price?.toFixed(2) ?? '-'}
                 </TableCellStyled>
                 <TableCellStyled head={false}>
-                  {order.order.map(
+                  {order.order ? order.order.map(
                     (product: { label: string; quantity: number }) => (
                       <Fragment key={product.label}>
                         <Typography
@@ -73,6 +76,8 @@ export function Orders() {
                         <br />
                       </Fragment>
                     )
+                  ) : (
+                    <Typography>-</Typography>
                   )}
                 </TableCellStyled>
                 <TableCellStyled head={false}>
@@ -92,6 +97,11 @@ export function Orders() {
               </TableRow>
             );
           })}
+          {(!orders || !orders.length) && (
+              <TableRow>
+                <TableCell>No orders found</TableCell>
+              </TableRow>
+          ) }
         </TableBody>
       </Table>
     </Box>

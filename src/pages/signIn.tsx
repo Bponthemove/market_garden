@@ -19,7 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 function SignInSide() {
   const navigate = useNavigate();
   const { getUserDetails } = useFirebase();
-  const { currentUser, signIn, loading, error, setError } = useAuthContext();
+  const { currentUser, signIn, loading, error, setError, userDetails } = useAuthContext();
   const toast = useToast();
 
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
@@ -96,15 +96,7 @@ function SignInSide() {
     }
   }, [error, toast, setError])
 
-  // useEffect(() => {
-  //   //password or email autocomplete on first load
-  //   handleValidateEmail()
-  //   handleValidatePassword()
-  // }, [])
-
-  return currentUser.user ? (
-    <Navigate to={"/logout"} />
-  ) : (
+  return (
     <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
       <Grid
         item

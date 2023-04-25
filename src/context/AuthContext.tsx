@@ -77,6 +77,7 @@ type AuthContextTypes = {
   error: string | undefined;
   setError: React.Dispatch<React.SetStateAction<string | undefined>>;
   loading: boolean;
+  userDetails: IUserDetails[] | undefined;
 };
 
 const AuthContext = createContext({} as AuthContextTypes);
@@ -210,6 +211,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         loading,
         error,
         setError,
+        userDetails,
       }}
     >
       {children}
