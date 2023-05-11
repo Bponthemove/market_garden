@@ -62,6 +62,7 @@ export interface IOrder {
   email: string;
   phone: string;
   price: number;
+  deliveryDay: string;
 }
 
 export interface IAddOrder extends IOrder {

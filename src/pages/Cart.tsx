@@ -15,6 +15,22 @@ import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { useState } from "react";
 import { CheckOut } from "./checkOut";
 
+export const TableCellStyled = ({
+  children,
+}: {
+  children: string | number;
+}) => (
+  <TableCell
+    sx={{
+      "&.MuiTableCellStyled-root": {
+        padding: 0,
+      },
+    }}
+  >
+    <Typography variant="subtitle1">{children}</Typography>
+  </TableCell>
+);
+
 export function Cart() {
   const [maxHeight, setMaxHeight] = useState<"auto" | 0>(0);
   const { cartItems, setCartIsOpen, cartTotal, clearCart, cartQuantity } =
@@ -38,23 +54,28 @@ export function Cart() {
         style={{
           opacity: "0.06",
           position: "fixed",
-          left: "0",
-          top: "0",
+          left: "30%", //50 - width/2
+          top: "10%",
           width: "40%",
           height: "auto",
         }}
       />
-      <Grid container position="relative" justifyContent='center'>
-        <Grid item xs={12}>
-          <Grid
-            position="fixed"
-            display="flex"
-            gap={4}
-            sx={(theme) => ({
-              top: "2rem",
-              left: "2rem",
-            })}
-          >
+      <Grid
+        container
+        alignContent="center"
+        flexDirection="column"
+      >
+        <Grid
+          item
+          position="fixed"
+          p={2}
+          sx={{
+            backgroundColor: "#FFF",
+            boxShadow: "0 8px 6px -6px #D3D3D3",
+            minWidth: "100%",
+          }}
+        >
+          <Box display="flex" gap={4}>
             <Box
               display="flex"
               justifyContent="center"
@@ -93,9 +114,9 @@ export function Cart() {
             >
               <ClearAllIcon fontSize="medium" color="action" />
             </Box>
-          </Grid>
+          </Box>
         </Grid>
-        <Grid item xs={10} md={8}>
+        <Grid item width='100%' xs={6}>
           <Box pt={20} display="flex" flexDirection="column">
             <Table>
               <TableBody>
@@ -103,50 +124,49 @@ export function Cart() {
                   <CartItem item={item} key={idx} />
                 ))}
                 <TableRow>
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell>
-                    <Typography variant="h5">total</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h5">=</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h5">{cartTotal.toFixed(2)}</Typography>
-                  </TableCell>
+                  <TableCellStyled>{""}</TableCellStyled>
+                  <TableCellStyled>{""}</TableCellStyled>
+                  <TableCellStyled>total</TableCellStyled>
+                  <TableCellStyled>=</TableCellStyled>
+
+                  <TableCellStyled>{cartTotal.toFixed(2)}</TableCellStyled>
                 </TableRow>
               </TableBody>
             </Table>
             <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
               {maxHeight === 0 && (
-                <Button
-                  disabled={!cartQuantity}
-                  variant="contained"
-                  onClick={handleClickOrder}
-                >
-                  Proceed to checkout
-                </Button>
+                <Box display="flex" flexDirection="column">
+                  <Button
+                    disabled={!cartQuantity || cartTotal <= 25}
+                    variant="contained"
+                    onClick={handleClickOrder}
+                  >
+                    Proceed to checkout
+                  </Button>
+                  {cartTotal <= 25 && (
+                    <Typography variant="subtitle1">
+                      Minimum order of £25
+                    </Typography>
+                  )}
+                </Box>
               )}
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={10} md={8} maxHeight={maxHeight}>
-          {maxHeight === "auto" && (
-            <>
-              <CheckOut />
-              <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
-                <Button
-                  disabled={!cartQuantity}
-                  variant="contained"
-                  onClick={handleClickOrder}
-                >
-                  I do not want to checkout yet.
-                </Button>
-              </Box>
-            </>
-          )}
-        </Grid>
+        {maxHeight === "auto" && (
+          <Grid item maxHeight={maxHeight} xs={6} marginBottom={4}>
+            <CheckOut />
+            <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
+              <Button
+                disabled={!cartQuantity}
+                variant="contained"
+                onClick={handleClickOrder}
+              >
+                cancel
+              </Button>
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

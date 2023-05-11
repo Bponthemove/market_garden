@@ -1,4 +1,4 @@
-import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import { HandlerEvent, HandlerContext } from "@netlify/functions";
 
 const stripe = require("stripe")(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
@@ -6,6 +6,9 @@ const handler = async (
   event: HandlerEvent,
   context: HandlerContext
 ) => {
+  console.log({stripe})
+  console.log({context})
+  console.log({event})
   const checkOut = JSON.parse(event.body ?? '');
   let session: any;
   let status: number;
@@ -20,10 +23,10 @@ const handler = async (
     }))
     try {
       session = await stripe.checkout.sessions.create({
+        mode: "payment",
         line_items: modifiedLineItems,
         success_url: "http://localhost:8888/afterstripe/success",
         cancel_url: "http://localhost:8888/afterstripe/failed",
-        mode: "payment",
         customer_email: checkOut.email,
       });
       status = 200;      

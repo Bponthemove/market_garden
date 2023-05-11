@@ -1,33 +1,50 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/material";
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
 import { useFirebase } from "../hooks/useFirebase";
 
 export const AfterStripe = () => {
-  const { orderNr, setOrderNr } = useOrderContext();
+  const { orderNr, deliveryDay, setOrderNr, setDeliveryDay } =
+    useOrderContext();
 
   const { result } = useParams();
   const { cartItems, clearCart } = useCartContext();
   const { addOrder } = useFirebase();
-
-  const addOrderToDB = useCallback(async() => {
-    try {
-      await addOrder();
-    } catch (err) {
-      console.log(`Error adding order to db, orderNr: ${orderNr}`);
-    }
-  }, [orderNr, addOrder]);
+  const [repeated, setRepeated] = useState(0);
+  const [orderNotProcessed, setOrderNotProcessed] = useState(
+    cartItems.length > 0 && orderNr !== '' && deliveryDay !== ''
+  );
   
   useEffect(() => {
-    if (orderNr && cartItems.length > 0) {
-      addOrderToDB()
+    if (result === 'failed') {
+      return
+    }
+
+    if (repeated > 3) {
       clearCart();
       setOrderNr("");
+      setDeliveryDay("");
     }
-  }, [addOrderToDB, clearCart, setOrderNr, cartItems.length, orderNr]);
+
+    async function addOrderToDB() {
+      setOrderNotProcessed(false);
+      try {
+        await addOrder();
+        clearCart();
+        setOrderNr("");
+        setDeliveryDay("");
+      } catch (err) {
+        setOrderNotProcessed(true);
+        setRepeated((prev) => prev++);
+      }
+    };
+    if (orderNotProcessed && repeated <= 3) {
+      addOrderToDB();
+    }
+  }, [orderNotProcessed, addOrder, repeated, result, clearCart, setOrderNr, setDeliveryDay]);
 
   return (
     <Box>

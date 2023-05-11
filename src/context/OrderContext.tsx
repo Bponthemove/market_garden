@@ -13,7 +13,9 @@ type OrderProviderProps = {
 
 type OrderContextTypes = {
   orderNr: string,
-  setOrderNr: Dispatch<SetStateAction<string>>
+  deliveryDay: string,
+  setOrderNr: Dispatch<SetStateAction<string>>,
+  setDeliveryDay: Dispatch<SetStateAction<string>>
 }
 
 
@@ -28,12 +30,18 @@ export function OrderProvider({ children }: OrderProviderProps) {
     "order",
     ''
   );
+  const [deliveryDay, setDeliveryDay] = useLocalStorage<string>(
+    "deliveryDay",
+    ''
+  );
 
   return (
     <OrderContext.Provider
       value={{
         orderNr,
-        setOrderNr
+        deliveryDay,
+        setOrderNr,
+        setDeliveryDay
       }}
     >
       {children}

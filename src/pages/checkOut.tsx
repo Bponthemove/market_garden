@@ -2,11 +2,21 @@ import { BaseSyntheticEvent, useState } from "react";
 import { useCartContext } from "../context/CartContext";
 import { useAuthContext } from "../context/AuthContext";
 import Grid from "@mui/material/Grid";
-import { Typography, TextField, Box, Button } from "@mui/material";
+import {
+  Typography,
+  TextField,
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import getStripe from "../stripe";
 import { useOrderContext } from "../context/OrderContext";
+import { useDate } from "../hooks/useDate";
 
 interface ICheckOut {
   firstName: string;
@@ -16,28 +26,38 @@ interface ICheckOut {
   addressLine1: string;
   addressLine2: string;
   town: string;
-}
+  deliveryDay: string;
+}; 
 
 export const CheckOut = () => {
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
   const [postcodeValid, setPostcodeValid] = useState<boolean | null>(null);
   const { cartItems } = useCartContext();
-  const {currentUser} = useAuthContext(); 
-  const {setOrderNr} = useOrderContext();
-  
+  const { currentUser } = useAuthContext();
+  const { setOrderNr, setDeliveryDay } = useOrderContext();
+  const { saturday, sunday, monday} = useDate('checkOut');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const defaultValues = {
     firstName: currentUser.userDetails[0].firstName ?? "",
-    lastName: currentUser.userDetails[0].lastName ?? '',
+    lastName: currentUser.userDetails[0].lastName ?? "",
     email: currentUser.user?.email ?? "",
-    postcode: currentUser.userDetails[0].postcode ?? '',
-    addressLine1: currentUser.userDetails[0].addressLine1 ?? '',
-    addressLine2: currentUser.userDetails[0].addressLine2 ?? '',
-    town: currentUser.userDetails[0].town ?? '',
+    postcode: currentUser.userDetails[0].postcode ?? "",
+    addressLine1: currentUser.userDetails[0].addressLine1 ?? "",
+    addressLine2: currentUser.userDetails[0].addressLine2 ?? "",
+    town: currentUser.userDetails[0].town ?? "",
+    deliveryDay: "",
   };
 
-  const { control, handleSubmit, getValues } = useForm<ICheckOut>({
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { isValid },
+  } = useForm<ICheckOut>({
     defaultValues,
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
   });
 
   const handleOnSubmit = async (
@@ -45,34 +65,35 @@ export const CheckOut = () => {
     event?: BaseSyntheticEvent<object, any, any>
   ) => {
     event?.preventDefault();
-    const email = getValues('email')
+    const email = getValues("email");
+    const deliveryDay = getValues("deliveryDay");
+    console.log({deliveryDay})
+    console.log({email})
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
-      body: JSON.stringify(
-        {
-          items: cartItems.map(item => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price,
-            email
-          }))
-        }
-      )
+      body: JSON.stringify({
+        items: cartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+          email,
+        })),
+      }),
     })
-      .then(res => res.json())
-      .then(async(session) => {
-        const stripe = await getStripe()
-        setOrderNr(session.id)
-        return await stripe?.redirectToCheckout({sessionId: session.id})
+      .then((res) => res.json())
+      .then(async (session) => {
+        const stripe = await getStripe();
+        setOrderNr(session.id);
+        setDeliveryDay(deliveryDay);
+        return await stripe?.redirectToCheckout({ sessionId: session.id });
       })
-      .then(result => {
+      .then((result) => {
         if (result?.error) {
-          setOrderNr('')
-          console.log(result?.error)
-        } 
-      })
-    
-    
+          setOrderNr("");
+          console.log(result?.error);
+        }
+      });
+
     //succesful then add order to db
   };
 
@@ -250,6 +271,34 @@ export const CheckOut = () => {
             )}
           />
         </Grid>
+        <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
+          <Box sx={{ flex: 3 }}>
+            You can order for this coming weekend. We deliver saturday's,
+            sunday's and monday's between 9am and 1pm. If you can't select your
+            preferred day, then please choose a different day.
+            <br/>
+            Cut off time for deliveries for this weekend is Friday at 22:00.
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            <Controller
+              name="deliveryDay"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Select
+                  {...field}
+                  required
+                  fullWidth
+                  label="Delivery Day"
+                  error={!!fieldState.error?.message}
+                >
+                  <MenuItem value={saturday as unknown as string}>{`Saturday ${saturday}`}</MenuItem>
+                  <MenuItem value={sunday as unknown as string}>{`Sunday ${sunday}`}</MenuItem>
+                  <MenuItem value={monday as unknown as string}>{`Monday ${monday}`}</MenuItem>
+                </Select>
+              )}
+            />
+          </Box>
+        </Box>
         <Grid
           item
           xs={12}
@@ -257,7 +306,12 @@ export const CheckOut = () => {
           sx={{ display: "flex", justifyContent: "center" }}
         >
           <Box sx={{ display: "flex", justifyContent: "center", gap: 4 }}>
-            <Button type="submit" color="primary" variant="contained">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              disabled={!isValid}
+            >
               Proceed to checkout
             </Button>
           </Box>

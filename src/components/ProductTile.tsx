@@ -3,24 +3,52 @@ import {
   ImageListItem,
   ImageListItemBar,
   Grid,
+  Typography,
 } from "@mui/material";
 import { useCartContext } from "../context/CartContext";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
-function ProductTile(props: {product: any}) {
+function ProductTile(props: { product: any }) {
   const {
-      id,
-      label,
-      description,
-      image,
-  } = props.product ;
+    id,
+    label,
+    description,
+    image,
+    inSeason,
+    isOffer,
+    stillGrowing,
+    soldOut,
+    sellingFast,
+    popular,
+    comingSoon,
+  } = props.product;
 
-  const {
-    increaseCartQuantity,
-    decreaseCartQuantity,
-    getItemQuantity,
-  } = useCartContext();
+  console.log(description);
+
+  const banners = [
+    { inSeason },
+    { isOffer },
+    { stillGrowing },
+    { soldOut },
+    { sellingFast },
+    { popular },
+    { comingSoon },
+  ].filter((banner) => Object.values(banner)[0]);
+
+  const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } =
+    useCartContext();
+
+  const fromCamelCaseToNormal = (value: string) => {
+    const string = value.replace(/([a-z])([A-Z])/g, "$1 $2").split(" ");
+    let flat = "";
+
+    string.forEach(
+      (word) =>
+        (flat = flat + word.charAt(0).toUpperCase() + word.slice(1) + " ")
+    );
+    return flat;
+  };
 
   return (
     <Grid
@@ -28,14 +56,28 @@ function ProductTile(props: {product: any}) {
       key={id}
       position="relative"
       sx={{
-        height: "15rem",
+        height: "25rem",
         width: "15rem",
         gridTemplateColumns: "repeat(auto-fill, auto)",
+        "&:hover": {
+          //cursor: "pointer",
+          boxShadow: "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px",
+        },
       }}
     >
       <ImageListItem
         sx={{
           height: "inherit !important",
+          "& .MuiImageListItemBar-root: hover": {
+            height: "200px",
+            alignItems: "stretch",
+            ".MuiImageListItemBar-subtitle": {
+              height: "100%",
+              textOverflow: "clip",
+              overflow: "visible",
+              whiteSpace: "normal",
+            },
+          },
         }}
       >
         <Box
@@ -56,8 +98,7 @@ function ProductTile(props: {product: any}) {
           {id ? getItemQuantity(id) : 0}
         </Box>
         <img
-          src={image}
-          srcSet={image}
+          src={image ?? '/images/logo.png'}
           width="100%"
           height="100%"
           alt={label}
@@ -66,6 +107,17 @@ function ProductTile(props: {product: any}) {
         <ImageListItemBar
           title={label}
           subtitle={description}
+          sx={{
+            justifyContent: "space-between",
+            "& .MuiImageListItemBar-titleWrap": {
+              flex: "1 1 70%",
+            },
+            "& .MuiImageListItemBar-actionIcon": {
+              flex: "1 1 20%",
+              justifySelf: "flex-end",
+              alignSelf: "flex-end",
+            },
+          }}
           actionIcon={
             <>
               <AddCircleIcon
@@ -86,6 +138,29 @@ function ProductTile(props: {product: any}) {
           }
         />
       </ImageListItem>
+
+      <Box
+        sx={(theme) => ({
+          position: "absolute",
+          top: 0,
+          right: 0,
+          padding: "2px 4px",
+          backgroundColor: theme.palette.secondary.light,
+          borderRadius: '0 0 0 5px'
+        })}
+      >
+        {banners.map((banner, idx) => (
+          <Typography
+            key={idx}
+            variant="subtitle2"
+            sx={(theme) => ({
+              color: theme.palette.primary.light,
+            })}
+          >
+            {fromCamelCaseToNormal(Object.keys(banner)[0])}
+          </Typography>
+        ))}
+      </Box>
     </Grid>
 
     // <Card

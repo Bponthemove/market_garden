@@ -179,14 +179,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
   
-  useEffect(() => {
-    console.log(1)
-    if (!loading) {
-      console.log(2)
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        console.log(3, user, auth, userDetails, currentUser.user)
-        if (user) {
-          console.log(4, userDetails)
+  useEffect(() => {    
+    if (!loading) {      
+      const unsubscribe = onAuthStateChanged(auth, (user) => {        
+        if (user) {          
           setCurrentUser({
             user,
             superUser: superUsers.includes(user?.email?.toLowerCase() ?? ""),

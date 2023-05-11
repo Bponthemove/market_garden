@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { IUserDetails, superUsers, useAuthContext } from "../context/AuthContext";
-import { auth, database, db } from "../firebase";
+import { useState } from "react";
+import { IUserDetails, useAuthContext } from "../context/AuthContext";
+import { database, db } from "../firebase";
 import { IAddOrder, IAddProduct, IGetProduct, IUpdateProduct } from "../types/allTypes";
 import {
   query,
@@ -19,13 +19,9 @@ import { useOrderContext } from "../context/OrderContext";
 export const useFirebase = () => {
   const [firebaseLoading, setFirebaseLoading] = useState<boolean>(false);
   const [firebaseError, setFirebaseError] = useState<string>("");
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
-
-  console.log({authenticated})
-
   const {cartItems, cartTotal} = useCartContext();
   const {currentUser} = useAuthContext();
-  const {orderNr} = useOrderContext();
+  const {orderNr, deliveryDay} = useOrderContext();
 
   //------------------CRUD------------// 
   //----------------PRODUCTS----------//
@@ -54,7 +50,7 @@ export const useFirebase = () => {
     return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    }))
   };
 
   //read product by id and category
@@ -149,6 +145,7 @@ export const useFirebase = () => {
       price: cartTotal,
       town: currentUser.userDetails[0].town,
       orderNr,
+      deliveryDay,
       processed: false,
       order: JSON.stringify(cartItems)
     }
@@ -189,13 +186,13 @@ export const useFirebase = () => {
 
   //delete orders
 
-  useEffect(() => {
-    if (firebaseLoading) {
-      //check if current user is part of the super users
-      const user = auth.currentUser;
-      setAuthenticated(superUsers.includes(user?.email?.toLowerCase() ?? ""));
-    }
-  }, [firebaseLoading]);
+  // useEffect(() => {
+  //   if (firebaseLoading) {
+  //     //check if current user is part of the super users
+  //     const user = auth.currentUser;
+  //     setAuthenticated(superUsers.includes(user?.email?.toLowerCase() ?? ""));
+  //   }
+  // }, [firebaseLoading]);
 
   return {
     firebaseLoading,

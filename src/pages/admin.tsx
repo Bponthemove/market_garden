@@ -69,7 +69,7 @@ export default function Admin() {
   >();
   const [query, setQuery] = useState("");
 
-  console.log({percent})
+  console.log({ percent });
 
   const { control, handleSubmit, reset, formState, getValues } =
     useForm<IAddProduct>({
@@ -108,7 +108,6 @@ export default function Admin() {
     isError: isErrorMutateDelete,
   } = useMutation(({ id }: { id: string }) => deleteProduct(id));
 
-  // Handle file upload event and update state
   const isLoading =
     isLoadingMutateAdd || isLoadingMutateDelete || isLoadingMutateUpdate;
   const isError =
@@ -163,15 +162,22 @@ export default function Admin() {
       try {
         const dirtyFieldsWithValues = Object.keys(formState.dirtyFields).map(
           (fieldKey: any) => ({
-            fieldKey: getValues(fieldKey),
+            [fieldKey]: getValues(fieldKey),
           })
         );
 
-        const productToUpdate: IUpdateProduct = {
-          id: itemToUpdateOrDelete.id,
-          ...dirtyFieldsWithValues[0],
-        };
-        await mutateAsyncUpdate(productToUpdate);
+        let toUpdate = { id: itemToUpdateOrDelete.id };
+
+        dirtyFieldsWithValues.forEach(
+          (value) =>
+            (toUpdate = {
+              ...toUpdate,
+              ...value,
+            })
+        );
+
+        await mutateAsyncUpdate(toUpdate);
+        toast.info("Product succesfully updated.");
       } catch (err) {
         console.log(err);
       }
@@ -180,19 +186,21 @@ export default function Admin() {
         const data = await mutateAsyncAdd(product);
         console.log({ data });
         //add product to stripe
-        reset(defaultValues);
-        setImageURL("");
-        setFile("");
-        setShowProduct({
-          id: "",
-          ...defaultValues,
-        });
-        window.scrollTo(0, 0);
         toast.info("Product succesfully added.");
       } catch (err) {
         console.log(`Error adding product: ${err}`);
       }
     }
+    reset(defaultValues);
+    setImageURL("");
+    setFile("");
+    setQuery("");
+    setShowProduct({
+      id: "",
+      ...defaultValues,
+    });
+    setItemToUpdateOrDelete(undefined);
+    window.scrollTo(0, 0);
   };
 
   const handleOnBlur = (event: { preventDefault: () => void; target: any }) => {
@@ -231,7 +239,7 @@ export default function Admin() {
     });
     setItemToUpdateOrDelete(undefined);
     reset({
-      ...itemToUpdateOrDelete,
+      ...defaultValues,
       image: "",
     });
   };
@@ -265,7 +273,7 @@ export default function Admin() {
     <Typography variant="subtitle1">{`Error query ${updateAddDelete}`}</Typography>
   ) : isErrorGet ? (
     <Typography variant="subtitle1">Error loading products</Typography>
-  ) : isLoadingGet ? (
+  ) : isLoadingGet && updateAddDelete !== 'add' ? (
     <CircularProgress />
   ) : (
     <Grid
@@ -335,12 +343,18 @@ export default function Admin() {
               <Button
                 disabled={!query}
                 onClick={() => {
+                  console.log({ products });
                   const productFound = products.find(
                     (p) => p.label.toLowerCase() === query
                   );
                   if (productFound) {
                     setItemToUpdateOrDelete(productFound);
                     setShowProduct(productFound);
+                    const productNoImage = {
+                      ...productFound,
+                      image: "",
+                    };
+                    reset(productNoImage);
                   }
                 }}
               >
@@ -381,7 +395,8 @@ export default function Admin() {
             </Button>
           </Box>
         </Grid>
-      ) : (
+      ) : (updateAddDelete === "update" && itemToUpdateOrDelete) ||
+        updateAddDelete === "add" ? (
         <>
           <Grid
             item
@@ -721,7 +736,7 @@ export default function Admin() {
                   disabled={
                     (updateAddDelete === "add" && !imageURL) ||
                     (updateAddDelete === "update" &&
-                      (Object.keys(formState.dirtyFields).length > 0 ||
+                      (Object.keys(formState.dirtyFields).length === 0 ||
                         !query)) ||
                     isLoading
                   }
@@ -737,7 +752,7 @@ export default function Admin() {
           </Grid>
           <DevTool control={control} />
         </>
-      )}
+      ) : null}
     </Grid>
   );
 }

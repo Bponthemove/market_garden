@@ -1,15 +1,52 @@
-import { ButtonBase } from "@mui/material";
+import { Button, ButtonBase, TextField } from "@mui/material";
 import { Box, Card, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import { categories } from "../constants/products";
+import { useEffect, useState } from "react";
+import { postcodes } from "../constants/postcodes";
 
 const Home = () => {
+  const [postcode, setPostcode] = useState<string | undefined>();
+  const [deliver, setDeliver] = useState<string>("");
   const navigate = useNavigate();
+
+  const handleValidatePostcode = (event: {
+    preventDefault: () => void;
+    target: { value: string };
+  }) => {
+    event.preventDefault();
+    const value = event.target.value;
+    if (/^([A-Za-z]{2}[\d]{1,2}[A-Za-z]?)[\s]+([\d][A-Za-z]{2})$/.test(value)) {
+      setPostcode(value.replace(/ /g, "").toLowerCase());
+    } else {
+      if (!value) {
+        setPostcode(undefined);
+      } else {
+        setPostcode("");
+      }
+    }
+  };
+
+  const handleCheckPostcode = () => {
+    if (postcode) {
+      if (postcodes.indexOf(postcode) >= 0) {
+        setDeliver("Yes, we deliver to your address!");
+      } else {
+        setDeliver("No, really sorry but we do not deliver to your address");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!postcode && deliver) {
+      setDeliver("");
+    }
+  }, [deliver, postcode]);
 
   return (
     <Grid container flexDirection="column">
-      <Grid item >
+      <Grid item>
         <Box
           sx={{
             display: "flex",
@@ -28,7 +65,7 @@ const Home = () => {
             height: "60vh",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            margin: "2rem 0"
+            margin: "2rem 0",
           }}
         />
         <Box
@@ -59,12 +96,52 @@ const Home = () => {
           </Typography>
           <br />
           <Typography variant="body2" color="white">
+            {" "}
+            We deliver mainly in West-Berkshire. Check here if we deliver to
+            your postcode.
+          </Typography>
+          <Box display="flex" gap={2} mt={2}>
+            <TextField
+              variant="standard"
+              onChange={handleValidatePostcode}
+              error={postcode === ""}
+              helperText={
+                postcode || postcode === undefined
+                  ? ""
+                  : "Please enter a valid postcode, including spaces. "
+              }
+              label="Postcode"
+              type="text"
+              sx={{
+                "& .MuiInputLabel-root": { color: "#FFF" },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#FFF" },
+                borderBottom: "1px solid #FFF",
+              }}
+              InputProps={{ disableUnderline: true }}
+            />
+            {postcode && (
+              <Button
+                variant="outlined"
+                onClick={handleCheckPostcode}
+                color="secondary"
+                sx={{ border: "none" }}
+              >
+                Check
+              </Button>
+            )}
+          </Box>
+          <br />
+          <Typography variant="body1" color="white">
+            {deliver}
+          </Typography>
+          <br />
+          <Typography variant="body2" color="white">
             We grow all our own produce in the heart of West-Berkshire, in the
             beautiful village of Bucklebury.
           </Typography>
           <br />
           <Typography variant="body2" color="white">
-            Personal, fast and reliable, we deliver up to a 10 mile radius.
+            Personal, fast and reliable, we deliver our own products to you.
           </Typography>
           <br />
           <Typography variant="body2" color="white">
@@ -86,7 +163,7 @@ const Home = () => {
         display="flex"
         flexDirection="column"
         sx={{
-          rowGap: {xs: "2rem", md: "4rem"}
+          rowGap: { xs: "2rem", md: "4rem" },
         }}
       >
         {categories.map((cat, idx) => (

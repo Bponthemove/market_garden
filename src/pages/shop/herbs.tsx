@@ -12,7 +12,8 @@ export default function Herbs() {
     isError,
   } = useQuery<IGetProduct[] | undefined>(["herbs"], getProducts);
 
-  const herbs = data || [];
+  const herbs = data || []
+  console.log(herbs)
 
   return (
     <>
