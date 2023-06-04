@@ -31,10 +31,11 @@ export const Layout = ({children}: {children: React.ReactElement | null}) => {
             <Box
               sx={(theme) => ({
                 backgroundColor: theme.palette.primary.light,
+                display: "inline-block",
                 minHeight: "calc(100vh - 8rem)",
                 width: "100vw",
                 paddingY: homeLogo ? {xs: "0", md: "10rem"} : {xs: "0", md: "2rem"},
-                paddingX: {xs: "0", md: "10rem"}
+                paddingX: {xs: "0", md: "13rem"}
               })}
             >
               {children}

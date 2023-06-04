@@ -1,26 +1,9 @@
 import { useState } from "react";
-import {
-  Box,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Drawer, IconButton, List, ListItem } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import { routes } from "../../constants/routes"; 
-
-const linkStyles = {
-  textDecoration: "none",
-  color: "blue",
-  fontSize: "20px",
-};
-
-const iconStyles = {
-  color: "white",
-};
+import { routes } from "../../constants/routes";
+import Link from "./Link";
 
 function DrawerComponent() {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -28,20 +11,16 @@ function DrawerComponent() {
     <>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <List>
-          {Object.values(routes).map(({ path, label }) => (
-            <ListItem key={label} onClick={() => setOpenDrawer(false)}>
-              <ListItemText>
-                <Box sx={{ ...linkStyles }}>
-                  <NavLink to={path}>{label}</NavLink>
-                </Box>
-              </ListItemText>
+          {Object.values(routes).map((link) => (
+            <ListItem key={link.label} onClick={() => setOpenDrawer(false)}>
+              <Link {...link} />
             </ListItem>
           ))}
         </List>
       </Drawer>
       <IconButton
         onClick={() => setOpenDrawer(!openDrawer)}
-        sx={{ ...iconStyles }}
+        sx={{ color: ({ palette }) => palette.primary.light }}
       >
         <MenuIcon />
       </IconButton>

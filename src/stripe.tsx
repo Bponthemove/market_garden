@@ -3,7 +3,7 @@ import { loadStripe, Stripe } from '@stripe/stripe-js'
 let stripePromise: Stripe | null;
 const getStripe = async() => {
   if (!stripePromise) {
-    stripePromise = await loadStripe(`${process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!}`);
+    stripePromise = await loadStripe(`${import.meta.env.VITE_APP_STRIPE_PUBLISHABLE_KEY!}`);
   }
   return stripePromise;
 };

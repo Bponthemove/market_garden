@@ -173,7 +173,10 @@ const Home = () => {
             key={cat.label}
             display="flex"
             sx={{
-              flexDirection: idx % 2 === 0 ? "row" : "row-reverse",
+              flexDirection: {
+                xs: "row",
+                md: idx % 2 === 0 ? "row" : "row-reverse",
+              },
               minHeight: { xs: "30rem", md: "15rem" },
             }}
           >
@@ -206,14 +209,15 @@ const Home = () => {
             </Grid>
             <Grid
               item
+              textAlign="center"
               xs={12}
               md={5}
-              sx={(theme) => ({
+              sx={{
                 margin: {
                   xs: "2rem 1rem 0rem 1rem",
                   md: "2rem 0rem 0rem 2rem",
                 },
-              })}
+              }}
             >
               <Typography variant="h4">{cat.label}</Typography>
               <Typography variant="subtitle2">

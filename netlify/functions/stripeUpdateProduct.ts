@@ -1,6 +1,6 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
-const stripe = require("stripe")(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripe = require("stripe")(import.meta.env.VITE_APP_STRIPE_PUBLISHABLE_KEY);
 
 const handler: Handler = async (
   event: HandlerEvent,

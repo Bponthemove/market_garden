@@ -3,9 +3,10 @@ import {
   Toolbar,
   useTheme,
   useMediaQuery,
+  Typography,
+  Box,
 } from "@mui/material";
 import DrawerComponent from "./Drawer";
-import { Box } from "@mui/system";
 import Link from "./Link";
 import { routes } from "../../constants/routes";
 import { useAuthContext } from "../../context/AuthContext";
@@ -31,21 +32,35 @@ function NavBar() {
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          maxHeight: "2rem",
+          height: "2rem",
         }}
       >
         {isMobile ? (
-          <DrawerComponent />
+          <Box
+          width="100%"
+            display="flex"
+            justifyContent="space-between"
+          >
+            <Box>
+              <Typography
+                component="h3"
+                sx={({ palette }) => ({ color: palette.primary.light })}
+              >
+                RtF
+              </Typography>
+            </Box>
+            <DrawerComponent />
+          </Box>
         ) : (
           <>
             {homeLogo && (
               <Box
-                position='absolute'
+                position="absolute"
                 sx={{
                   borderRadius: "50%",
                   zIndex: "9",
                   top: "5rem",
-                  left: "1.25rem"
+                  left: "1.25rem",
                 }}
               >
                 <Link path={routes["HOME"].path} label={routes["HOME"].label}>
@@ -65,7 +80,7 @@ function NavBar() {
             >
               {Object.values(routes).map((route) => {
                 if (
-                  (homeLogo && route.label === 'Home') ||
+                  (homeLogo && route.label === "Home") ||
                   (!currentUser.user && route.label === "Log out") ||
                   (currentUser.user && route.label === "Sign in") ||
                   (!currentUser.superUser && route.label === "Admin") ||

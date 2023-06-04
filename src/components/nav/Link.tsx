@@ -35,7 +35,7 @@ const Link = (props: PropsWithChildren<ILinkProps>) => {
         to={path}
         sx={(theme) => ({
           ...linkStyles,
-          marginLeft: path !== "/" ? theme.spacing(10) : 0,
+          marginLeft: {xs: 0, md: path !== "/" ? theme.spacing(10) : 0},
           color: !navbar
             ? theme.palette.primary.main
             : theme.palette.primary.light,

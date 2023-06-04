@@ -28,6 +28,24 @@ export const appTheme = createTheme({
     allVariants: {
       color: '#4aaaf8'
     }
+  }, 
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          background: '#4aaaf8'
+        }
+      }
+    }
   }
 });
 
