@@ -1,11 +1,15 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(() => {
-  return {
-    build: {
-      outDir: 'build',
+export default defineConfig({
+  plugins: [react()],
+  esbuild: {
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment',
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly',
     },
-    plugins: [react()],
-  };
+  },
 });

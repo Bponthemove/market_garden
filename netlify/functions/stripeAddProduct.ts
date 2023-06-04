@@ -1,7 +1,7 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
-const stripe = require("stripe")(import.meta.env.VITE_APP_STRIPE_SECRET_KEY);
-
+const stripe = require("stripe")(process.env.VITE_APP_STRIPE_SECRET_KEY);
+console.log('BRAM', stripe)
 const statusCode = 200;
 const headers = {
   "Access-Control-Allow-Origin": "*",

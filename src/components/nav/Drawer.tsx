@@ -11,8 +11,8 @@ function DrawerComponent() {
     <>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <List>
-          {Object.values(routes).map((link) => (
-            <ListItem key={link.label} onClick={() => setOpenDrawer(false)}>
+          {Object.values(routes).map((link, idx) => (
+            <ListItem key={idx} onClick={() => setOpenDrawer(false)}>
               <Link {...link} />
             </ListItem>
           ))}
