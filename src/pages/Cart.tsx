@@ -49,7 +49,7 @@ export function Cart() {
       }}
     >
       <img
-        src="./images/logo.png"
+        src="https://firebasestorage.googleapis.com/v0/b/marketgarden-dev.appspot.com/o/files%2Flogo.png?alt=media&token=be046d76-e8dd-4303-bf27-11c86b1aac5d"
         alt="gg"
         style={{
           opacity: "0.06",

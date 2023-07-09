@@ -98,7 +98,7 @@ function ProductTile(props: { product: any }) {
           {id ? getItemQuantity(id) : 0}
         </Box>
         <img
-          src={image ?? '/images/logo.png'}
+          src={image ?? "https://firebasestorage.googleapis.com/v0/b/marketgarden-dev.appspot.com/o/files%2Flogo.png?alt=media&token=be046d76-e8dd-4303-bf27-11c86b1aac5d"}
           width="100%"
           height="100%"
           alt={label}
