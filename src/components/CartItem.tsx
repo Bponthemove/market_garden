@@ -1,6 +1,5 @@
 import { Grid, TableRow } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
-//import { products } from "../constants/products";
 import { ICartItem, useCartContext } from "../context/CartContext";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";

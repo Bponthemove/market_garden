@@ -19,7 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 function SignInSide() {
   const navigate = useNavigate();
   const { getUserDetails } = useFirebase();
-  const { currentUser, signIn, loading, error, setError, userDetails } = useAuthContext();
+  const { signIn, loading, error, setError } = useAuthContext();
   const toast = useToast();
 
   const [emailValid, setEmailValid] = useState<boolean | null>(null);

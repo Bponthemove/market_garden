@@ -12,7 +12,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import Input from "@mui/material/Input";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -419,7 +419,7 @@ export default function Admin() {
                 <Controller
                   control={control}
                   name="category"
-                  render={({ field, formState, fieldState }) => (
+                  render={({ field, fieldState }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
                       <InputLabel id="area-label">Category</InputLabel>
                       <Select
@@ -517,7 +517,6 @@ export default function Admin() {
                   name="isOffer"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -541,7 +540,6 @@ export default function Admin() {
                   name="stillGrowing"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -565,7 +563,6 @@ export default function Admin() {
                   name="soldOut"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -589,7 +586,6 @@ export default function Admin() {
                   name="inSeason"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -613,7 +609,6 @@ export default function Admin() {
                   name="sellingFast"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -637,7 +632,6 @@ export default function Admin() {
                   name="popular"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -661,7 +655,6 @@ export default function Admin() {
                   name="comingSoon"
                   render={({
                     field: { onChange, value },
-                    formState,
                     fieldState,
                   }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
@@ -697,7 +690,7 @@ export default function Admin() {
                 <Controller
                   name="image"
                   control={control}
-                  render={({ field, fieldState }) => (
+                  render={({ field }) => (
                     <Input
                       {...field}
                       onChange={handleChangeImage}

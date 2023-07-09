@@ -3,10 +3,10 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { appTheme } from "./themes/standard";
 import { routes } from "./constants/routes";
 import { useAuthContext } from "./context/AuthContext";
-import React from "react";
 import Home from "./pages/home";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Layout } from "./components/Layout";
+import { Fragment } from "react";
 
 function App() {
   const { currentUser } = useAuthContext();
@@ -27,13 +27,13 @@ function App() {
                       ({ childPath, childComponent }, idx) => {
                         if (idx === 0) {
                           return (
-                            <React.Fragment key={childPath}>
+                            <Fragment key={childPath}>
                               <Route index element={childComponent} />
                               <Route
                                 path={childPath}
                                 element={childComponent}
                               />
-                            </React.Fragment>
+                            </Fragment>
                           );
                         } else {
                           return (

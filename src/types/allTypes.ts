@@ -1,5 +1,3 @@
-import { ICartItem } from "../context/CartContext";
-
 export type ICategory = {
   readonly category: "vegetables" | "herbs";
 };
