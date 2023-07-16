@@ -3,13 +3,17 @@ import { createTheme } from "@mui/material/styles";
 export const appTheme = createTheme({
   palette: {
     primary: {
-      light: '#fffbee',
-      main: '#4aaaf8',
+      light: '#35d44f',
+      main: '#36b44b',
     },
     secondary: {
-      light: '#36b44b',
-      main: '#fff',
-    },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+      light: '#57aff7',
+      main: '#4aaaf8',
+    },
+    light: {
+      main: '#fffff2'
+    },
+    dark: {main: '#000'}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
   },
   typography: {
     fontFamily: [
@@ -25,9 +29,9 @@ export const appTheme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
-    allVariants: {
-      color: '#4aaaf8'
-    }
+    // allVariants: {
+    //   color: '#4aaaf8'
+    // }
   }, 
   breakpoints: {
     values: {

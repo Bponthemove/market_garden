@@ -1,4 +1,3 @@
-import About from "../pages/about";
 import Admin from "../pages/admin";
 import { AfterStripe } from "../pages/afterStripe";
 import { CheckOut } from "../pages/checkOut";
@@ -13,25 +12,25 @@ import SignInSide from "../pages/signIn";
 import SignUp from "../pages/signUp";
 
 interface IChildrenRoute {
-  childPath: string
-  childLabel: string
-  childComponent: JSX.Element
+  childPath: string;
+  childLabel: string;
+  childComponent: JSX.Element;
 }
 
 interface IRoute {
-  path: string
-  label: string
-  component: JSX.Element
-  superUser: boolean
-  childrenRoutes?: IChildrenRoute[]
+  path: string;
+  label: string;
+  component: JSX.Element;
+  superUser: boolean;
+  childrenRoutes?: IChildrenRoute[];
 }
 
-export const routes: {[key: string]: IRoute} = {
+export const routes: { [key: string]: IRoute } = {
   HOME: {
     path: "/",
     label: "Home",
     component: <Home />,
-    superUser: false
+    superUser: false,
   },
   SHOP: {
     path: "/shop",
@@ -39,70 +38,64 @@ export const routes: {[key: string]: IRoute} = {
     component: <Shop />,
     childrenRoutes: [
       {
-        childPath: '/shop/vegetables',
-        childLabel: 'Vegetables',
-        childComponent: <Vegetables />
+        childPath: "/shop/vegetables",
+        childLabel: "Vegetables",
+        childComponent: <Vegetables />,
       },
       {
-        childPath: '/shop/herbs',
-        childLabel: 'Herbs',
-        childComponent: <Herbs />
-      }
+        childPath: "/shop/herbs",
+        childLabel: "Herbs",
+        childComponent: <Herbs />,
+      },
     ],
-    superUser: false
-  },
-  ABOUT: {
-    path: "/about",
-    label: "About",
-    component: <About />,
-    superUser: false
+    superUser: false,
   },
   CONTACT: {
     path: "/contact",
     label: "Contact",
     component: <Contact />,
-    superUser: false
+    superUser: false,
   },
   CHECK_OUT: {
     path: "/checkout",
     label: "",
     component: <CheckOut />,
-    superUser: false
+    superUser: false,
   },
   SIGN_IN: {
     path: "/signin",
-    label: 'Sign in',
+    label: "Sign in",
     component: <SignInSide />,
-    superUser: false
+    superUser: false,
   },
   SIGN_UP: {
     path: "/signup",
-    label: 'Sign up',
+    label: "Sign up",
     component: <SignUp />,
-    superUser: false
+    superUser: false,
   },
   LOG_OUT: {
     path: "/logout",
-    label: 'Log out',
+    label: "Log out",
     component: <LogOut />,
-    superUser: false
+    superUser: false,
   },
   ADMIN: {
     path: "/admin",
-    label: 'Admin',
+    label: "Admin",
     component: <Admin />,
-    superUser: true
+    superUser: true,
   },
   ORDERS: {
     path: "/orders`",
-    label: 'Orders',
+    label: "Orders",
     component: <Orders />,
-    superUser: true
+    superUser: true,
   },
   AFTER_STRIPE: {
     path: "/afterstripe/:result",
-    label: '',
+    label: "",
     component: <AfterStripe />,
-    superUser: false
-  }  
+    superUser: false,
+  },
 };

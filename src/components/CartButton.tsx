@@ -1,44 +1,88 @@
-import { ButtonBase, Box, Typography } from "@mui/material";
+import { ButtonBase, Box, Typography, Divider } from "@mui/material";
 import { useCartContext } from "../context/CartContext";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { useNavigate } from "react-router-dom";
 
 export default function CartButton() {
   const { setCartIsOpen, cartTotal } = useCartContext();
+  const navigate = useNavigate();
 
   return (
-    <ButtonBase
-      onClick={() => setCartIsOpen(true)}
-      sx={{
+    <Box
+      display="flex"
+      flexDirection="column"
+      sx={({ palette }) => ({
+        backgroundColor: palette.primary.main,
         position: "fixed",
         width: "5rem",
         height: "5rem",
-        bottom: {xs: "10rem", md: "5rem"},
-        right: {xs: "0.75rem", md: "3.5rem"},
-      }}
+        borderRadius: "1rem",
+        bottom: { xs: "10rem", md: "5rem" },
+        right: { xs: "0.75rem", md: "3.5rem" },
+      })}
     >
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        sx={(theme) => ({
-          backgroundColor: theme.palette.primary.main,
-          width: "100%",
-          height: "100%",
-          borderRadius: "50%",
-          cursor: "pointer",
-          ": hover": {
-            boxShadow:
-              "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
-          },
+      <ButtonBase onClick={() => setCartIsOpen(true)}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          sx={({ palette }) => ({
+            backgroundColor: palette.primary.main,
+            borderRadius: "1rem 1rem 0 0",
+            width: "100%",
+            height: "100%",
+            cursor: "pointer",
+            ": hover": {
+              backgroundColor: palette.primary.light,
+            },
+          })}
+        >
+          <ShoppingCartIcon
+            fontSize="medium"
+            sx={({ palette }) => ({ color: palette.dark.main })}
+          />
+          <Typography
+            variant="subtitle2"
+            sx={({ palette }) => ({ color: palette.dark.main })}
+          >{`£ ${cartTotal.toFixed(2)}`}</Typography>
+        </Box>
+      </ButtonBase>
+      <Divider
+        sx={({ palette }) => ({
+          backgroundColor: palette.dark.main,
         })}
-      >
-        <ShoppingCartIcon fontSize="large" color="action" />
-        <Typography
-          variant="subtitle2"
-          color="rgba(0, 0, 0, 0.54)"
-        >{`£ ${cartTotal.toFixed(2)}`}</Typography>
-      </Box>
-    </ButtonBase>
+      />
+      <ButtonBase onClick={() => navigate("/shop")}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          sx={({ palette }) => ({
+            backgroundColor: palette.primary.main,
+            borderRadius: "0 0 1rem 1rem",
+            width: "100%",
+            height: "100%",
+            cursor: "pointer",
+            ": hover": {
+              backgroundColor: palette.primary.light,
+            },
+          })}
+        >
+          <Typography
+            variant="subtitle2"
+            sx={({ palette }) => ({ color: palette.dark.main })}
+          >
+            Shop now
+          </Typography>
+          <AddShoppingCartIcon
+            fontSize="medium"
+            sx={({ palette }) => ({ color: palette.dark.main })}
+          />
+        </Box>
+      </ButtonBase>
+    </Box>
   );
 }

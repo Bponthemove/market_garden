@@ -20,7 +20,7 @@ interface ILinkProps {
 }
 
 const Link = (props: PropsWithChildren<ILinkProps>) => {
-  const { path, label, children, navbar = true } = props;
+  const { path, label, children } = props;
   const { pathname } = useLocation();
 
   const activeLink =
@@ -33,19 +33,10 @@ const Link = (props: PropsWithChildren<ILinkProps>) => {
       <ButtonBase
         component={NavLink}
         to={path}
-        sx={(theme) => ({
+        sx={({ palette: { dark } }) => ({
           ...linkStyles,
-          marginLeft: {xs: 0, md: path !== "/" ? theme.spacing(10) : 0},
-          color: !navbar
-            ? theme.palette.primary.main
-            : theme.palette.primary.light,
-          borderBottom: activeLink
-            ? `2px solid ${
-                !navbar
-                  ? theme.palette.primary.main
-                  : theme.palette.primary.light
-              }`
-            : "",
+          color: dark.main,
+          borderBottom: activeLink ? `2px solid ${dark.main}` : "",
         })}
       >
         {children ?? label}

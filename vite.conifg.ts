@@ -16,6 +16,15 @@ export default defineConfig({
                     return id.toString().split('node_modules/')[1].split('/')[0].toString();
                 }
             }
+        },
+        onwarn(warning, warn) {
+          if (
+            warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
+            warning.message.includes(`'use client'`)
+          ) {
+            return;
+          }
+          warn(warning);
         }
     }
 },
