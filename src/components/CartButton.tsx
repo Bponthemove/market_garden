@@ -24,6 +24,7 @@ export default function CartButton() {
     >
       <ButtonBase onClick={() => setCartIsOpen(true)}>
         <Box
+          p={0.6}
           display="flex"
           flexDirection="column"
           justifyContent="center"
@@ -56,6 +57,7 @@ export default function CartButton() {
       />
       <ButtonBase onClick={() => navigate("/shop")}>
         <Box
+          p={0.6}
           display="flex"
           flexDirection="column"
           justifyContent="center"

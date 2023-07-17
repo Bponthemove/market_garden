@@ -36,9 +36,10 @@ export const Layout = ({
         <>
           {pathname === "/" && (
             <Box
+              position="relative"
               sx={{
                 width: "100vw",
-                paddingTop: "80vh",
+                paddingTop: "100vh",
                 background: `linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,1)), 
               url(${
                 pathname === "/"
@@ -49,7 +50,14 @@ export const Layout = ({
                 backgroundSize: "cover",
               }}
             >
-              <Box p="0 0 4rem 4rem">
+              <Box
+                position='absolute'
+                sx={{
+                  bottom: {xs: '3rem', sm: '1rem'},
+                  left: '3rem'
+                }} 
+                //p="0 0 4rem 4rem"
+              >
                 <Typography
                   component="h1"
                   variant="h3"
@@ -67,9 +75,9 @@ export const Layout = ({
               </Box>
             </Box>
           )}
-          <NavBar shouldFix={isHomeVisible}/>
+          <NavBar shouldFix={isHomeVisible} />
           <Box
-          ref={pathname === '/' ? homeRef : null}
+            ref={pathname === "/" ? homeRef : null}
             sx={(theme) => ({
               backgroundColor: theme.palette.light.main,
               display: "inline-block",
@@ -78,7 +86,7 @@ export const Layout = ({
               paddingY: { xs: "2rem", sm: "4rem" },
               paddingX: { xs: "2rem", sm: "5rem" },
             })}
-          >            
+          >
             {children}
           </Box>
           {/* Shopping Cart Button */}

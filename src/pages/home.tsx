@@ -72,8 +72,9 @@ const Home = () => {
           flex="1"
           alignSelf='center'
           sx={{            
-            minHeight: { xs: "30vh", sm: "60vh" },
-            maxHeight: { xs: "", sm: "60vh" },
+            minHeight: { xs: "50vh", sm: "60vh" },
+            maxHeight: { xs: "50vh", sm: "60vh" },
+            width: { xs: "100%" },
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fcfc4bcc1-f300-4990-826e-705a845f2f5d.jpg?alt=media&token=2b2f0c03-d217-47be-ac40-c8fbe833a0d5)`,
             backgroundPosition: "right",
             backgroundRepeat: "no-repeat",
@@ -92,8 +93,9 @@ const Home = () => {
           flex="1"
           alignSelf='center'          
           sx={{
-            minHeight: { xs: "30vh", sm: "60vh" },
-            maxHeight: { xs: "30vh", sm: "60vh" },
+            minHeight: { xs: "50vh", sm: "60vh" },
+            maxHeight: { xs: "50vh", sm: "60vh" },
+            width: { xs: "100%" },
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0086.jpg?alt=media&token=65e9b4e3-d609-43f3-919e-c2a41a311e17)`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
@@ -123,10 +125,10 @@ const Home = () => {
               }
               label="Postcode"
               type="text"
-              sx={({ palette: { secondary } }) => ({
-                "& .MuiInputLabel-root": { color: secondary.main },
-                "& .MuiInputLabel-root.Mui-focused": { color: secondary.main },
-                borderBottom: `1px solid ${secondary.main}`,
+              sx={({ palette: { primary } }) => ({
+                "& .MuiInputLabel-root": { color: primary.main },
+                "& .MuiInputLabel-root.Mui-focused": { color: primary.main },
+                borderBottom: `1px solid ${primary.main}`,
               })}
               InputProps={{ disableUnderline: true }}
             />
