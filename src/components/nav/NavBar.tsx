@@ -1,13 +1,18 @@
-import { AppBar, Toolbar, Box } from "@mui/material";
-import Link from "./Link";
+import { AppBar, Box, Toolbar } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { useAuthContext } from "../../context/AuthContext";
+import DropdownLink from "./DropdownLink";
+import Link from "./Link";
 
 function NavBar({ shouldFix }) {
   const { currentUser } = useAuthContext();
+  const { pathname } = useLocation();
 
   return (
-    <AppBar position={shouldFix ? "fixed" : "static"}>
+    <AppBar
+      position={shouldFix || pathname.includes("/shop") ? "fixed" : "static"}
+    >
       <Toolbar
         sx={{
           display: "flex",
@@ -35,6 +40,10 @@ function NavBar({ shouldFix }) {
             ) {
               return null;
             }
+            if (route.path === "/shop") {
+              return <DropdownLink key={route.label} {...route} />;
+            }
+
             if (route.path === "/") {
               return <Link key={route.label} {...route} />;
             }

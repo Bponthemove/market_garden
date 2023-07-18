@@ -4,15 +4,15 @@ import ProductTile from "../../components/ProductTile";
 import { useFirebase } from "../../hooks/useFirebase";
 import { IGetProduct } from "../../types/allTypes";
 
-export default function Vegetables() {
+export default function Category({cat}: {cat: string}) {
   const { getProducts } = useFirebase();
   const {
     data,
     isLoading,
     isError,
-  } = useQuery<IGetProduct[] | undefined>(["vegetables"], getProducts);
+  } = useQuery<IGetProduct[] | undefined>([cat], getProducts);
 
-  const vegetables = data || [];
+  const products = data || []
 
   return (
     <>
@@ -22,9 +22,9 @@ export default function Vegetables() {
       : isError ? (
         <Box>Error loading</Box>
       )
-      : vegetables.length ? (
-        vegetables.map((vegetable) => (
-          <ProductTile product={vegetable} key={vegetable.id} />
+      : products.length ? (
+        products.map((product) => (
+          <ProductTile product={product} key={product.id} />
         ))
       ) : (
         <Typography variant="h3">No items found</Typography>

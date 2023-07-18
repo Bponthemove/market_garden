@@ -29,6 +29,15 @@ export const appTheme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+    h6: {
+      fontSize: '15px'
+    },
+    subtitle2: {
+      fontSize: '11px'
+    },
+    button: {
+      textTransform: 'none'
+    }
     // allVariants: {
     //   color: '#4aaaf8'
     // }

@@ -17,10 +17,11 @@ interface ILinkProps {
   path: string;
   label: string;
   navbar?: boolean;
+  sx?: {[key: string]: string}
 }
 
 const Link = (props: PropsWithChildren<ILinkProps>) => {
-  const { path, label, children } = props;
+  const { path, label, children, sx, navbar = true } = props;
   const { pathname } = useLocation();
 
   const activeLink =
@@ -35,8 +36,10 @@ const Link = (props: PropsWithChildren<ILinkProps>) => {
         to={path}
         sx={({ palette: { dark } }) => ({
           ...linkStyles,
+          ...sx,
           color: dark.main,
-          borderBottom: activeLink ? `2px solid ${dark.main}` : "",
+          fontWeight: activeLink && !navbar ? '600' : '',
+          borderBottom: activeLink && navbar ? `2px solid ${dark.main}` : "",
         })}
       >
         {children ?? label}

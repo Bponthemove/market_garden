@@ -19,10 +19,7 @@ export const Layout = ({
   const { pathname } = useLocation();
 
   const showCartBtn =
-    pathname === "/shop" ||
-    pathname === "/shop/herbs" ||
-    pathname === "/shop/vegetables" ||
-    pathname === "/" ||
+    pathname.includes("/shop") ||
     pathname === "/contact";
 
   return (
@@ -53,10 +50,9 @@ export const Layout = ({
               <Box
                 position='absolute'
                 sx={{
-                  bottom: {xs: '3rem', sm: '1rem'},
+                  bottom: {xs: '5rem', sm: '1rem'},
                   left: '3rem'
-                }} 
-                //p="0 0 4rem 4rem"
+                }}                 
               >
                 <Typography
                   component="h1"
@@ -83,14 +79,15 @@ export const Layout = ({
               display: "inline-block",
               minHeight: "calc(100vh - 8rem)",
               width: "100vw",
-              paddingY: { xs: "2rem", sm: "4rem" },
-              paddingX: { xs: "2rem", sm: "5rem" },
+              paddingY: pathname.includes('/shop') ? { xs: "5rem", sm: "6rem" } : { xs: "2rem", sm: "4rem" },
+              paddingLeft: pathname.includes('/shop') ? { xs: "2rem", sm: "1rem" } : { xs: "2rem", sm: "5rem" },
+              paddingRight: pathname.includes('/shop') ? { xs: "2rem", sm: "2rem" } : { xs: "2rem", sm: "5rem" },
             })}
           >
             {children}
           </Box>
           {/* Shopping Cart Button */}
-          {isHomeVisible && showCartBtn && <CartButton />}
+          {((pathname === '/' && isHomeVisible) || showCartBtn) && <CartButton />}
           <Footer />
         </>
       ) : (

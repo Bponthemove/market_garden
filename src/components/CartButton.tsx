@@ -1,8 +1,8 @@
-import { ButtonBase, Box, Typography, Divider } from "@mui/material";
-import { useCartContext } from "../context/CartContext";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Box, ButtonBase, Divider, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useCartContext } from "../context/CartContext";
 
 export default function CartButton() {
   const { setCartIsOpen, cartTotal } = useCartContext();

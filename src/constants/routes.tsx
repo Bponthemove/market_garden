@@ -5,11 +5,11 @@ import Contact from "../pages/contact";
 import Home from "../pages/home";
 import LogOut from "../pages/logOut";
 import { Orders } from "../pages/orders";
-import Herbs from "../pages/shop/herbs";
+import Category from "../pages/shop/category";
 import Shop from "../pages/shop/shop";
-import Vegetables from "../pages/shop/vegetables";
 import SignInSide from "../pages/signIn";
 import SignUp from "../pages/signUp";
+import { categories } from "./categories";
 
 interface IChildrenRoute {
   childPath: string;
@@ -36,18 +36,11 @@ export const routes: { [key: string]: IRoute } = {
     path: "/shop",
     label: "Shop",
     component: <Shop />,
-    childrenRoutes: [
-      {
-        childPath: "/shop/vegetables",
-        childLabel: "Vegetables",
-        childComponent: <Vegetables />,
-      },
-      {
-        childPath: "/shop/herbs",
-        childLabel: "Herbs",
-        childComponent: <Herbs />,
-      },
-    ],
+    childrenRoutes: categories.map((cat) => ({
+      childPath: cat.path,
+      childLabel: cat.label,
+      childComponent: <Category cat={cat.cat} />,
+    })),
     superUser: false,
   },
   CONTACT: {
