@@ -51,7 +51,6 @@ const DropdownLink = () => {
         {categories.map((cat, idx) => (
           <MenuItem
             key={cat.label}
-            disabled={idx === 0}
             selected={idx === selectedIndex}
             onClick={(event) => handleMenuItemClick(event, cat.path, idx)}
           >

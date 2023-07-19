@@ -11,7 +11,7 @@ const Contact = () => {
       gap={4}
       sx={{
         width: "100%",
-        height: "50vh",
+        height: {xs: "", sm: "50vh"},
         justifyContent: "center",
         alingItems: "center",
       }}

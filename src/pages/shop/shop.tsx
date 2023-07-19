@@ -9,33 +9,33 @@ const Shop = () => {
   return pathname === "/shop" ? (
     <Navigate to={"/shop/vegbox"} />
   ) : (
-    <Box display="flex">
-      <Box flex="4" sx={{ overflowY: "auto" }}>
+    <Box display="flex" position='relative'>
+      <Box sx={{ maxWidth: { xs: "70%", sm: "80%" } }}>
         <Grid container columnGap={4} rowGap={7} justifyContent="center">
           <Outlet />
         </Grid>
       </Box>
-        <Box flex="1">
-          <Box
-            display="flex"
-            sx={{
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="h6">What we sell</Typography>
-            {routes["SHOP"]?.childrenRoutes?.map(
-              ({ childPath: path, childLabel: label }) => (
-                <Link
-                  key={label}
-                  path={path}
-                  label={`- ${label}`}
-                  navbar={false}
-                  sx={{ fontSize: "12px" }}
-                />
-              )
-            )}
-          </Box>
+      <Box position='fixed' sx={{top: '4rem', right: '0.5rem'}}>
+        <Box
+          display="flex"
+          sx={{
+            flexDirection: "column",
+          }}
+        >
+          <Typography variant="h6">What we sell</Typography>
+          {routes["SHOP"]?.childrenRoutes?.map(
+            ({ childPath: path, childLabel: label }) => (
+              <Link
+                key={label}
+                path={path}
+                label={`- ${label}`}
+                navbar={false}
+                sx={{ fontSize: "12px" }}
+              />
+            )
+          )}
         </Box>
+      </Box>
     </Box>
   );
 };
