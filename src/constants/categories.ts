@@ -15,7 +15,7 @@ export const categories = [
     cat: 'eggs',
   },
   {
-    label: 'Meat',
+    label: 'Organic Meat',
     path: '/shop/meat',
     cat: 'meat',
   },

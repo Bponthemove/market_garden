@@ -26,9 +26,9 @@ const Home = () => {
   const handleCheckPostcode = () => {
     if (postcode) {
       if (postcodes.indexOf(postcode) >= 0) {
-        setDeliver("Yes, we deliver to your address!");
+        setDeliver("Great! We can deliver to your area!");
       } else {
-        setDeliver("No, really sorry but we do not deliver to your address");
+        setDeliver("Sorry! We are not in your area yet. Check back soon!");
       }
     }
   };
@@ -45,36 +45,32 @@ const Home = () => {
         mb={6}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" }
+          flexDirection: { xs: "column", sm: "row" },
         }}
       >
         <Box flex="1" p={4}>
-          <Typography variant="h5">
-            Market Garden
-          </Typography>
+          <Typography variant="h5">About us</Typography>
           <Typography variant="subtitle2" pt={1}>
-            A no dig organic market garden is a type of garden that is
-            cultivated without disturbing the soil. This means that no digging,
-            tilling, or other forms of soil disturbance are used. Instead, the
-            soil is built up and improved over time by adding organic matter,
-            such as compost, manure, and mulch. They help to conserve soil
-            moisture and fertility, reduce the risk of soil erosion, they are
-            less labor-intensive than traditional gardens and they can be more
-            productive than traditional gardens. There are a number of different
-            methods that can be used to create a no dig organic market garden.
-            One popular method is the Lasagna Method, which involves layering
-            different materials, such as compost, cardboard, and straw, to
-            create a raised bed. No dig organic market gardens can be used to
-            grow a variety of vegetables, fruits, herbs, and flowers.
+            Tom and Tessa Green, founded Round the Field market garden in
+            October 2022 where by following regenerative agriculture and
+            holistic growing practices created a no dig garden to produce high
+            quality, local tasty fruit and veg. But forming no-dig beds and
+            avoiding the act of tilling or turning the soil this creates an
+            amazing environment for good bacteria and mycorrhizal fungi; this in
+            turn created healthier fruit and veg for your table. Packed full of
+            nutrients and vitamins we aim to deliver our produce to you as
+            quickly as possible so you can benefit the most from the freshness!
+            We are working towards our organic accreditation with The Soil
+            Association. Currently unofficially organic. No pesticides or
+            herbicides are used on our market garden.
           </Typography>
         </Box>
         <Box
           flex="1"
-          alignSelf='center'
-          sx={{            
+          sx={{
             minHeight: { xs: "50vh", sm: "60vh" },
-            maxHeight: { xs: "50vh", sm: "60vh" },
             width: { xs: "100%" },
+            alignSelf: {xs: 'center', sm: 'stretch'},
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fcfc4bcc1-f300-4990-826e-705a845f2f5d.jpg?alt=media&token=2b2f0c03-d217-47be-ac40-c8fbe833a0d5)`,
             backgroundPosition: "right",
             backgroundRepeat: "no-repeat",
@@ -88,24 +84,22 @@ const Home = () => {
           flexDirection: { xs: "column-reverse", sm: "row" },
           width: { xs: "100%" },
         }}
-      >        
+      >
         <Box
           flex="1"
-          alignSelf='center'          
           sx={{
             minHeight: { xs: "50vh", sm: "60vh" },
-            maxHeight: { xs: "50vh", sm: "60vh" },
             width: { xs: "100%" },
+            alignSelf: {xs: 'center', sm: 'stretch'},
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0086.jpg?alt=media&token=65e9b4e3-d609-43f3-919e-c2a41a311e17)`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         />
-        <Box flex='1' p={4}>
+        <Box flex="1" p={4}>
           <Typography variant="h5">How it works</Typography>
           <Typography variant="subtitle2" pt={1}>
-            Order before Friday 9pm to get your order this weekend. We deliver
-            on saturdays and sundays.
+          Our subscription seasonal veg boxes are coming soon but in the meantime just select the produce you like to add to your crate, proceed to checkout and order before 4pm to receive next day deliver between 7am to 12pm.
           </Typography>
           <br />
           <Typography variant="subtitle2">
@@ -153,93 +147,9 @@ const Home = () => {
           <Typography variant="subtitle2">
             Personal, fast and reliable, we deliver our own products to you.
           </Typography>
-          <br />
-          <Typography variant="subtitle2">
-            We are an small, independent business who love food the
-            old-fashioned way. No chemicals, mass produced, identical
-            vegetables. But grown with love and passion.
-          </Typography>
-          <br />
-          <Typography variant="subtitle2">
-            We also supply other small local businesses like.
-          </Typography>
         </Box>
       </Box>
     </Box>
-
-    
-    // {/* <Grid
-    //   item
-    //   container
-    //   xs={12}
-    //   gap={2}
-    //   display="flex"
-    //   flexDirection="column"
-    //   sx={{
-    //     rowGap: { xs: "2rem", md: "4rem" },
-    //   }}
-    // >
-    //   {categories.map((cat, idx) => (
-    //     <Grid
-    //       item
-    //       container
-    //       key={cat.label}
-    //       display="flex"
-    //       sx={{
-    //         flexDirection: {
-    //           xs: "row",
-    //           md: idx % 2 === 0 ? "row" : "row-reverse",
-    //         },
-    //         minHeight: { xs: "30rem", md: "15rem" },
-    //       }}
-    //     >
-    //       <Grid item xs={12} md={6}>
-    //         <ButtonBase
-    //           onClick={() => navigate(cat.path)}
-    //           sx={{ height: "100%", width: "100%" }}
-    //         >
-    //           <Card
-    //             sx={(theme) => ({
-    //               backgroundColor: theme.palette.primary.main,
-    //               boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-    //               margin: "auto",
-    //               height: "100%",
-    //               width: "100%",
-    //               maxWidth: "30rem",
-    //               textAlign: "center",
-    //               cursor: "pointer",
-    //               "&:hover": {
-    //                 opacity: "0.8",
-    //               },
-    //               backgroundImage: `url(${cat.image})`,
-    //               backgroundRepeat: "no-repeat",
-    //               backgroundSize: "cover",
-    //               display: "flex",
-    //               justifyContent: "center",
-    //             })}
-    //           />
-    //         </ButtonBase>
-    //       </Grid>
-    //       <Grid
-    //         item
-    //         textAlign="center"
-    //         xs={12}
-    //         md={5}
-    //         sx={{
-    //           margin: {
-    //             xs: "2rem 1rem 0rem 1rem",
-    //             md: "2rem 0rem 0rem 2rem",
-    //           },
-    //         }}
-    //       >
-    //         <Typography variant="h4">{cat.label}</Typography>
-    //         <Typography variant="subtitle2">
-    //           dfddksjdfhksjfhsdj sdkjfbdskjfbsd sdf sdkf sdkhfbdfbdjhfbd{" "}
-    //         </Typography>
-    //       </Grid>
-    //     </Grid>
-    //   ))}
-    // </Grid> */}
   );
 };
 
