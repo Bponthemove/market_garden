@@ -28,7 +28,7 @@ function Footer() {
             display: "flex",
             justifyContent: "space-between",
             flexDirection: { xs: "column-reverse", sm: "row" },
-            rowGap: { xs: "2rem", sm: "0" },
+            rowGap: { xs: "1rem", sm: "0" },
           }}
         >
           <Grid

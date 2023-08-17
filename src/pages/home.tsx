@@ -68,11 +68,11 @@ const Home = () => {
         <Box
           flex="1"
           sx={{
-            minHeight: { xs: "50vh", sm: "60vh" },
-            width: { xs: "100%" },
+            minHeight: { xs: "75vh", sm: "60vh" },
+            width: "100%",
             alignSelf: {xs: 'center', sm: 'stretch'},
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fcfc4bcc1-f300-4990-826e-705a845f2f5d.jpg?alt=media&token=2b2f0c03-d217-47be-ac40-c8fbe833a0d5)`,
-            backgroundPosition: "right",
+            backgroundPosition: { xs: "center", sm: "right"},
             backgroundRepeat: "no-repeat",
           }}
         />
@@ -89,7 +89,7 @@ const Home = () => {
           flex="1"
           sx={{
             minHeight: { xs: "50vh", sm: "60vh" },
-            width: { xs: "100%" },
+            width: "100%",
             alignSelf: {xs: 'center', sm: 'stretch'},
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0086.jpg?alt=media&token=65e9b4e3-d609-43f3-919e-c2a41a311e17)`,
             backgroundSize: "cover",

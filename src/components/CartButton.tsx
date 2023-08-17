@@ -15,10 +15,8 @@ export default function CartButton() {
       sx={({ palette }) => ({
         backgroundColor: palette.primary.main,
         position: "fixed",
-        width: "5rem",
-        height: "5rem",
         borderRadius: "1rem",
-        bottom: { xs: "10rem", md: "5rem" },
+        bottom: { xs: "10rem", md: "2rem" },
         right: { xs: "0.75rem", md: "3.5rem" },
       })}
     >
@@ -31,6 +29,7 @@ export default function CartButton() {
           alignItems="center"
           sx={({ palette }) => ({
             backgroundColor: palette.primary.main,
+            padding: '0.25rem 0.25rem 0 0.25rem',
             borderRadius: "1rem 1rem 0 0",
             width: "100%",
             height: "100%",
@@ -65,6 +64,7 @@ export default function CartButton() {
           sx={({ palette }) => ({
             backgroundColor: palette.primary.main,
             borderRadius: "0 0 1rem 1rem",
+            padding: '0 0.25rem 0.25rem 0.25rem',
             width: "100%",
             height: "100%",
             cursor: "pointer",

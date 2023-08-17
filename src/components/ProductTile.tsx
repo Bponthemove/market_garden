@@ -1,6 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { useCartContext } from "../context/CartContext";
 
 function ProductTile(props: { product: any }) {
@@ -10,6 +10,8 @@ function ProductTile(props: { product: any }) {
     description,
     image,
     inSeason,
+    price,
+    eachOrWeigth,
     isOffer,
     stillGrowing,
     soldOut,
@@ -17,8 +19,6 @@ function ProductTile(props: { product: any }) {
     popular,
     comingSoon,
   } = props.product;
-
-  console.log(description);
 
   const banners = [
     { inSeason },
@@ -32,6 +32,8 @@ function ProductTile(props: { product: any }) {
 
   const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } =
     useCartContext();
+
+  const itemQuantity = id ? getItemQuantity(id) : 0;
 
   const fromCamelCaseToNormal = (value: string) => {
     const string = value.replace(/([a-z])([A-Z])/g, "$1 $2").split(" ");
@@ -50,12 +52,13 @@ function ProductTile(props: { product: any }) {
       position="relative"
       key={id}
       sx={{
-        height: "20rem",
-        width: "8rem",
+        height: { xs: "15em", sm: "22.5rem" },
+        width: { xs: "100%", sm: "10rem" },
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        flexDirection: { xs: "row", sm: "column" },
+        alignItems: { sm: "center" },
         gridTemplateColumns: "repeat(auto-fill, auto)",
+        backgroundColor: "#fff",
         "&:hover": {
           //cursor: "pointer",
           boxShadow:
@@ -63,23 +66,26 @@ function ProductTile(props: { product: any }) {
         },
       }}
     >
-      <Box
-        position="absolute"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        sx={({ palette }) => ({
-          top: "0.1rem",
-          left: "0.1rem",
-          width: "1.5rem",
-          height: "1.5rem",
-          borderRadius: "50%",
-          backgroundColor: palette.primary.main,
-          color: palette.dark.main,
-        })}
-      >
-        {id ? getItemQuantity(id) : 0}
-      </Box>
+      {itemQuantity > 0 && (
+        <Box
+          position="absolute"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={({ palette }) => ({
+            top: "0.1rem",
+            left: "0.1rem",
+            width: "1.5rem",
+            height: "1.5rem",
+            borderRadius: "50%",
+            backgroundColor: palette.primary.main,
+            color: palette.dark.main,
+          })}
+        >
+          {itemQuantity}
+        </Box>
+      )}
+
       {banners.length > 0 && (
         <Box
           position="absolute"
@@ -88,8 +94,8 @@ function ProductTile(props: { product: any }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            bottom: "10.1rem",
-            right: "0.1rem",
+            top: { xs: "45%", sm: "35%" },
+            right: { xs: "none", sm: "0.1rem" },
             borderRadius: "5%",
             backgroundColor: palette.primary.main,
             color: palette.dark.main,
@@ -102,44 +108,69 @@ function ProductTile(props: { product: any }) {
       )}
       <Box
         sx={{
-          height: "50%",
-          width: "100%",
+          height: { xs: "50%", sm: "40%" },
+          width: { xs: "50%", sm: "100%" },
           backgroundImage: `url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       />
-      <Box
-        py={2}
-        px={1}
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        sx={{
-          height: "50%",
-        }}
-      >
-        <Typography variant="h6">{label}</Typography>
-        <Typography variant="subtitle2" pt={1}>
-          {description}
-        </Typography>
-      </Box>
-      <Box display="flex">
-        <AddCircleIcon
-          color="primary"
-          onClick={() => increaseCartQuantity(props.product)}
+      <Box display="flex" flexDirection="column" alignItems="center" sx={{width: {xs: "50%", sm: "100%"}}}>
+        <Box
+          py={2}
+          px={1}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
           sx={{
-            cursor: "pointer",
+            height: "50%",
           }}
-        />
-        <RemoveCircleIcon
-          color={id && getItemQuantity(id) === 0 ? "disabled" : "primary"}
-          onClick={id ? () => decreaseCartQuantity(id) : () => null}
-          sx={{
-            cursor: "pointer",
-          }}
-        />
+        >
+          <Typography variant="h6">{label}</Typography>
+          <Typography variant="subtitle2" pt={1}>
+            {description}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="subtitle2" pt={1}>
+            £ {price}
+          </Typography>
+          <Typography variant="subtitle2" pt={1}>
+            {eachOrWeigth}
+          </Typography>
+        </Box>
+        <Box display="flex">
+          {itemQuantity ? (
+            <>
+              <AddCircleIcon
+                color="primary"
+                onClick={() => increaseCartQuantity(props.product)}
+                sx={{
+                  cursor: "pointer",
+                }}
+              />
+              <RemoveCircleIcon
+                color={id && getItemQuantity(id) === 0 ? "disabled" : "primary"}
+                onClick={id ? () => decreaseCartQuantity(id) : () => null}
+                sx={{
+                  cursor: "pointer",
+                }}
+              />
+            </>
+          ) : (
+            <Button
+              variant="outlined"
+              onClick={() => increaseCartQuantity(props.product)}
+              sx={{
+                cursor: "pointer",
+                marginY: "0.25rem",
+              }}
+            >
+              <Typography variant="subtitle2">Add to cart</Typography>
+            </Button>
+          )}
+        </Box>
       </Box>
     </Grid>
   );
