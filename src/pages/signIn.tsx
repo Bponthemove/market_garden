@@ -1,20 +1,20 @@
+import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  IUserDetails,
   IAuthSignIn,
+  IUserDetails,
   useAuthContext,
 } from "../context/AuthContext";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
-import { Box } from "@mui/material";
 import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
-import { useQuery } from "@tanstack/react-query";
 
 function SignInSide() {
   const navigate = useNavigate();
@@ -26,27 +26,23 @@ function SignInSide() {
   const [passwordValid, setPasswordValid] = useState<boolean | null>(null);
   const [uid, setUid] = useState<string>("");
 
-  useQuery<IUserDetails[] | undefined>(
-    ["uid", uid],
-    getUserDetails,
-    {
-      enabled: !!uid,
-      onSuccess: (data) => {
-        const user = data || [];
-        toast.success(
-          `Hi ${user[0]?.firstName}, you have successfully logged in!`
-        );
-        navigate("/");
-      },
-    }
-  );
+  useQuery<IUserDetails[] | undefined>(["uid", uid], getUserDetails, {
+    enabled: !!uid,
+    onSuccess: (data) => {
+      const user = data || [];
+      toast.success(
+        `Hi ${user[0]?.firstName}, you have successfully logged in!`
+      );
+      navigate("/");
+    },
+  });
 
   const { control, handleSubmit } = useForm<IAuthSignIn>({
     defaultValues: {
       email: "",
       password: "",
     },
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
   });
 
   const handleValidateEmail = (event: {
@@ -91,10 +87,10 @@ function SignInSide() {
 
   useEffect(() => {
     if (error) {
-      toast.error(error)
-      setError('')
+      toast.error(error);
+      setError("");
     }
-  }, [error, toast, setError])
+  }, [error, toast, setError]);
 
   return (
     <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>

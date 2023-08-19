@@ -94,7 +94,7 @@ function ProductTile(props: { product: any }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            top: { xs: "45%", sm: "35%" },
+            top: { xs: "45%", sm: "34%" },
             right: { xs: "none", sm: "0.1rem" },
             borderRadius: "5%",
             backgroundColor: palette.primary.main,
@@ -107,8 +107,9 @@ function ProductTile(props: { product: any }) {
         </Box>
       )}
       <Box
+      flex={3}
         sx={{
-          height: { xs: "50%", sm: "40%" },
+          height: { xs: "50%", sm: "" },
           width: { xs: "50%", sm: "100%" },
           backgroundImage: `url(${image})`,
           backgroundSize: "cover",
@@ -116,7 +117,7 @@ function ProductTile(props: { product: any }) {
           backgroundRepeat: "no-repeat",
         }}
       />
-      <Box display="flex" flexDirection="column" alignItems="center" sx={{width: {xs: "50%", sm: "100%"}}}>
+      <Box flex={5} display="flex" flexDirection="column" alignItems="center" mb={1} rowGap={1} sx={{width: {xs: "50%", sm: "100%"}}}>
         <Box
           py={2}
           px={1}
@@ -124,7 +125,7 @@ function ProductTile(props: { product: any }) {
           flexDirection="column"
           alignItems="center"
           sx={{
-            height: "50%",
+            height: "100%",
           }}
         >
           <Typography variant="h6">{label}</Typography>

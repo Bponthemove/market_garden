@@ -1,6 +1,6 @@
+import InstagramIcon from "@mui/icons-material/Instagram";
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import { iconStyles } from "../components/Footer";
 
 const Contact = () => {
@@ -11,7 +11,6 @@ const Contact = () => {
       gap={4}
       sx={{
         width: "100%",
-        height: {xs: "", sm: "50vh"},
         justifyContent: "center",
         alingItems: "center",
       }}
@@ -25,7 +24,7 @@ const Contact = () => {
       <Box>
         <Typography variant="h5">
           Or follow us on instagram!{" "}
-          <Link to="instagram.com/yourusername/">
+          <Link to="http://www.instagram.com/roundthefield_marketgarden">
             <InstagramIcon sx={iconStyles} fontSize="large" />
           </Link>
         </Typography>

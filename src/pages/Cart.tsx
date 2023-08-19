@@ -116,7 +116,7 @@ export function Cart() {
             </Box>
           </Box>
         </Grid>
-        <Grid item width='100%' xs={6}>
+        <Grid item width='100%' sx={{paddingX: {xs: '0.5rem', sm: '3.5rem', md: '6.5rem'}}}>
           <Box pt={20} display="flex" flexDirection="column">
             <Table>
               <TableBody>
@@ -154,7 +154,7 @@ export function Cart() {
           </Box>
         </Grid>
         {maxHeight === "auto" && (
-          <Grid item maxHeight={maxHeight} xs={6} marginBottom={4}>
+          <Grid item maxHeight={maxHeight} marginBottom={4} sx={{paddingX: {xs: '2.5rem', sm: '8.5rem', md: '16.5rem'}}}>
             <CheckOut />
             <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
               <Button

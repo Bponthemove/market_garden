@@ -76,7 +76,7 @@ export const Layout = ({
             sx={(theme) => ({
               backgroundColor: theme.palette.light.main,
               display: "inline-block",
-              minHeight: pathname !== "/contact" ? "calc(100vh - 8rem)" : "",
+              minHeight: pathname !== "/contact" ? "calc(100vh - 8rem)" : "calc(60vh - 10.8rem)",
               width: "100vw",
               paddingY: pathname.includes("/shop")
                 ? { xs: "5rem", sm: "6rem" }

@@ -273,13 +273,9 @@ export const CheckOut = () => {
         </Grid>
         <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
           <Box sx={{ flex: 3 }}>
-            You can order for this coming weekend. We deliver saturday's,
-            sunday's and monday's between 9am and 1pm. If you can't select your
-            preferred day, then please choose a different day.
-            <br/>
-            Cut off time for deliveries for this weekend is Friday at 22:00.
+            You can order for tomorrow. Cut off time is 4pm. We wil deliver the next day between 7am and 12pm.
           </Box>
-          <Box sx={{ flex: 1 }}>
+          {/* <Box sx={{ flex: 1 }}>
             <Controller
               name="deliveryDay"
               control={control}
@@ -297,7 +293,7 @@ export const CheckOut = () => {
                 </Select>
               )}
             />
-          </Box>
+          </Box> */}
         </Box>
         <Grid
           item
