@@ -50,7 +50,7 @@ const Home = () => {
       >
         <Box flex="1" p={4}>
           <Typography variant="h5">About us</Typography>
-          <Typography variant="subtitle2" pt={1}>
+          <Typography variant="body2" pt={1}>
             Tom and Tessa Green, founded Round the Field market garden in
             October 2022 where by following regenerative agriculture and
             holistic growing practices created a no dig garden to produce high
@@ -98,11 +98,11 @@ const Home = () => {
         />
         <Box flex="1" p={4}>
           <Typography variant="h5">How it works</Typography>
-          <Typography variant="subtitle2" pt={1}>
+          <Typography variant="body2" pt={1}>
           Our subscription seasonal veg boxes are coming soon but in the meantime just select the produce you like to add to your crate, proceed to checkout and order before 4pm to receive next day deliver between 7am to 12pm.
           </Typography>
           <br />
-          <Typography variant="subtitle2">
+          <Typography variant="body2">
             {" "}
             We deliver mainly in West-Berkshire. Check here if we deliver to
             your postcode.
@@ -139,12 +139,12 @@ const Home = () => {
           <br />
           <Typography variant="body1">{deliver}</Typography>
           <br />
-          <Typography variant="subtitle2">
+          <Typography variant="body2">
             We grow all our own produce in the heart of West-Berkshire, in the
             beautiful village of Bucklebury.
           </Typography>
           <br />
-          <Typography variant="subtitle2">
+          <Typography variant="body2">
             Personal, fast and reliable, we deliver our own products to you.
           </Typography>
         </Box>

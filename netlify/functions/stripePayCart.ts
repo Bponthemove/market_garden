@@ -25,8 +25,8 @@ const handler = async (
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: modifiedLineItems,
-        success_url: "http://localhost:8888/afterstripe/success",
-        cancel_url: "http://localhost:8888/afterstripe/failed",
+        success_url: "https://roundthefield.co.uk/afterstripe/success",
+        cancel_url: "https://roundthefield.co.uk//afterstripe/failed",
         customer_email: checkOut.email,
       });
       status = 200;      

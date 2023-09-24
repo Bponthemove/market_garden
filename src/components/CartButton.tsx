@@ -16,8 +16,8 @@ export default function CartButton() {
         backgroundColor: palette.primary.main,
         position: "fixed",
         borderRadius: "1rem",
-        bottom: { xs: "10rem", md: "2rem" },
-        right: { xs: "0.75rem", md: "3.5rem" },
+        bottom: { xs: "10rem", sm: "7.5rem" },
+        right: { xs: "0.75rem", sm: "2.5rem" },
       })}
     >
       <ButtonBase onClick={() => setCartIsOpen(true)}>

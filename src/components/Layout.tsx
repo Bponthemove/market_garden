@@ -101,18 +101,18 @@ export const Layout = ({
                 display: "inline-block",
                 minHeight:
                   pathname !== "/contact"
-                    ? "calc(100vh - 8rem)"
-                    : "calc(80vh - 10.75rem)",
+                    ? "calc(100vh - 5.75rem)"
+                    : {xs: "calc(80vh - 10.75rem)", sm: "calc(80vh - 8rem)"},
                 width: "100vw",
                 paddingY: pathname.includes("/shop")
                   ? { xs: "5rem", sm: "6rem" }
                   : { xs: "2rem", sm: "4rem" },
                 paddingLeft: pathname.includes("/shop")
                   ? { xs: "2rem", sm: "1rem" }
-                  : { xs: "2rem", sm: "5rem" },
+                  : { xs: "2rem", sm: "8rem" },
                 paddingRight: pathname.includes("/shop")
                   ? { xs: "2rem", sm: "2rem" }
-                  : { xs: "2rem", sm: "5rem" },
+                  : { xs: "2rem", sm: "8rem" },
               })}
             >
               {children}
