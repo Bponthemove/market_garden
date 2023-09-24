@@ -1,22 +1,20 @@
-import { BaseSyntheticEvent, useState } from "react";
-import { useCartContext } from "../context/CartContext";
-import { useAuthContext } from "../context/AuthContext";
-import Grid from "@mui/material/Grid";
+import { DevTool } from "@hookform/devtools";
 import {
-  Typography,
-  TextField,
   Box,
   Button,
-  Select,
-  MenuItem,
-  useTheme,
+  TextField,
+  Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import { BaseSyntheticEvent, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
-import getStripe from "../stripe";
+import { useAuthContext } from "../context/AuthContext";
+import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
-import { useDate } from "../hooks/useDate";
+//import { useDate } from "../hooks/useDate";
+import getStripe from "../stripe";
 
 interface ICheckOut {
   firstName: string;
@@ -27,7 +25,7 @@ interface ICheckOut {
   addressLine2: string;
   town: string;
   deliveryDay: string;
-}; 
+}
 
 export const CheckOut = () => {
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
@@ -35,7 +33,7 @@ export const CheckOut = () => {
   const { cartItems } = useCartContext();
   const { currentUser } = useAuthContext();
   const { setOrderNr, setDeliveryDay } = useOrderContext();
-  const { saturday, sunday, monday} = useDate('checkOut');
+  //const { saturday, sunday, monday } = useDate("checkOut");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -67,8 +65,8 @@ export const CheckOut = () => {
     event?.preventDefault();
     const email = getValues("email");
     const deliveryDay = getValues("deliveryDay");
-    console.log({deliveryDay})
-    console.log({email})
+    console.log({ deliveryDay });
+    console.log({ email });
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
@@ -273,7 +271,8 @@ export const CheckOut = () => {
         </Grid>
         <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
           <Box sx={{ flex: 3 }}>
-            You can order for tomorrow. Cut off time is 4pm. We wil deliver the next day between 7am and 12pm.
+            You can order for tomorrow. Cut off time is 4pm. We wil deliver the
+            next day between 7am and 12pm.
           </Box>
           {/* <Box sx={{ flex: 1 }}>
             <Controller

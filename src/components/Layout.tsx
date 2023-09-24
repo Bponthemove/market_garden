@@ -22,8 +22,8 @@ export const Layout = ({
 
   return (
     <Box
-      position="relative"
       sx={{
+        minHeight: "100vh",
         overflowX: "hidden",
       }}
     >
@@ -31,26 +31,47 @@ export const Layout = ({
         <>
           {(pathname === "/" || pathname === "/contact") && (
             <Box
-              position="relative"
               sx={{
+                "@keyframes transformHome": {
+                  "0%": {
+                    height: pathname === "/" ? "100vh" : "40vh",
+                  },
+                  "100%": {
+                    height: pathname === "/" ? "20vh" : "20vh",
+                  },
+                },
                 width: "100vw",
-                paddingTop: pathname === "/" ? "100vh" : "40vh",
-                background: `linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,1)), 
-              url(${
-                pathname === "/"
-                  ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0042.jpg?alt=media&token=e0f7f83c-bbb2-4ad0-b6ed-5f1aae99a20e"
-                  : "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0112.jpg?alt=media&token=3ae5ec9b-cf40-4a5b-8c39-51c247b66412"//"https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_5117.JPG?alt=media&token=834117ed-1726-4703-84ed-28951d464b07"
-              })`,
-                backgroundAttachment: "fixed",
-                backgroundSize: "cover",
+                position: "relative",
+                animation: "1s ease-out 1s 1 transformHome",
+                MozAnimation: "1s ease-out 1s 1 transformHome",
+                WebkitAnimation: "1s ease-out 1s 1 transformHome",
+                animationFillMode: "both",
+                "&:after": {
+                  background: `linear-gradient(to bottom, rgba(0,0,0,0) 10%, rgba(0,0,0,1)), url(${
+                    pathname === "/"
+                      ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0042.jpg?alt=media&token=e0f7f83c-bbb2-4ad0-b6ed-5f1aae99a20e"
+                      : "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0112.jpg?alt=media&token=3ae5ec9b-cf40-4a5b-8c39-51c247b66412"
+                  })`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                  position: "absolute",
+                  top: "0px",
+                  left: "0px",
+                  right: "0px",
+                  bottom: "0px",
+                  zIndex: "-1",
+                  content: '""',
+                },
               }}
             >
               <Box
                 position="absolute"
+                width="100%"
                 sx={{
                   bottom:
-                    pathname === "/" ? { xs: "5rem", sm: "1rem" } : "1rem",
-                  left: pathname === "/" ? "3rem" : "1rem",
+                    pathname === "/" ? { xs: "2rem", sm: "1rem" } : "1rem",
+                  left: "1rem",
                 }}
               >
                 <Typography
@@ -70,32 +91,38 @@ export const Layout = ({
               </Box>
             </Box>
           )}
-          <NavBar shouldFix={isHomeVisible} />
-          <Box
-            ref={pathname === "/" ? homeRef : null}
-            sx={(theme) => ({
-              backgroundColor: theme.palette.light.main,
-              display: "inline-block",
-              minHeight: pathname !== "/contact" ? "calc(100vh - 8rem)" : "calc(60vh - 10.8rem)",
-              width: "100vw",
-              paddingY: pathname.includes("/shop")
-                ? { xs: "5rem", sm: "6rem" }
-                : { xs: "2rem", sm: "4rem" },
-              paddingLeft: pathname.includes("/shop")
-                ? { xs: "2rem", sm: "1rem" }
-                : { xs: "2rem", sm: "5rem" },
-              paddingRight: pathname.includes("/shop")
-                ? { xs: "2rem", sm: "2rem" }
-                : { xs: "2rem", sm: "5rem" },
-            })}
-          >
-            {children}
-          </Box>
-          {/* Shopping Cart Button */}
-          {((pathname === "/" && isHomeVisible) || showCartBtn) && (
-            <CartButton />
-          )}
-          <Footer />
+          
+            <NavBar shouldFix={isHomeVisible} />
+
+            <Box
+              ref={pathname === "/" ? homeRef : null}
+              sx={(theme) => ({
+                backgroundColor: theme.palette.light.main,
+                display: "inline-block",
+                minHeight:
+                  pathname !== "/contact"
+                    ? "calc(100vh - 8rem)"
+                    : "calc(80vh - 10.75rem)",
+                width: "100vw",
+                paddingY: pathname.includes("/shop")
+                  ? { xs: "5rem", sm: "6rem" }
+                  : { xs: "2rem", sm: "4rem" },
+                paddingLeft: pathname.includes("/shop")
+                  ? { xs: "2rem", sm: "1rem" }
+                  : { xs: "2rem", sm: "5rem" },
+                paddingRight: pathname.includes("/shop")
+                  ? { xs: "2rem", sm: "2rem" }
+                  : { xs: "2rem", sm: "5rem" },
+              })}
+            >
+              {children}
+            </Box>
+            {/* Shopping Cart Button */}
+            {((pathname === "/" && isHomeVisible) || showCartBtn) && (
+              <CartButton />
+            )}
+            <Footer />
+          
         </>
       ) : (
         <Cart />

@@ -4,7 +4,7 @@ export const appTheme = createTheme({
   palette: {
     primary: {
       light: "#35d44f",
-      main: "#36b44b",
+      main: "#12af83",
     },
     secondary: {
       light: "#57aff7",
