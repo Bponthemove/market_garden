@@ -14,7 +14,8 @@ export const Layout = ({
   children: React.ReactElement | null;
 }) => {
   const homeRef = useRef();
-  const isHomeVisible = useIsVisible(homeRef);
+  const rootMargin = "0px 0px -92.5% 0px";
+  const isHomeVisible = useIsVisible(homeRef, rootMargin);
   const { cartIsOpen } = useCartContext();
   const { pathname } = useLocation();
 

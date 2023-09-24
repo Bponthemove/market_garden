@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export function useIsVisible(ref) {
+export function useIsVisible(ref, rootMargin) {
   const [isIntersecting, setIntersecting] = useState(false);
   const {pathname} = useLocation();
 
@@ -10,14 +10,14 @@ export function useIsVisible(ref) {
     if (pathname !== '/') return;
     const observer = new IntersectionObserver(
       ([entry]) => setIntersecting(entry.isIntersecting),
-      { root: null, rootMargin: "0px 0px -92.5% 0px" }
+      { root: null, rootMargin }
     );
 
     observer.observe(ref.current);
     return () => {
       observer.disconnect();
     };
-  }, [ref, pathname]);
+  }, [ref, pathname, rootMargin]);
 
   return isIntersecting;
 }

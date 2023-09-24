@@ -1,10 +1,18 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { postcodes } from "../constants/postcodes";
+import { useIsVisible } from "../hooks/useIsVisible";
+
+const rootMarginImg = "200px";
 
 const Home = () => {
   const [postcode, setPostcode] = useState<string | undefined>();
   const [deliver, setDeliver] = useState<string>("");
+  const image1Ref = useRef();
+  const image2Ref = useRef();
+
+  const image1Load = useIsVisible(image1Ref, rootMarginImg);
+  const image2Load = useIsVisible(image2Ref, rootMarginImg);
 
   const handleValidatePostcode = (event: {
     preventDefault: () => void;
@@ -66,13 +74,18 @@ const Home = () => {
           </Typography>
         </Box>
         <Box
+          ref={image1Ref}
           flex="1"
           sx={{
             minHeight: { xs: "75vh", sm: "60vh" },
             width: "100%",
-            alignSelf: {xs: 'center', sm: 'stretch'},
-            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fcfc4bcc1-f300-4990-826e-705a845f2f5d.jpg?alt=media&token=2b2f0c03-d217-47be-ac40-c8fbe833a0d5)`,
-            backgroundPosition: { xs: "center", sm: "right"},
+            alignSelf: { xs: "center", sm: "stretch" },
+            backgroundImage: `url(${
+              image1Load
+                ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fcfc4bcc1-f300-4990-826e-705a845f2f5d.jpg?alt=media&token=2b2f0c03-d217-47be-ac40-c8fbe833a0d5"
+                : ""
+            })`,
+            backgroundPosition: { xs: "center", sm: "right" },
             backgroundRepeat: "no-repeat",
           }}
         />
@@ -86,12 +99,17 @@ const Home = () => {
         }}
       >
         <Box
+          ref={image2Ref}
           flex="1"
           sx={{
             minHeight: { xs: "50vh", sm: "60vh" },
             width: "100%",
-            alignSelf: {xs: 'center', sm: 'stretch'},
-            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0086.jpg?alt=media&token=65e9b4e3-d609-43f3-919e-c2a41a311e17)`,
+            alignSelf: { xs: "center", sm: "stretch" },
+            backgroundImage: `url(${
+              image2Load
+                ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0086.jpg?alt=media&token=65e9b4e3-d609-43f3-919e-c2a41a311e17"
+                : ""
+            })`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
@@ -99,7 +117,10 @@ const Home = () => {
         <Box flex="1" p={4}>
           <Typography variant="h5">How it works</Typography>
           <Typography variant="body2" pt={1}>
-          Our subscription seasonal veg boxes are coming soon but in the meantime just select the produce you like to add to your crate, proceed to checkout and order before 4pm to receive next day deliver between 7am to 12pm.
+            Our subscription seasonal veg boxes are coming soon but in the
+            meantime just select the produce you like to add to your crate,
+            proceed to checkout and order before 4pm to receive next day deliver
+            between 7am to 12pm.
           </Typography>
           <br />
           <Typography variant="body2">
