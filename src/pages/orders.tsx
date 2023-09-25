@@ -3,14 +3,15 @@ import {
   Button,
   Table,
   TableBody,
+  TableCell,
+  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
-import { TableHead, TableCell } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
-import { useFirebase } from "../hooks/useFirebase";
 import { CSVDownload } from "../components/CSVDownload";
+import { useFirebase } from "../hooks/useFirebase";
 
 const TableCellOrdersStyled = ({
   children,
@@ -45,8 +46,8 @@ export function Orders() {
         };
       })
     : [];
-    console.count("rendering");
-  const handleGetCSV = () => {    
+
+  const handleGetCSV = () => {
     getCSV(true);
   };
 

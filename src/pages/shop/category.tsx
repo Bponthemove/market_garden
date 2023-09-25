@@ -29,7 +29,7 @@ export default function Category({ cat }: { cat: string }) {
         <Box>Error loading</Box>
       ) : notAvailable.hasOwnProperty(cat) ? (
         <Box px={2}>
-          <Typography variant="h6">{notAvailable[cat]}</Typography>
+          <Typography variant="body1">{notAvailable[cat]}</Typography>
         </Box>
       ) : (
         products.map((product) => (

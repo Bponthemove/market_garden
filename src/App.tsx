@@ -1,12 +1,13 @@
-import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { appTheme } from "./themes/standard";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Fragment } from "react";
+import CookieConsent from "react-cookie-consent";
+import { Route, Routes } from "react-router-dom";
+import { Layout } from "./components/Layout";
 import { routes } from "./constants/routes";
 import { useAuthContext } from "./context/AuthContext";
 import Home from "./pages/home";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Layout } from "./components/Layout";
-import { Fragment } from "react";
+import { appTheme } from "./themes/standard";
 
 function App() {
   const { currentUser } = useAuthContext();
@@ -14,6 +15,15 @@ function App() {
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
+      <CookieConsent
+        location="bottom"
+        cookieName="myAwesomeCookieName3"
+        expires={999}
+        overlay
+      >
+        We store your data when you place your order with us. We do not share
+        any of your data with others.
+      </CookieConsent>
       <Layout>
         <Routes>
           {Object.values(routes).map(

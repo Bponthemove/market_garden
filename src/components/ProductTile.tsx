@@ -107,7 +107,7 @@ function ProductTile(props: { product: any }) {
         </Box>
       )}
       <Box
-      flex={3}
+        flex={3}
         sx={{
           height: { xs: "50%", sm: "" },
           width: { xs: "50%", sm: "100%" },
@@ -117,7 +117,15 @@ function ProductTile(props: { product: any }) {
           backgroundRepeat: "no-repeat",
         }}
       />
-      <Box flex={5} display="flex" flexDirection="column" alignItems="center" mb={1} rowGap={1} sx={{width: {xs: "50%", sm: "100%"}}}>
+      <Box
+        flex={5}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        mb={1}
+        rowGap={1}
+        sx={{ width: { xs: "50%", sm: "100%" } }}
+      >
         <Box
           py={2}
           px={1}
@@ -133,7 +141,7 @@ function ProductTile(props: { product: any }) {
             {description}
           </Typography>
         </Box>
-        <Box>
+        <Box display="flex" gap={1}>
           <Typography variant="subtitle2" pt={1}>
             £ {price}
           </Typography>
@@ -141,7 +149,7 @@ function ProductTile(props: { product: any }) {
             {eachOrWeigth}
           </Typography>
         </Box>
-        <Box display="flex">
+        <Box display="flex" minHeight="2rem" maxHeight="2rem">
           {itemQuantity ? (
             <>
               <AddCircleIcon

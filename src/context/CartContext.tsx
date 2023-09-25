@@ -13,9 +13,9 @@ type CartProviderProps = {
   children: ReactNode;
 };
 
-export interface ICartItem extends IGetProduct {  
+export interface ICartItem extends IGetProduct {
   quantity: number;
-};
+}
 
 type CartContextTypes = {
   openCart: () => void;
@@ -55,7 +55,7 @@ export function CartProvider({ children }: CartProviderProps) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
   }
 
-  function increaseCartQuantity(product: IGetProduct) {    
+  function increaseCartQuantity(product: IGetProduct) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === product.id) == null) {
         return [...currItems, { ...product, quantity: 1 }];
