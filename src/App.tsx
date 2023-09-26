@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import CookieConsent from "react-cookie-consent";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
@@ -11,6 +11,7 @@ import { appTheme } from "./themes/standard";
 
 function App() {
   const { currentUser } = useAuthContext();
+  const [animation, setAnimation] = useState<boolean>(false);
 
   return (
     <ThemeProvider theme={appTheme}>
@@ -20,11 +21,13 @@ function App() {
         cookieName="myAwesomeCookieName3"
         expires={999}
         overlay
+        debug={true}
+        onAccept={() => setAnimation(true)}
       >
         We store your data when you place your order with us. We do not share
         any of your data with others.
       </CookieConsent>
-      <Layout>
+      <Layout animation={animation}>
         <Routes>
           {Object.values(routes).map(
             ({ path, component, superUser, childrenRoutes }) => {

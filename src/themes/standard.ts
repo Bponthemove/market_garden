@@ -1,5 +1,17 @@
 import { createTheme } from "@mui/material/styles";
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    light: Palette["primary"];
+    dark: Palette["primary"];
+  }
+
+  interface PaletteOptions {
+    light?: PaletteOptions["primary"];
+    dark?: PaletteOptions["primary"];
+  }
+}
+
 export const appTheme = createTheme({
   palette: {
     primary: {
@@ -10,9 +22,7 @@ export const appTheme = createTheme({
       light: "#57aff7",
       main: "#4aaaf8",
     },
-    light: {
-      main: "#f5f5f5",
-    },
+    light: { main: "#f5f5f5" },
     dark: { main: "#000" },
   },
   typography: {

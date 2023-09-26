@@ -9,8 +9,10 @@ import Footer from "./Footer";
 import NavBar from "./nav/NavBar";
 
 export const Layout = ({
+  animation,
   children,
 }: {
+  animation: boolean;
   children: React.ReactElement | null;
 }) => {
   const homeRef = useRef();
@@ -41,11 +43,25 @@ export const Layout = ({
                     height: pathname === "/" ? "20vh" : "20vh",
                   },
                 },
+                "@keyframes transformHomeBeforeAccept": {
+                  "0%": {
+                    height: pathname === "/" ? "100vh" : "40vh",
+                  },
+                  "100%": {
+                    height: pathname === "/" ? "100vh" : "20vh",
+                  },
+                },
                 width: "100vw",
                 position: "relative",
-                animation: "1s ease-out 1s 1 transformHome",
-                MozAnimation: "1s ease-out 1s 1 transformHome",
-                WebkitAnimation: "1s ease-out 1s 1 transformHome",
+                animation: animation
+                  ? "1s ease-out 1s 1 transformHome"
+                  : "1s ease-out 1s 1 transformHomeBeforeAccept",
+                MozAnimation: animation
+                  ? "1s ease-out 1s 1 transformHome"
+                  : "1s ease-out 1s 1 transformHomeBeforeAccept",
+                WebkitAnimation: animation
+                  ? "1s ease-out 1s 1 transformHome"
+                  : "1s ease-out 1s 1 transformHomeBeforeAccept",
                 animationFillMode: "both",
                 "&:after": {
                   background: `linear-gradient(to bottom, rgba(0,0,0,0) 10%, rgba(0,0,0,1)), url(${
@@ -70,8 +86,7 @@ export const Layout = ({
                 position="absolute"
                 width="100%"
                 sx={{
-                  bottom:
-                    pathname === "/" ? { xs: "2rem", sm: "1rem" } : "1rem",
+                  top: pathname === "/" ? { xs: "2rem", sm: "1rem" } : "1rem",
                   left: "1rem",
                 }}
               >
@@ -92,38 +107,37 @@ export const Layout = ({
               </Box>
             </Box>
           )}
-          
-            <NavBar shouldFix={isHomeVisible} />
 
-            <Box
-              ref={pathname === "/" ? homeRef : null}
-              sx={(theme) => ({
-                backgroundColor: theme.palette.light.main,
-                display: "inline-block",
-                minHeight:
-                  pathname !== "/contact"
-                    ? "calc(100vh - 5.75rem)"
-                    : {xs: "calc(80vh - 10.75rem)", sm: "calc(80vh - 8rem)"},
-                width: "100vw",
-                paddingY: pathname.includes("/shop")
-                  ? { xs: "5rem", sm: "6rem" }
-                  : { xs: "2rem", sm: "4rem" },
-                paddingLeft: pathname.includes("/shop")
-                  ? { xs: "2rem", sm: "1rem" }
-                  : { xs: "2rem", sm: "8rem" },
-                paddingRight: pathname.includes("/shop")
-                  ? { xs: "2rem", sm: "2rem" }
-                  : { xs: "2rem", sm: "8rem" },
-              })}
-            >
-              {children}
-            </Box>
-            {/* Shopping Cart Button */}
-            {((pathname === "/" && isHomeVisible) || showCartBtn) && (
-              <CartButton />
-            )}
-            <Footer />
-          
+          <NavBar shouldFix={isHomeVisible} />
+
+          <Box
+            ref={pathname === "/" ? homeRef : null}
+            sx={(theme) => ({
+              backgroundColor: theme.palette.light.main,
+              display: "inline-block",
+              minHeight:
+                pathname !== "/contact"
+                  ? "calc(100vh - 5.75rem)"
+                  : { xs: "calc(80vh - 10.75rem)", sm: "calc(80vh - 8rem)" },
+              width: "100vw",
+              paddingY: pathname.includes("/shop")
+                ? { xs: "5rem", sm: "6rem" }
+                : { xs: "2rem", sm: "4rem" },
+              paddingLeft: pathname.includes("/shop")
+                ? { xs: "2rem", sm: "1rem" }
+                : { xs: "2rem", sm: "8rem" },
+              paddingRight: pathname.includes("/shop")
+                ? { xs: "2rem", sm: "2rem" }
+                : { xs: "2rem", sm: "8rem" },
+            })}
+          >
+            {children}
+          </Box>
+          {/* Shopping Cart Button */}
+          {((pathname === "/" && isHomeVisible) || showCartBtn) && (
+            <CartButton />
+          )}
+          <Footer />
         </>
       ) : (
         <Cart />
