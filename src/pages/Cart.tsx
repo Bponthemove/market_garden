@@ -1,3 +1,4 @@
+import ClearAllIcon from "@mui/icons-material/ClearAll";
 import {
   Box,
   Button,
@@ -8,11 +9,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 import { CartItem } from "../components/CartItem";
 import { useCartContext } from "../context/CartContext";
-import CloseIcon from "@mui/icons-material/Close";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
-import { useState } from "react";
 import { CheckOut } from "./checkOut";
 
 export const TableCellStyled = ({
@@ -33,8 +32,7 @@ export const TableCellStyled = ({
 
 export function Cart() {
   const [maxHeight, setMaxHeight] = useState<"auto" | 0>(0);
-  const { cartItems, setCartIsOpen, cartTotal, clearCart, cartQuantity } =
-    useCartContext();
+  const { cartItems, cartTotal, clearCart, cartQuantity } = useCartContext();
 
   const handleClickOrder = () => {
     setMaxHeight((prev) => (prev === "auto" ? 0 : "auto"));
@@ -60,63 +58,33 @@ export function Cart() {
           height: "auto",
         }}
       />
-      <Grid
-        container
-        alignContent="center"
-        flexDirection="column"
-      >
+      <Grid container alignContent="center" flexDirection="column">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          onClick={() => clearCart()}
+          sx={(theme) => ({
+            backgroundColor: theme.palette.primary.main,
+            width: "2rem",
+            height: "2rem",
+            borderRadius: "50%",
+            p: "1rem",
+            cursor: "pointer",
+            ": hover": {
+              boxShadow:
+                "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
+            },
+          })}
+        >
+          <ClearAllIcon fontSize="medium" color="action" />
+        </Box>
+
         <Grid
           item
-          position="fixed"
-          p={2}
-          sx={{
-            backgroundColor: "#FFF",
-            boxShadow: "0 8px 6px -6px #D3D3D3",
-            minWidth: "100%",
-          }}
+          width="100%"
+          sx={{ paddingX: { xs: "0.5rem", sm: "3.5rem", md: "6.5rem" } }}
         >
-          <Box display="flex" gap={4}>
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              onClick={() => setCartIsOpen(false)}
-              sx={(theme) => ({
-                backgroundColor: theme.palette.primary.main,
-                width: "2rem",
-                height: "2rem",
-                borderRadius: "50%",
-                cursor: "pointer",
-                ": hover": {
-                  boxShadow:
-                    "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
-                },
-              })}
-            >
-              <CloseIcon fontSize="medium" color="action" />
-            </Box>
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              onClick={() => clearCart()}
-              sx={(theme) => ({
-                backgroundColor: theme.palette.primary.main,
-                width: "2rem",
-                height: "2rem",
-                borderRadius: "50%",
-                cursor: "pointer",
-                ": hover": {
-                  boxShadow:
-                    "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
-                },
-              })}
-            >
-              <ClearAllIcon fontSize="medium" color="action" />
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item width='100%' sx={{paddingX: {xs: '0.5rem', sm: '3.5rem', md: '6.5rem'}}}>
           <Box pt={20} display="flex" flexDirection="column">
             <Table>
               <TableBody>
@@ -154,7 +122,12 @@ export function Cart() {
           </Box>
         </Grid>
         {maxHeight === "auto" && (
-          <Grid item maxHeight={maxHeight} marginBottom={4} sx={{paddingX: {xs: '2.5rem', sm: '8.5rem', md: '16.5rem'}}}>
+          <Grid
+            item
+            maxHeight={maxHeight}
+            marginBottom={4}
+            sx={{ paddingX: { xs: "2.5rem", sm: "8.5rem", md: "16.5rem" } }}
+          >
             <CheckOut />
             <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
               <Button

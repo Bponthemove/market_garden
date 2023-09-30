@@ -10,7 +10,7 @@ export function useIsVisible(ref, rootMargin) {
     if (pathname !== '/') return;
     const observer = new IntersectionObserver(
       ([entry]) => setIntersecting(entry.isIntersecting),
-      { root: null, rootMargin }
+      { root: null, rootMargin, threshold: [0.01, 0.99] }
     );
 
     observer.observe(ref.current);

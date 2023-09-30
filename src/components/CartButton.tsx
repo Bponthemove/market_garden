@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
 
 export default function CartButton() {
-  const { setCartIsOpen, cartTotal } = useCartContext();
+  const { cartTotal } = useCartContext();
   const navigate = useNavigate();
 
   return (
@@ -20,7 +20,7 @@ export default function CartButton() {
         right: { xs: "0.75rem", sm: "2.5rem" },
       })}
     >
-      <ButtonBase onClick={() => setCartIsOpen(true)}>
+      <ButtonBase onClick={() => navigate("/cart")}>
         <Box
           p={0.6}
           display="flex"
@@ -29,7 +29,7 @@ export default function CartButton() {
           alignItems="center"
           sx={({ palette }) => ({
             backgroundColor: palette.primary.main,
-            padding: '0.25rem 0.25rem 0 0.25rem',
+            padding: "0.25rem 0.25rem 0 0.25rem",
             borderRadius: "1rem 1rem 0 0",
             width: "100%",
             height: "100%",
@@ -64,7 +64,7 @@ export default function CartButton() {
           sx={({ palette }) => ({
             backgroundColor: palette.primary.main,
             borderRadius: "0 0 1rem 1rem",
-            padding: '0 0.25rem 0.25rem 0.25rem',
+            padding: "0 0.25rem 0.25rem 0.25rem",
             width: "100%",
             height: "100%",
             cursor: "pointer",

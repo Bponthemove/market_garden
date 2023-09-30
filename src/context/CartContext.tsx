@@ -1,11 +1,4 @@
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { IGetProduct } from "../types/allTypes";
 
@@ -18,8 +11,6 @@ export interface ICartItem extends IGetProduct {
 }
 
 type CartContextTypes = {
-  openCart: () => void;
-  closeCart: () => void;
   clearCart: () => void;
   cartQuantity: number;
   cartTotal: number;
@@ -28,8 +19,6 @@ type CartContextTypes = {
   increaseCartQuantity: (product: IGetProduct) => void;
   decreaseCartQuantity: (id: string) => void;
   removeFromCart: (id: string) => void;
-  cartIsOpen: boolean;
-  setCartIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const CartContext = createContext({} as CartContextTypes);
@@ -43,7 +32,6 @@ export function CartProvider({ children }: CartProviderProps) {
     "shopping-cart",
     []
   );
-  const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
 
   const cartQuantity = cartItems.reduce((a, c) => c.quantity + a, 0);
 
@@ -91,14 +79,6 @@ export function CartProvider({ children }: CartProviderProps) {
     setCartItems((currItems) => currItems.filter((item) => item.id !== id));
   }
 
-  function openCart() {
-    setCartIsOpen(true);
-  }
-
-  function closeCart() {
-    setCartIsOpen(false);
-  }
-
   function clearCart() {
     setCartItems([]);
   }
@@ -110,13 +90,9 @@ export function CartProvider({ children }: CartProviderProps) {
         decreaseCartQuantity,
         increaseCartQuantity,
         getItemQuantity,
-        closeCart,
-        openCart,
         cartItems,
         cartQuantity,
         cartTotal,
-        cartIsOpen,
-        setCartIsOpen,
         clearCart,
       }}
     >

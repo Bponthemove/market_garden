@@ -6,6 +6,7 @@ import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { routes } from "./constants/routes";
 import { useAuthContext } from "./context/AuthContext";
+import { Cart } from "./pages/Cart";
 import Home from "./pages/home";
 import { appTheme } from "./themes/standard";
 
@@ -21,7 +22,6 @@ function App() {
         cookieName="myAwesomeCookieName3"
         expires={999}
         overlay
-        debug={true}
         onAccept={() => setAnimation(true)}
       >
         We store your data when you place your order with us. We do not share
@@ -66,6 +66,7 @@ function App() {
               }
             }
           )}
+          <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<p>There's nothing here: 404!</p>} />
         </Routes>
       </Layout>
