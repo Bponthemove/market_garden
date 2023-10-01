@@ -52,14 +52,14 @@ export const Layout = ({
             width: "100vw",
             position: "relative",
             animation: animation
-              ? "1s ease-out 1s 1 transformHome"
-              : "1s ease-out 1s 1 transformHomeBeforeAccept",
+              ? "1s ease-out 0s 1 transformHome"
+              : "1s ease-out 0s 1 transformHomeBeforeAccept",
             MozAnimation: animation
-              ? "1s ease-out 1s 1 transformHome"
-              : "1s ease-out 1s 1 transformHomeBeforeAccept",
+              ? "1s ease-out 0s 1 transformHome"
+              : "1s ease-out 0s 1 transformHomeBeforeAccept",
             WebkitAnimation: animation
-              ? "1s ease-out 1s 1 transformHome"
-              : "1s ease-out 1s 1 transformHomeBeforeAccept",
+              ? "1s ease-out 0s 1 transformHome"
+              : "1s ease-out 0s 1 transformHomeBeforeAccept",
             animationFillMode: "both",
             "&:after": {
               background: `linear-gradient(to bottom, rgba(0,0,0,0) 10%, rgba(0,0,0,1)), url(${
