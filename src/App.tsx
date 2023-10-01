@@ -13,15 +13,14 @@ import { appTheme } from "./themes/standard";
 function App() {
   const { currentUser } = useAuthContext();
   const [accepted, setAccepted] = useState<boolean>(false);
-  const [animationRan, setAnimationRan] = useState<boolean>(false)
-
-  const givenConsent = !!getCookieConsentValue("givenConsent");
+  const [animationRan, setAnimationRan] = useState<boolean>(false);
 
   useEffect(() => {
-    if (givenConsent && !accepted) {
+    const consentGiven = !!getCookieConsentValue("consentGiven");
+    if (consentGiven && !accepted) {
       setAccepted(true);
     }
-  }, [accepted, givenConsent]);
+  }, [accepted]);
 
   return (
     <ThemeProvider theme={appTheme}>
@@ -36,7 +35,11 @@ function App() {
         We store your data when you place your order with us. We do not share
         any of your data with others.
       </CookieConsent>
-      <Layout accepted={accepted} setAnimationRan={setAnimationRan} animationRan={animationRan}>
+      <Layout
+        accepted={accepted}
+        setAnimationRan={setAnimationRan}
+        animationRan={animationRan}
+      >
         <Routes>
           {Object.values(routes).map(
             ({ path, component, superUser, childrenRoutes }) => {
