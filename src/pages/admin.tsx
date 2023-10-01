@@ -1,50 +1,48 @@
+import { DevTool } from "@hookform/devtools";
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   Grid,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import Input from "@mui/material/Input";
+import Typography from "@mui/material/Typography";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import ProductTile from "../components/ProductTile";
-import {
-  IProduct,
-  IAddProduct,
-  IGetProduct,
-  IUpdateProduct,
-} from "../types/allTypes";
 import { storage } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
-import Autocomplete from "@mui/material/Autocomplete";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Divider from "@mui/material/Divider";
 import { useToast } from "../hooks/useToast";
-import CircularProgress from "@mui/material/CircularProgress";
-import Typography from "@mui/material/Typography";
+import {
+  IAddProduct,
+  IGetProduct,
+  IProduct,
+  IUpdateProduct,
+} from "../types/allTypes";
 
 const defaultValues: IAddProduct = {
   category: "vegetables",
   label: "",
   description: "",
+  stockLevel: 0,
   price: 0,
   eachOrWeigth: "",
-  isOffer: false,
-  stillGrowing: false,
-  soldOut: false,
-  inSeason: false,
-  sellingFast: false,
-  popular: false,
-  comingSoon: false,
+  banner: "",
   image: "",
 };
 
@@ -68,8 +66,6 @@ export default function Admin() {
     IGetProduct | undefined
   >();
   const [query, setQuery] = useState("");
-
-  console.log({ percent });
 
   const { control, handleSubmit, reset, formState, getValues } =
     useForm<IAddProduct>({
@@ -123,8 +119,12 @@ export default function Admin() {
     if (!file) {
       alert("Please upload an image first!");
     }
-    const storageRef = ref(storage, `/files/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const metadata = {
+      contentType: "image/jpeg",
+    };
+    const storageRef = ref(storage, "files/" + file.name);
+    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -132,12 +132,23 @@ export default function Admin() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         ); // update progress
         setPercent(percent);
+        console.log("Upload is " + percent + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+        }
       },
-      (err) => console.log(err),
+      (err) => console.error(err),
       async () => {
         // download url
+        console.log("completed");
         try {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log(url);
           setImageURL(url);
           setShowProduct((prevState) => ({
             ...prevState,
@@ -273,7 +284,7 @@ export default function Admin() {
     <Typography variant="subtitle1">{`Error query ${updateAddDelete}`}</Typography>
   ) : isErrorGet ? (
     <Typography variant="subtitle1">Error loading products</Typography>
-  ) : isLoadingGet && updateAddDelete !== 'add' ? (
+  ) : isLoadingGet && updateAddDelete !== "add" ? (
     <CircularProgress />
   ) : (
     <Grid
@@ -513,161 +524,71 @@ export default function Admin() {
               </Grid>
               <Grid item mt={2}>
                 <Controller
+                  name="stockLevel"
                   control={control}
-                  name="isOffer"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
-                    <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        Is offer?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="isOffer"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
-                    </FormControl>
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      onBlur={handleOnBlur}
+                      required
+                      fullWidth
+                      type="number"
+                      label="Stock Level"
+                      error={!!fieldState.error?.message}
+                      helperText={fieldState.error?.message}
+                    />
                   )}
                 />
               </Grid>
-              <Grid item>
+              <Grid item mt={2}>
                 <Controller
                   control={control}
-                  name="stillGrowing"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
+                  name="banner"
+                  render={({ field: { onChange, value }, fieldState }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        Still growing?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="stillGrowing"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  control={control}
-                  name="soldOut"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
-                    <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        Sold out?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="soldOut"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  control={control}
-                  name="inSeason"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
-                    <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        In season?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="inSeason"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  control={control}
-                  name="sellingFast"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
-                    <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        Selling fast?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="sellingFast"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  control={control}
-                  name="popular"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
-                    <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        Popular?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="popular"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  control={control}
-                  name="comingSoon"
-                  render={({
-                    field: { onChange, value },
-                    fieldState,
-                  }) => (
-                    <FormControl fullWidth error={!!fieldState.error?.message}>
-                      <InputLabel shrink={false} id="area-label">
-                        Coming soon?
-                      </InputLabel>
-                      <Checkbox
-                        onBlur={handleOnBlur}
-                        onChange={onChange}
-                        checked={value}
-                        name="comingSoon"
-                        sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                      />
+                      <FormLabel id="demo-radio-buttons-group-label">
+                        Banner
+                      </FormLabel>
+                      <RadioGroup
+                        aria-labelledby="radio-buttons-group-banner"
+                        name="banner"
+                      >
+                        <FormControlLabel
+                          value="isOffer"
+                          control={<Radio />}
+                          label="Is On Offer"
+                        />
+                        <FormControlLabel
+                          value="stillGrowing"
+                          control={<Radio />}
+                          label="Still Growing"
+                        />
+                        <FormControlLabel
+                          value="soldOut"
+                          control={<Radio />}
+                          label="Sold Out"
+                        />
+                        <FormControlLabel
+                          value="comingSoon"
+                          control={<Radio />}
+                          label="Coming Soon"
+                        />
+                        <FormControlLabel
+                          value="sellingFast"
+                          control={<Radio />}
+                          label="Selling Fast"
+                        />
+                        <FormControlLabel
+                          value="popular"
+                          control={<Radio />}
+                          label="Popular"
+                        />
+                        <FormControlLabel
+                          value="inSeason"
+                          control={<Radio />}
+                          label="In Season"
+                        />
+                      </RadioGroup>
                     </FormControl>
                   )}
                 />

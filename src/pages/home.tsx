@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { postcodes } from "../constants/postcodes";
 import { useIsVisible } from "../hooks/useIsVisible";
@@ -125,8 +125,13 @@ const Home = () => {
           <br />
           <Typography variant="body2">
             {" "}
-            We deliver mainly in West-Berkshire. Check here if we deliver to
-            your postcode.
+            We deliver mainly in West-Berkshire. Check below to see if we
+            deliver to your postcode.
+          </Typography>
+          <Typography variant="body2">
+            {" "}
+            Please <Link href="/contact">contact us</Link> if you're a business
+            and not in our area and we can discuss a tailored solution.
           </Typography>
           <Box display="flex" gap={2} mt={2}>
             <TextField

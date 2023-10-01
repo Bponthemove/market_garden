@@ -9,26 +9,11 @@ function ProductTile(props: { product: any }) {
     label,
     description,
     image,
-    inSeason,
     price,
+    stockLevel,
     eachOrWeigth,
-    isOffer,
-    stillGrowing,
-    soldOut,
-    sellingFast,
-    popular,
-    comingSoon,
+    banner,
   } = props.product;
-
-  const banners = [
-    { inSeason },
-    { isOffer },
-    { stillGrowing },
-    { soldOut },
-    { sellingFast },
-    { popular },
-    { comingSoon },
-  ].filter((banner) => Object.values(banner)[0]);
 
   const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } =
     useCartContext();
@@ -46,25 +31,29 @@ function ProductTile(props: { product: any }) {
     return flat;
   };
 
+  const soldOut = true;
+
   return (
     <Grid
       item
       position="relative"
       key={id}
-      sx={{
-        height: { xs: "15em", sm: "22.5rem" },
+      sx={({ palette }) => ({
+        height: { xs: "12rem", sm: "22.5rem" },
         width: { xs: "100%", sm: "10rem" },
         display: "flex",
         flexDirection: { xs: "row", sm: "column" },
         alignItems: { sm: "center" },
         gridTemplateColumns: "repeat(auto-fill, auto)",
         backgroundColor: "#fff",
+        border: `1px solid ${palette.grey[300]}`,
+        borderRadius: "4px",
         "&:hover": {
           //cursor: "pointer",
           boxShadow:
             "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px",
         },
-      }}
+      })}
     >
       {itemQuantity > 0 && (
         <Box
@@ -86,7 +75,7 @@ function ProductTile(props: { product: any }) {
         </Box>
       )}
 
-      {banners.length > 0 && (
+      {(banner || soldOut) && (
         <Box
           position="absolute"
           display="flex"
@@ -94,23 +83,25 @@ function ProductTile(props: { product: any }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            top: { xs: "45%", sm: "34%" },
-            right: { xs: "none", sm: "0.1rem" },
+            top: { xs: "5px", sm: "34%" },
+            right: { xs: "5px", sm: "0.1rem" },
             borderRadius: "5%",
             backgroundColor: palette.primary.main,
             color: palette.dark.main,
           })}
         >
           <Typography variant="subtitle2">
-            {fromCamelCaseToNormal(Object.keys(banners[0])[0])}
+            {soldOut ? "Sold Out" : fromCamelCaseToNormal(banner)}
           </Typography>
         </Box>
       )}
       <Box
         flex={3}
         sx={{
-          height: { xs: "50%", sm: "" },
+          height: { xs: "100%", sm: "" },
           width: { xs: "50%", sm: "100%" },
+          borderTopLeftRadius: "4px",
+          borderTopRightRadius: "4px",
           backgroundImage: `url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -150,7 +141,18 @@ function ProductTile(props: { product: any }) {
           </Typography>
         </Box>
         <Box display="flex" minHeight="2rem" maxHeight="2rem">
-          {itemQuantity ? (
+          {soldOut ? (
+            <Button
+              variant="outlined"
+              disabled
+              onClick={() => null}
+              sx={{
+                marginY: "0.25rem",
+              }}
+            >
+              <Typography variant="subtitle2">Sold Out</Typography>
+            </Button>
+          ) : itemQuantity ? (
             <>
               <AddCircleIcon
                 color="primary"

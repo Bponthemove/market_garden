@@ -39,13 +39,7 @@ export function Cart() {
   };
 
   return (
-    <Box
-      sx={{
-        overflow: "hidden",
-        postition: "relative",
-        height: "100%",
-      }}
-    >
+    <Box pt={6}>
       <img
         src="https://firebasestorage.googleapis.com/v0/b/marketgarden-dev.appspot.com/o/files%2Flogo.png?alt=media&token=be046d76-e8dd-4303-bf27-11c86b1aac5d"
         alt="gg"
@@ -94,28 +88,41 @@ export function Cart() {
                 <TableRow>
                   <TableCellStyled>{""}</TableCellStyled>
                   <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>total</TableCellStyled>
-                  <TableCellStyled>=</TableCellStyled>
+                  <TableCellStyled>{""}</TableCellStyled>
+                  <TableCellStyled>delivery :</TableCellStyled>
 
-                  <TableCellStyled>{cartTotal.toFixed(2)}</TableCellStyled>
+                  <TableCellStyled>
+                    {cartTotal <= 25 ? 3.99 : "Free Delivery"}
+                  </TableCellStyled>
+                </TableRow>
+                <TableRow>
+                  <TableCellStyled>{""}</TableCellStyled>
+                  <TableCellStyled>{""}</TableCellStyled>
+                  <TableCellStyled>{""}</TableCellStyled>
+                  <TableCellStyled>Total :</TableCellStyled>
+
+                  <TableCellStyled>
+                    {cartTotal <= 25
+                      ? parseFloat(cartTotal.toFixed(2)) + 3.99
+                      : cartTotal.toFixed(2)}
+                  </TableCellStyled>
                 </TableRow>
               </TableBody>
             </Table>
             <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
               {maxHeight === 0 && (
-                <Box display="flex" flexDirection="column">
+                <Box display="flex" flexDirection="column" gap={2}>
+                  <Typography variant="subtitle2">
+                    Minimum order of £25 for free delivery, otherwise delivery
+                    is £3.99.
+                  </Typography>
                   <Button
-                    disabled={!cartQuantity || cartTotal <= 25}
+                    disabled={!cartQuantity}
                     variant="contained"
                     onClick={handleClickOrder}
                   >
                     Proceed to checkout
                   </Button>
-                  {cartTotal <= 25 && (
-                    <Typography variant="subtitle1">
-                      Minimum order of £25
-                    </Typography>
-                  )}
                 </Box>
               )}
             </Box>
