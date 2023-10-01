@@ -85,7 +85,7 @@ export function Cart() {
           width="100%"
           sx={{ paddingX: { xs: "0.5rem", sm: "3.5rem", md: "6.5rem" } }}
         >
-          <Box pt={20} display="flex" flexDirection="column">
+          <Box pt={2} display="flex" flexDirection="column">
             <Table>
               <TableBody>
                 {cartItems.map((item, idx) => (

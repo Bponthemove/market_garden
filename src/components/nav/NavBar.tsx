@@ -16,7 +16,12 @@ function NavBar({ shouldFix }) {
           ? "fixed"
           : "static"
       }
-      sx={{ top: shouldFix || pathname.includes("/shop") ? 0 : "20vh" }}
+      sx={{
+        top:
+          shouldFix || pathname.includes("/shop") || pathname === "/cart"
+            ? 0
+            : "20vh",
+      }}
     >
       <Toolbar
         sx={{
