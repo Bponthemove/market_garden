@@ -1,17 +1,22 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  createContext,
+  User,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import {
   ReactNode,
+  createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
-import { useToast } from "../hooks/useToast";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useToast } from "../hooks/useToast";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -31,12 +36,12 @@ export interface IUser {
   user: User | null;
   superUser: boolean;
   userDetails: IUserDetails[];
-};
+}
 
 export interface IAuthSignIn {
   email: string;
   password: string;
-};
+}
 
 export interface IAuthSignUp {
   email: string;
@@ -48,30 +53,41 @@ export interface IAuthSignUp {
   addressLine1: string;
   addressLine2: string;
   town: string;
-};
+}
 
-export const superUsers = ["bpvanzalk@hotmail.com"];
+export const superUsers = import.meta.env.VITE_APP_EMAIL_ADMIN.split(" ");
 
-const defaultUserDetails = [{
-  uid: '',
-  firstName: '',
-  lastName: '',
-  postcode: '',
-  addressLine1: '',
-  addressLine2: '',
-  town: '',
-}];
+const defaultUserDetails = [
+  {
+    uid: "",
+    firstName: "",
+    lastName: "",
+    postcode: "",
+    addressLine1: "",
+    addressLine2: "",
+    town: "",
+  },
+];
 
 export const defaultNoUser = {
   user: null,
   superUser: false,
   userDetails: defaultUserDetails,
-}
+};
 
 type AuthContextTypes = {
   currentUser: IUser;
   setCurrentUser: React.Dispatch<React.SetStateAction<IUser>>;
-  signUp: (email: string, password: string, firstName: string, lastName: string, postcode: string, addressLine1: string, addressLine2: string, town: string) => Promise<any>;
+  signUp: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    postcode: string,
+    addressLine1: string,
+    addressLine2: string,
+    town: string
+  ) => Promise<any>;
   logOut: () => void;
   signIn: (email: string, password: string) => Promise<any>;
   error: string | undefined;
@@ -92,97 +108,103 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useLocalStorage<IUser>(
     "user",
     defaultNoUser
-  );;
+  );
   const navigate = useNavigate();
   const { addUserDetails, getUserDetails } = useFirebase();
 
-  const {
-    mutateAsync: mutateAsyncAddUser,
-  } = useMutation((user: IUserDetails) => addUserDetails(user));
+  const { mutateAsync: mutateAsyncAddUser } = useMutation(
+    (user: IUserDetails) => addUserDetails(user)
+  );
 
-  const { 
-    data: userDetails,
-  } = useQuery<IUserDetails[]>(
+  const { data: userDetails } = useQuery<IUserDetails[]>(
     ["userDetails", currentUser?.user?.uid],
     getUserDetails,
     {
       enabled: !!currentUser.user,
     }
-  ); 
+  );
 
   const toast = useToast();
 
   async function signUp(
-    email: string, 
-    password: string, 
+    email: string,
+    password: string,
     firstName: string,
     lastName: string,
-    postcode: string, 
-    addressLine1: string, 
-    addressLine2: string, 
+    postcode: string,
+    addressLine1: string,
+    addressLine2: string,
     town: string
   ) {
-    setLoading(true)
-    setError(undefined)
+    setLoading(true);
+    setError(undefined);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       const uid = user?.uid;
-      if (!uid) throw new Error(`No uid returned for ${user}`)
-      await mutateAsyncAddUser({uid, firstName, lastName, postcode, addressLine1, addressLine2, town});
+      if (!uid) throw new Error(`No uid returned for ${user}`);
+      await mutateAsyncAddUser({
+        uid,
+        firstName,
+        lastName,
+        postcode,
+        addressLine1,
+        addressLine2,
+        town,
+      });
     } catch (err) {
-      setError(`Sign up credentials are not correct.`)
-      console.error(`Error signing in : ${err}`)
+      setError(`Sign up credentials are not correct.`);
+      console.error(`Error signing in : ${err}`);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function logOut() {
-    setLoading(true)
-    setError(undefined)
+    setLoading(true);
+    setError(undefined);
     try {
-      await auth.signOut()
+      await auth.signOut();
       setCurrentUser({
         user: null,
         superUser: false,
         userDetails: [],
       });
-      toast.info('You have successfully logged out!')
+      toast.info("You have successfully logged out!");
       navigate("/");
     } catch (err) {
-      console.error('Error with signing out')
-      setError(`Error signing out`)
+      console.error("Error with signing out");
+      setError(`Error signing out`);
     } finally {
       setLoading(false);
     }
   }
 
   async function signIn(email: string, password: string) {
-    setLoading(true)
-    setError(undefined)
+    setLoading(true);
+    setError(undefined);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
-      setCurrentUser(prevUser => ({
+      setCurrentUser((prevUser) => ({
         ...prevUser,
         user,
-        superUser: superUsers.includes(user?.email?.toLowerCase() ?? "")
-      }))
+        superUser: superUsers.includes(user?.email?.toLowerCase() ?? ""),
+      }));
     } catch (err) {
-      if (err && typeof err === 'object' && 'code' in err) {
-        console.error(`Error signing in : ${err.code}`)
-        setError(err.code as string)
-      }      
+      if (err && typeof err === "object" && "code" in err) {
+        console.error(`Error signing in : ${err.code}`);
+        setError(err.code as string);
+      }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
-  
-  useEffect(() => {    
-    if (!loading) {      
-      const unsubscribe = onAuthStateChanged(auth, (user) => {        
-        if (user) {          
+
+  useEffect(() => {
+    if (!loading) {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
           setCurrentUser({
             user,
             superUser: superUsers.includes(user?.email?.toLowerCase() ?? ""),
@@ -193,7 +215,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       return unsubscribe;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, userDetails]);
 
   return (

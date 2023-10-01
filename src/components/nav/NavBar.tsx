@@ -5,12 +5,19 @@ import { useAuthContext } from "../../context/AuthContext";
 import DropdownLink from "./DropdownLink";
 import Link from "./Link";
 
-function NavBar({shouldFix}) {
+function NavBar({ shouldFix }) {
   const { currentUser } = useAuthContext();
-const {pathname} = useLocation()
+  const { pathname } = useLocation();
 
   return (
-    <AppBar position={shouldFix || pathname.includes("/shop") ? "fixed" : "static"} sx={{top: shouldFix || pathname.includes('/shop') ? 0 : '20vh'}}>
+    <AppBar
+      position={
+        shouldFix || pathname.includes("/shop") || pathname === "/cart"
+          ? "fixed"
+          : "static"
+      }
+      sx={{ top: shouldFix || pathname.includes("/shop") ? 0 : "20vh" }}
+    >
       <Toolbar
         sx={{
           display: "flex",

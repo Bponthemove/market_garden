@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useRef } from "react";
+import { SetStateAction, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsVisible } from "../hooks/useIsVisible";
 import CartButton from "./CartButton";
@@ -7,10 +7,14 @@ import Footer from "./Footer";
 import NavBar from "./nav/NavBar";
 
 export const Layout = ({
-  animation,
+  accepted,
+  setAnimationRan,
+  animationRan,
   children,
 }: {
-  animation: boolean;
+  setAnimationRan: React.Dispatch<SetStateAction<boolean>>;
+  animationRan: boolean;
+  accepted: boolean;
   children: React.ReactElement | null;
 }) => {
   const homeRef = useRef();
@@ -21,7 +25,9 @@ export const Layout = ({
   const showCartBtn =
     pathname.includes("/shop") ||
     pathname === "/contact" ||
-    (pathname === "/" && animation);
+    (pathname === "/" && accepted);
+
+  const showAnimation = accepted && !animationRan;
 
   return (
     <Box
@@ -32,34 +38,35 @@ export const Layout = ({
     >
       {(pathname === "/" || pathname === "/contact") && (
         <Box
+          onAnimationEnd={() => setAnimationRan(true)}
           sx={{
+            height:
+              pathname === "/contact" || (pathname === "/" && animationRan)
+                ? "20vh"
+                : "100vh",
+
             "@keyframes transformHome": {
               "0%": {
-                height: pathname === "/" ? "100vh" : "40vh",
+                height: "100vh",
               },
               "100%": {
-                height: pathname === "/" ? "20vh" : "20vh",
-              },
-            },
-            "@keyframes transformHomeBeforeAccept": {
-              "0%": {
-                height: pathname === "/" ? "100vh" : "40vh",
-              },
-              "100%": {
-                height: pathname === "/" ? "100vh" : "20vh",
+                height: "20vh",
               },
             },
             width: "100vw",
             position: "relative",
-            animation: animation
-              ? "1s ease-out 0s 1 transformHome"
-              : "1s ease-out 0s 1 transformHomeBeforeAccept",
-            MozAnimation: animation
-              ? "1s ease-out 0s 1 transformHome"
-              : "1s ease-out 0s 1 transformHomeBeforeAccept",
-            WebkitAnimation: animation
-              ? "1s ease-out 0s 1 transformHome"
-              : "1s ease-out 0s 1 transformHomeBeforeAccept",
+            animation:
+              showAnimation && pathname === "/"
+                ? "1s ease-out 0s 1 transformHome"
+                : "none",
+            MozAnimation:
+              showAnimation && pathname === "/"
+                ? "1s ease-out 0s 1 transformHome"
+                : "none",
+            WebkitAnimation:
+              showAnimation && pathname === "/"
+                ? "1s ease-out 0s 1 transformHome"
+                : "none",
             animationFillMode: "both",
             "&:after": {
               background: `linear-gradient(to bottom, rgba(0,0,0,0) 10%, rgba(0,0,0,1)), url(${
