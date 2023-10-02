@@ -55,9 +55,9 @@ export interface IAuthSignUp {
   town: string;
 }
 
-export const superUsers = import.meta.env.VITE_APP_EMAIL_ADMIN.split(" ");
+//export const superUsers = import.meta.env.VITE_APP_EMAIL_ADMIN.split(" ");
 
-alert(superUsers);
+const superUsers = ["Tom.green1@yahoo.co.uk", "bpvanzalk@hotmail.com"];
 
 const defaultUserDetails = [
   {

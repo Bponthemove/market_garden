@@ -103,7 +103,7 @@ export function Cart() {
 
                   <TableCellStyled>
                     {cartTotal <= 25
-                      ? parseFloat(cartTotal.toFixed(2)) + 3.99
+                      ? Math.round((cartTotal * 100) / 100) + 3.99
                       : cartTotal.toFixed(2)}
                   </TableCellStyled>
                 </TableRow>
