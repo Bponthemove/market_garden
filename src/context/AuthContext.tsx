@@ -57,7 +57,7 @@ export interface IAuthSignUp {
 
 export const superUsers = import.meta.env.VITE_APP_EMAIL_ADMIN.split(" ");
 
-console.log(superUsers);
+alert(superUsers);
 
 const defaultUserDetails = [
   {

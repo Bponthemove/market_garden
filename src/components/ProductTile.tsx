@@ -103,7 +103,7 @@ function ProductTile(props: { product: any }) {
           borderTopLeftRadius: "4px",
           borderTopRightRadius: "4px",
           backgroundImage: `url(${image})`,
-          backgroundSize: "cover",
+          backgroundSize: "contain",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
