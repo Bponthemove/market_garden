@@ -544,7 +544,7 @@ export default function Admin() {
                 <Controller
                   control={control}
                   name="banner"
-                  render={({ field: { onChange, value }, fieldState }) => (
+                  render={({ field, fieldState }) => (
                     <FormControl fullWidth error={!!fieldState.error?.message}>
                       <FormLabel id="demo-radio-buttons-group-label">
                         Banner

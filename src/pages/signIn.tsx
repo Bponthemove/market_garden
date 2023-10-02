@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -7,23 +8,29 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  IAuthSignIn,
-  IUserDetails,
-  useAuthContext,
-} from "../context/AuthContext";
+import { z } from "zod";
+import { IUserDetails, useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
+
+const signInSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .regex(
+      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
+      "Password should be a minumum of 8 characters and consist of at least one Uppercase, one Lowercase and one number"
+    ),
+});
+
+type TAuthSignIn = z.infer<typeof signInSchema>;
 
 function SignInSide() {
   const navigate = useNavigate();
   const { getUserDetails } = useFirebase();
   const { signIn, loading, error, setError } = useAuthContext();
   const toast = useToast();
-
-  const [emailValid, setEmailValid] = useState<boolean | null>(null);
-  const [passwordValid, setPasswordValid] = useState<boolean | null>(null);
   const [uid, setUid] = useState<string>("");
 
   useQuery<IUserDetails[] | undefined>(["uid", uid], getUserDetails, {
@@ -37,39 +44,20 @@ function SignInSide() {
     },
   });
 
-  const { control, handleSubmit } = useForm<IAuthSignIn>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<TAuthSignIn>({
     defaultValues: {
       email: "",
       password: "",
     },
+    resolver: zodResolver(signInSchema),
     reValidateMode: "onChange",
   });
 
-  const handleValidateEmail = (event: {
-    preventDefault: () => void;
-    target: { value: any };
-  }) => {
-    event.preventDefault();
-    const value = event.target.value;
-    if (value) {
-      setEmailValid(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value));
-    }
-  };
-
-  const handleValidatePassword = (event: {
-    preventDefault: () => void;
-    target: { value: any };
-  }) => {
-    event.preventDefault();
-    const value = event.target.value;
-    if (value) {
-      setPasswordValid(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value)
-      );
-    }
-  };
-
-  const handleOnSubmit = async (values: IAuthSignIn) => {
+  const handleOnSubmit = async (values: TAuthSignIn) => {
     const email = values?.email;
     const password = values?.password;
     if (password && email) {
@@ -84,6 +72,8 @@ function SignInSide() {
       }
     }
   };
+
+  console.log({ isValid });
 
   useEffect(() => {
     if (error) {
@@ -132,7 +122,7 @@ function SignInSide() {
           <Controller
             name="email"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
@@ -141,14 +131,8 @@ function SignInSide() {
                 label="Email Address"
                 name="email"
                 disabled={loading}
-                onBlur={handleValidateEmail}
-                error={emailValid === false}
-                color={emailValid ? "success" : "primary"}
-                helperText={
-                  emailValid || emailValid == null
-                    ? ""
-                    : "Please enter a valid email address."
-                }
+                error={!!error}
+                helperText={error?.message ?? ""}
                 autoComplete="email"
                 autoFocus
               />
@@ -159,21 +143,15 @@ function SignInSide() {
           <Controller
             name="password"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
                 name="password"
-                onBlur={handleValidatePassword}
-                color={passwordValid ? "success" : "primary"}
-                error={passwordValid === false}
+                error={!!error}
                 disabled={loading}
-                helperText={
-                  passwordValid || passwordValid == null
-                    ? ""
-                    : "Password must contain at least 8 chararcters including one uppercase and one lowercae letter and one number."
-                }
+                helperText={error?.message ?? ""}
                 label="Password"
                 type="password"
                 autoComplete="current-password"
@@ -186,7 +164,7 @@ function SignInSide() {
             type="submit"
             color="primary"
             variant="contained"
-            disabled={loading || !passwordValid}
+            disabled={!isValid}
           >
             Sign In
           </Button>
