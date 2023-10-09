@@ -1,23 +1,22 @@
-import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import { Handler, HandlerContext, HandlerEvent } from "@netlify/functions";
 
 const stripe = require("stripe")(process.env.VITE_APP_STRIPE_SECRET_KEY);
-console.log('BRAM', stripe)
+console.log("BRAM", stripe);
 const statusCode = 200;
 const headers = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type"
+  "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const handler: Handler = async( 
+const handler: Handler = async (
   event: HandlerEvent,
   context: HandlerContext
 ) => {
-
   if (event.httpMethod !== "POST") {
     return {
       statusCode,
       headers,
-      body: "This was not a POST request!"
+      body: "This was not a POST request!",
     };
   }
 
@@ -40,40 +39,42 @@ const handler: Handler = async(
   //   };
   // }
   const params = event?.queryStringParameters ?? {};
-  const {id, price, name} = params;
-  
-  let response = 'oeps';
+  const { id, price, name } = params;
+
+  let response = "oeps";
   if (id && price && name) {
     try {
+      console.log({ id, price, name });
       response = await stripe.products.create({
         id,
         name,
         default_price_data: {
-          currency: 'gbp',
-          unit_amount_decimal: Number(price) * 100
-        }
+          currency: "gbp",
+          unit_amount_decimal: Number(price) * 100,
+        },
       });
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return {
         statusCode: 424,
         headers,
         body: JSON.stringify({
           status: "failed",
-          message: err.message
-        })
-      }
+          message: err.message,
+        }),
+      };
     }
   }
+  console.log(response);
   return {
     statusCode,
     headers,
     body: JSON.stringify({
       statusCode: 200,
       status: response,
-      message: "Product successfully added!"
-    })
+      message: "Product successfully added!",
+    }),
   };
 };
 
-export {handler};
+export { handler };

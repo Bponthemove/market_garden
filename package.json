@@ -30,7 +30,6 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "firebase": "^9.18.0",
-    "netlify-cli": "^15.0.2",
     "react": "^18.2.0",
     "react-cookie-consent": "^8.0.1",
     "react-csv": "^2.2.2",
@@ -44,11 +43,12 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build && echo '/* /index.html  200' | cat >build/_redirects ",
+    "build": "vite build && echo '/* /index.html  200' | cat >dist/_redirects ",
     "serve": "vite preview",
     "lint": "eslint --max-warnings=0 src",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "debug": "netlify dev --edge-inspect"
   },
   "eslintConfig": {
     "extends": [
@@ -75,6 +75,7 @@
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "file-loader": "^6.2.0",
+    "netlify-cli": "^16.5.1",
     "vite": "^4.3.9",
     "vite-plugin-eslint": "^1.8.1"
   }

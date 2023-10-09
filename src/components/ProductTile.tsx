@@ -75,7 +75,7 @@ function ProductTile(props: { product: any }) {
         </Box>
       )}
 
-      {banner || soldOut || (stockLevel && stockLevel - itemQuantity < 10) ? (
+      {banner || (stockLevel && stockLevel - itemQuantity < 10) ? (
         <Box
           position="absolute"
           display="flex"
