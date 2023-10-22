@@ -130,10 +130,10 @@ export const Layout = ({
             : { xs: "1rem", sm: "4rem" },
           paddingLeft: pathname.includes("/shop")
             ? { xs: "2rem", sm: "1rem" }
-            : { xs: "1rem", sm: "8rem" },
+            : { xs: "1rem", sm: "4rem" },
           paddingRight: pathname.includes("/shop")
             ? { xs: "2rem", sm: "2rem" }
-            : { xs: "1rem", sm: "8rem" },
+            : { xs: "1rem", sm: "4rem" },
         })}
       >
         {children}

@@ -26,7 +26,7 @@ export const useFirebase = () => {
   const [firebaseError, setFirebaseError] = useState<string>("");
   const { cartItems, cartTotal } = useCartContext();
   const { currentUser } = useAuthContext();
-  const { orderNr, deliveryDay } = useOrderContext();
+  const { orderNr } = useOrderContext();
 
   //------------------CRUD------------//
   //----------------PRODUCTS----------//
@@ -153,9 +153,9 @@ export const useFirebase = () => {
       postcode: currentUser.userDetails[0].postcode,
       price: cartTotal,
       town: currentUser.userDetails[0].town,
-      orderNr,
+      orderNr: '',
       processed: false,
-      order: JSON.stringify(cartItems),
+      order: JSON.stringify([{radish: 3}]) //cartItems),
     };
 
     try {

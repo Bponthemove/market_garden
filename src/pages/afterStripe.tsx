@@ -14,18 +14,19 @@ export const AfterStripe = () => {
   const { cartItems, clearCart } = useCartContext();
   const { addOrder } = useFirebase();
   const [repeated, setRepeated] = useState(0);
-  const [orderNotProcessed, setOrderNotProcessed] = useState(cartItems.length > 0 && orderNr !== '');
+  const [orderNotProcessed, setOrderNotProcessed] = useState(cartItems.length > 0 && orderNr ? true : false);
   
   useEffect(() => {
+    
     if (result === 'failed') {
       return
     }
-
+    
     if (repeated > 3) {
       clearCart();
       setOrderNr("");
     }
-
+    
     async function addOrderToDB() {
       setOrderNotProcessed(false);
       try {
@@ -37,7 +38,7 @@ export const AfterStripe = () => {
         setRepeated((prev) => prev++);
       }
     };
-    
+  
     if (orderNotProcessed && repeated <= 3) {
       addOrderToDB();
     }

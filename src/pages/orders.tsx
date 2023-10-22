@@ -20,10 +20,22 @@ const TableCellOrdersStyled = ({
   children: React.ReactElement | string | React.ReactElement[];
   head: boolean;
 }) => (
-  <TableCell sx={{ verticalAlign: "top" }}>
+  <TableCell
+    sx={{
+      verticalAlign: "top",
+      "&.MuiTableCell-root": {
+        padding: "0",
+        fontSize: "10px",
+        span: {
+          fontSize: "10px",
+        },
+      },
+    }}
+  >
     <Typography
       color={head ? "primary" : "black"}
       variant={head ? "subtitle2" : "caption"}
+      fontSize="10px !important"
     >
       {children}
     </Typography>
@@ -37,12 +49,18 @@ export function Orders() {
   const { data } = useQuery(["getOrders"], getOrders);
 
   const orders = data || [];
-
   const parsed = orders.length
     ? orders.map((eachOrder) => {
         return {
           ...eachOrder,
-          order: eachOrder.order ? JSON.parse(eachOrder.order) : "",
+          order: eachOrder.order
+            ? JSON.parse(eachOrder.order).reduce((string, item) => {
+                string = `${string}${string ? ", " : ""}${item.label} x ${
+                  item.quantity
+                }`;
+                return string;
+              }, "")
+            : "",
         };
       })
     : [];
@@ -60,7 +78,7 @@ export function Orders() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCellOrdersStyled head>Delivery Day</TableCellOrdersStyled>
+              <TableCellOrdersStyled head>Telephone</TableCellOrdersStyled>
               <TableCellOrdersStyled head>Name</TableCellOrdersStyled>
               <TableCellOrdersStyled head>Email</TableCellOrdersStyled>
               <TableCellOrdersStyled head>Address</TableCellOrdersStyled>
@@ -74,17 +92,17 @@ export function Orders() {
               parsed.length &&
               parsed
                 .filter((order) => order.order)
-                .sort((a, b) => {
-                  if (a.deliveryDay < b.deliveryDay) return -1;
-                  if (a.deliveryDay > b.deliveryDay) return 1;
-                  return 0;
-                })
-                .map((order, idx) => {
+                // .sort((a, b) => {
+                //   if (a.deliveryDay < b.deliveryDay) return -1;
+                //   if (a.deliveryDay > b.deliveryDay) return 1;
+                //   return 0;
+                // })
+                .map((order) => {
                   const splitOrderNr = order.orderNr.match(/.{1,14}/g) ?? [];
                   return (
-                    <TableRow key={idx}>
+                    <TableRow key={order.orderNr}>
                       <TableCellOrdersStyled head={false}>
-                        {order.deliveryDay}
+                        {order.phone}
                       </TableCellOrdersStyled>
                       <TableCellOrdersStyled head={false}>
                         {order.name}
@@ -93,23 +111,27 @@ export function Orders() {
                         {order.email}
                       </TableCellOrdersStyled>
                       <TableCellOrdersStyled head={false}>
-                        {`${order.addressLineOne} ${order.addressLineTwo} ${order.town} ${order.postcode}`}
+                        <span>{order.addressLineOne}</span>
+                        <br />
+                        <span>{order.addressLineOne}</span>
+                        <br />
+                        <span>{order.town}</span>
+                        <br />
+                        <span>{order.postcode}</span>
                       </TableCellOrdersStyled>
                       <TableCellOrdersStyled head={false}>
                         {order?.price?.toFixed(2) ?? "-"}
                       </TableCellOrdersStyled>
                       <TableCellOrdersStyled head={false}>
                         {order.order ? (
-                          order.order.map(
-                            (product: { label: string; quantity: number }) => (
-                              <Fragment key={product.label}>
-                                <Typography variant="caption" color="inherit">
-                                  {`${product.label} x ${product.quantity} `}
-                                </Typography>
-                                <br />
-                              </Fragment>
-                            )
-                          )
+                          order.order.split(",").map((product, idx) => (
+                            <Fragment key={idx}>
+                              <Typography variant="caption" color="inherit">
+                                {product}
+                              </Typography>
+                              <br />
+                            </Fragment>
+                          ))
                         ) : (
                           <Typography>-</Typography>
                         )}
