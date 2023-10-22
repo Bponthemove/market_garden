@@ -1,12 +1,8 @@
 import { Handler, HandlerContext, HandlerEvent } from "@netlify/functions";
 
 const stripe = require("stripe")(process.env.VITE_APP_STRIPE_SECRET_KEY);
-console.log("BRAM", stripe);
-const statusCode = 200;
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+
+const statusCode = 400;
 
 const handler: Handler = async (
   event: HandlerEvent,
@@ -15,66 +11,63 @@ const handler: Handler = async (
   if (event.httpMethod !== "POST") {
     return {
       statusCode,
-      headers,
       body: "This was not a POST request!",
     };
   }
 
-  // // Parse the body contents into an object.
-  // const data = event.body ? JSON.parse(event.body) : {};
-
-  // // Make sure we have all required data. Otherwise, get outta here.
-  // if (!data.token || !data.amount || !data.idempotency_key) {
-  //   const message = "Required information is missing!";
-
-  //   console.error(message);
-
-  //   return {
-  //     statusCode,
-  //     headers,
-  //     body: JSON.stringify({
-  //       status: "failed",
-  //       message
-  //     })
-  //   };
-  // }
   const params = event?.queryStringParameters ?? {};
+
+  const paramsInArray = Object.keys(params);
+
+  const requiredParams = ["id", "price", "name"];
+
+  const paramsPresent = requiredParams.filter((param) =>
+    paramsInArray.includes(param)
+  );
+
+  if (paramsPresent.length !== requiredParams.length) {
+    return {
+      statusCode,
+      body: `The following params are missing: ${requiredParams.reduce(
+        (string, param) => {
+          if (!paramsPresent.includes(param)) {
+            string = string + " " + param;
+          }
+          return string;
+        },
+        ""
+      )}`,
+    };
+  }
+
   const { id, price, name } = params;
 
-  let response = "oeps";
-  if (id && price && name) {
-    try {
-      console.log({ id, price, name });
-      response = await stripe.products.create({
-        id,
-        name,
-        default_price_data: {
-          currency: "gbp",
-          unit_amount_decimal: Number(price) * 100,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      return {
-        statusCode: 424,
-        headers,
-        body: JSON.stringify({
-          status: "failed",
-          message: err.message,
-        }),
-      };
-    }
-  }
-  console.log(response);
-  return {
-    statusCode,
-    headers,
-    body: JSON.stringify({
+  try {
+    const product = await stripe.products.create({
+      id,
+      name,
+      default_price_data: {
+        currency: "gbp",
+        unit_amount_decimal: Number(price) * 100,
+      },
+    });
+    return {
       statusCode: 200,
-      status: response,
-      message: "Product successfully added!",
-    }),
-  };
+      body: JSON.stringify({
+        product,
+        message: 'succeeded',
+      }),
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      statusCode: 424,
+      body: JSON.stringify({
+        product: {},
+        message: err.message ?? 'ERROR',
+      }),
+    };
+  }
 };
 
 export { handler };

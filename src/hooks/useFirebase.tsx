@@ -1,42 +1,50 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useState } from "react";
 import { IUserDetails, useAuthContext } from "../context/AuthContext";
-import { database, db } from "../firebase";
-import { IAddOrder, IAddProduct, IGetProduct, IUpdateProduct } from "../types/allTypes";
-import {
-  query,
-  where,
-  addDoc,
-  getDocs,
-  collection,
-  doc,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
+import { database, db } from "../firebase";
+import {
+  IAddOrder,
+  IAddProduct,
+  IGetProduct,
+  IUpdateProduct,
+} from "../types/allTypes";
 
 export const useFirebase = () => {
   const [firebaseLoading, setFirebaseLoading] = useState<boolean>(false);
   const [firebaseError, setFirebaseError] = useState<string>("");
-  const {cartItems, cartTotal} = useCartContext();
-  const {currentUser} = useAuthContext();
-  const {orderNr, deliveryDay} = useOrderContext();
+  const { cartItems, cartTotal } = useCartContext();
+  const { currentUser } = useAuthContext();
+  const { orderNr, deliveryDay } = useOrderContext();
 
-  //------------------CRUD------------// 
+  //------------------CRUD------------//
   //----------------PRODUCTS----------//
   //create product
   const addProduct = async (product: IAddProduct) => {
     const { label, price } = product;
     const addedProductRef = await addDoc(collection(db, "product"), product);
-    console.log("Document written with ID: ", addedProductRef.id);
-    const addProductToStripe = await fetch(
-      `.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
-      {
-        method: "POST",
-      }
-    );
-    console.log({ addProductToStripe });
+    try {
+      const response = await fetch(
+        `.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
+        {
+          method: "POST",
+        }
+      );
+      console.log(response);
+    } catch (err) {
+      console.error("Item not added to Stripe: " + err);
+    }
   };
 
   // read all products in category
@@ -50,7 +58,7 @@ export const useFirebase = () => {
     return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
       id: doc.id,
       ...doc.data(),
-    }))
+    }));
   };
 
   //read product by id and category
@@ -68,7 +76,7 @@ export const useFirebase = () => {
 
   //update product
   const updateProduct = async (toUpdate: IUpdateProduct) => {
-    setFirebaseLoading(true)
+    setFirebaseLoading(true);
     let firebaseResp, stripeResp;
     const { id } = toUpdate;
     try {
@@ -77,9 +85,11 @@ export const useFirebase = () => {
           ...toUpdate,
         });
         if (Object.keys(toUpdate).includes("label" || "price")) {
-          const {label, price} = toUpdate;
+          const { label, price } = toUpdate;
           stripeResp = await fetch(
-            `.netlify/functions/stripeUpdateProduct?id=${id}&name=${label || ''}&price=${price || ''}`,
+            `.netlify/functions/stripeUpdateProduct?id=${id}&name=${
+              label || ""
+            }&price=${price || ""}`,
             {
               method: "POST",
             }
@@ -87,16 +97,16 @@ export const useFirebase = () => {
         }
       }
     } catch (err) {
-      setFirebaseError(`Error updating product: id ${id}`)
+      setFirebaseError(`Error updating product: id ${id}`);
     } finally {
-      setFirebaseLoading(false)
+      setFirebaseLoading(false);
     }
     console.log({ firebaseResp, stripeResp });
   };
 
   //delete product
   const deleteProduct = async (id: string) => {
-    console.log(id)
+    console.log(id);
     const firebaseResp = await deleteDoc(doc(db, "product", id));
     const stripeResp = await fetch(
       `.netlify/functions/stripeDeleteProduct?id=${id}`,
@@ -134,12 +144,11 @@ export const useFirebase = () => {
 
   //create order
   const addOrder = async () => {
-
     const modifiedOrder = {
       name: `${currentUser.userDetails[0].firstName} ${currentUser.userDetails[0].lastName}`,
       email: currentUser.user?.email,
-      phone: '',
-      addressLineOne: currentUser.userDetails[0].addressLine1, 
+      phone: "",
+      addressLineOne: currentUser.userDetails[0].addressLine1,
       addressLineTwo: currentUser.userDetails[0].addressLine2,
       postcode: currentUser.userDetails[0].postcode,
       price: cartTotal,
@@ -147,14 +156,17 @@ export const useFirebase = () => {
       orderNr,
       deliveryDay,
       processed: false,
-      order: JSON.stringify(cartItems)
-    }
-    
-    try{
-      const addedOrderRef = await addDoc(collection(db, "orders"), modifiedOrder);
+      order: JSON.stringify(cartItems),
+    };
+
+    try {
+      const addedOrderRef = await addDoc(
+        collection(db, "orders"),
+        modifiedOrder
+      );
       console.log("Order added with ID: ", addedOrderRef.id);
-    } catch(err) {
-      console.log("Error adding order", orderNr, err)
+    } catch (err) {
+      console.log("Error adding order", orderNr, err);
     }
   };
 
@@ -178,9 +190,9 @@ export const useFirebase = () => {
     const productRef = collection(db, "orders");
     const q = query(productRef, where("processed", "==", false));
     const querySnapShot = await getDocs(q);
-    querySnapShot.docs.forEach(async(order) => {
+    querySnapShot.docs.forEach(async (order) => {
       const docRef = doc(db, "orders", order.id);
-      await updateDoc(docRef, {processed: true});
+      await updateDoc(docRef, { processed: true });
     });
   };
 
