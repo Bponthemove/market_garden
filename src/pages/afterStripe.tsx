@@ -7,16 +7,14 @@ import { useOrderContext } from "../context/OrderContext";
 import { useFirebase } from "../hooks/useFirebase";
 
 export const AfterStripe = () => {
-  const { orderNr, deliveryDay, setOrderNr, setDeliveryDay } =
+  const { orderNr, setOrderNr } =
     useOrderContext();
 
   const { result } = useParams();
   const { cartItems, clearCart } = useCartContext();
   const { addOrder } = useFirebase();
   const [repeated, setRepeated] = useState(0);
-  const [orderNotProcessed, setOrderNotProcessed] = useState(
-    cartItems.length > 0 && orderNr !== '' && deliveryDay !== ''
-  );
+  const [orderNotProcessed, setOrderNotProcessed] = useState(cartItems.length > 0 && orderNr !== '');
   
   useEffect(() => {
     if (result === 'failed') {
@@ -26,7 +24,6 @@ export const AfterStripe = () => {
     if (repeated > 3) {
       clearCart();
       setOrderNr("");
-      setDeliveryDay("");
     }
 
     async function addOrderToDB() {
@@ -35,16 +32,16 @@ export const AfterStripe = () => {
         await addOrder();
         clearCart();
         setOrderNr("");
-        setDeliveryDay("");
       } catch (err) {
         setOrderNotProcessed(true);
         setRepeated((prev) => prev++);
       }
     };
+    
     if (orderNotProcessed && repeated <= 3) {
       addOrderToDB();
     }
-  }, [orderNotProcessed, addOrder, repeated, result, clearCart, setOrderNr, setDeliveryDay]);
+  }, [orderNotProcessed, addOrder, repeated, result, clearCart, setOrderNr]);
 
   return (
     <Box>

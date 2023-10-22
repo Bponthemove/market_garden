@@ -154,7 +154,6 @@ export const useFirebase = () => {
       price: cartTotal,
       town: currentUser.userDetails[0].town,
       orderNr,
-      deliveryDay,
       processed: false,
       order: JSON.stringify(cartItems),
     };
