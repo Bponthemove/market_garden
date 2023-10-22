@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import { NavLink, useLocation } from "react-router-dom";
-import { PropsWithChildren } from "react";
 import ButtonBase from "@mui/material/ButtonBase";
+import { PropsWithChildren } from "react";
+import { NavLink } from "react-router-dom";
 
 const linkStyles = {
   textDecoration: "none",
@@ -17,17 +17,11 @@ interface ILinkProps {
   path: string;
   label: string;
   navbar?: boolean;
-  sx?: {[key: string]: string}
+  sx?: { [key: string]: string };
 }
 
 const Link = (props: PropsWithChildren<ILinkProps>) => {
-  const { path, label, children, sx, navbar = true } = props;
-  const { pathname } = useLocation();
-
-  const activeLink =
-    path === "/shop"
-      ? pathname === `${path}/vegetables` || pathname === `${path}/herbs`
-      : pathname === path && path !== "/";
+  const { path, label, children, sx } = props;
 
   return (
     <Box>
@@ -38,8 +32,10 @@ const Link = (props: PropsWithChildren<ILinkProps>) => {
           ...linkStyles,
           ...sx,
           color: dark.main,
-          fontWeight: activeLink && !navbar ? '600' : '',
-          borderBottom: activeLink && navbar ? `2px solid ${dark.main}` : "",
+          "&.active": {
+            fontWeight: "600",
+            borderBottom: `2px solid ${dark.main}`,
+          },
         })}
       >
         {children ?? label}

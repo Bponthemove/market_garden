@@ -11,6 +11,8 @@ const DropdownLink = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const open = Boolean(anchorEl);
 
+  const active = pathname.includes('shop');
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -41,8 +43,14 @@ const DropdownLink = () => {
         onClick={handleClick}
         sx={({ palette }) => ({
           padding: 0,
-          fontWeight: "400",
           color: palette.dark.main,
+          fontWeight: active ? "600" : '400',
+          borderBottom: active ? `2px solid ${palette.dark.main}` : '',
+          '&.MuiButton-root': {
+            minWidth: 0,
+            borderRadius: 0,
+            
+          }
         })}
       >
         Shop

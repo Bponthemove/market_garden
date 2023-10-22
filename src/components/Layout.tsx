@@ -127,13 +127,13 @@ export const Layout = ({
           width: "100vw",
           paddingY: pathname.includes("/shop")
             ? { xs: "5rem", sm: "6rem" }
-            : { xs: "2rem", sm: "4rem" },
+            : { xs: "1rem", sm: "4rem" },
           paddingLeft: pathname.includes("/shop")
             ? { xs: "2rem", sm: "1rem" }
-            : { xs: "2rem", sm: "8rem" },
+            : { xs: "1rem", sm: "8rem" },
           paddingRight: pathname.includes("/shop")
             ? { xs: "2rem", sm: "2rem" }
-            : { xs: "2rem", sm: "8rem" },
+            : { xs: "1rem", sm: "8rem" },
         })}
       >
         {children}

@@ -15,7 +15,7 @@ import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
 
 const signInSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().min(1, { message: "Field is required" }),
   password: z
     .string()
     .regex(

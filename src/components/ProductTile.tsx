@@ -67,6 +67,7 @@ function ProductTile(props: { product: any }) {
             width: "1.5rem",
             height: "1.5rem",
             borderRadius: "50%",
+            border: `2px solid ${palette.dark.main}`,
             backgroundColor: palette.primary.main,
             color: palette.dark.main,
           })}
@@ -83,17 +84,16 @@ function ProductTile(props: { product: any }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            top: { xs: "5px", sm: "34%" },
-            right: { xs: "5px", sm: "0.1rem" },
+            bottom: { xs: "12px", sm: "34%" },
+            left: { xs: "4rem", sm: "0.1rem" },
             borderRadius: "5%",
-            backgroundColor: palette.primary.main,
-            color: palette.dark.main,
+            backgroundColor: palette.error.light,
           })}
         >
           <Typography variant="subtitle2">
             {soldOut
               ? "Sold Out"
-              : stockLevel && stockLevel < 10
+              : stockLevel && stockLevel - itemQuantity < 10
               ? `Only ${stockLevel - itemQuantity} items left`
               : fromCamelCaseToNormal(banner)}
           </Typography>
@@ -105,9 +105,10 @@ function ProductTile(props: { product: any }) {
           height: { xs: "100%", sm: "" },
           width: { xs: "50%", sm: "100%" },
           borderTopLeftRadius: "4px",
-          borderTopRightRadius: "4px",
+          borderTopRightRadius: { xs: 0, sm: "4px" },
+          borderBottomLeftRadius: { xs: "4px", sm: 0 },
           backgroundImage: `url(${image})`,
-          backgroundSize: "contain",
+          backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
@@ -144,7 +145,12 @@ function ProductTile(props: { product: any }) {
             {eachOrWeigth}
           </Typography>
         </Box>
-        <Box display="flex" minHeight="2rem" maxHeight="2rem">
+        <Box
+          display="flex"
+          minHeight="2rem"
+          maxHeight="2rem"
+          alignItems="center"
+        >
           {soldOut ? (
             <Button
               variant="outlined"

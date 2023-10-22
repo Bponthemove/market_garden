@@ -9,7 +9,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { CartItem } from "../components/CartItem";
 import { useCartContext } from "../context/CartContext";
 import { CheckOut } from "./checkOut";
@@ -17,12 +17,13 @@ import { CheckOut } from "./checkOut";
 export const TableCellStyled = ({
   children,
 }: {
-  children: string | number;
+  children: string | number | ReactNode;
 }) => (
   <TableCell
+    align="right"
     sx={{
-      "&.MuiTableCellStyled-root": {
-        padding: 0,
+      "&.MuiTableCell-root": {
+        padding: "0",
       },
     }}
   >
@@ -73,23 +74,27 @@ export function Cart() {
         >
           <ClearAllIcon fontSize="medium" color="action" />
         </Box>
-
         <Grid
           item
           width="100%"
-          sx={{ paddingX: { xs: "0.5rem", sm: "3.5rem", md: "6.5rem" } }}
+          sx={{ paddingX: { xs: "0", sm: "3.5rem", md: "6.5rem" } }}
         >
           <Box pt={2} display="flex" flexDirection="column">
-            <Table>
+            <Table
+              sx={{
+                "&.MuiTable-root": {
+                  borderCollapse: "separate",
+                  borderSpacing: "0 1rem",
+                },
+              }}
+            >
               <TableBody>
                 {cartItems.map((item, idx) => (
                   <CartItem item={item} key={idx} />
                 ))}
                 <TableRow>
                   <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>delivery :</TableCellStyled>
+                  <TableCellStyled>delivery  =</TableCellStyled>
 
                   <TableCellStyled>
                     {cartTotal <= 25 ? 3.99 : "Free Delivery"}
@@ -97,19 +102,21 @@ export function Cart() {
                 </TableRow>
                 <TableRow>
                   <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>Total :</TableCellStyled>
+                  <TableCellStyled>Total  =</TableCellStyled>
 
                   <TableCellStyled>
-                    {cartTotal <= 25
-                      ? Math.round((cartTotal * 100) / 100) + 3.99
-                      : cartTotal.toFixed(2)}
+                    {`£ ${
+                      cartTotal <= 25
+                        ? (Math.round((cartTotal * 100) / 100) + 3.99).toFixed(
+                            2
+                          )
+                        : cartTotal.toFixed(2)
+                    }`}
                   </TableCellStyled>
                 </TableRow>
               </TableBody>
             </Table>
-            <Box display="flex" justifyContent="flex-end" mr={6} mt={6}>
+            <Box display="flex" alignSelf="center" maxWidth="200px" mt={4}>
               {maxHeight === 0 && (
                 <Box display="flex" flexDirection="column" gap={2}>
                   <Typography variant="subtitle2">

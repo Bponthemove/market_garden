@@ -1,7 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { Grid, TableRow } from "@mui/material";
-import TableCell from "@mui/material/TableCell";
 import { ICartItem, useCartContext } from "../context/CartContext";
 import { TableCellStyled } from "../pages/Cart";
 
@@ -12,7 +11,7 @@ export function CartItem({ item }: { item: ICartItem }) {
 
   return (
     <TableRow>
-      <TableCell>
+      <TableCellStyled>
         <Grid container>
           <AddCircleIcon
             color="primary"
@@ -29,12 +28,12 @@ export function CartItem({ item }: { item: ICartItem }) {
             }}
           />
         </Grid>
-      </TableCell>
-      <TableCellStyled>{label ?? "-"}</TableCellStyled>
-      <TableCellStyled>{`x ${quantity ?? 0}`}</TableCellStyled>
-      <TableCellStyled>=</TableCellStyled>
+      </TableCellStyled>
+      <TableCellStyled>{`${label ?? "-"} x ${
+        quantity ?? 0
+      }  =`}</TableCellStyled>
       <TableCellStyled>
-        {price ? (quantity * Math.round(price * 100)) / 100 : 0}
+        {`£ ${price ? (quantity * Math.round(price * 100)) / 100 : 0}`}
       </TableCellStyled>
     </TableRow>
   );

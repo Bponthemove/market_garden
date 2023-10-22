@@ -8,13 +8,28 @@ import {
   useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
 //import { useDate } from "../hooks/useDate";
-import getStripe from "../stripe";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { z } from "zod";
+
+let stripePromise: Stripe | null;
+
+const getStripe = async () => {
+  if (!stripePromise) {
+    stripePromise = await loadStripe(
+      `${import.meta.env.VITE_APP_STRIPE_PUBLISHABLE_KEY!}`
+    );
+  }
+  return stripePromise;
+};
+
+const fieldRequiredMessage = "This field is required";
 
 interface ICheckOut {
   firstName: string;
@@ -27,13 +42,31 @@ interface ICheckOut {
   deliveryDay: string;
 }
 
+const checkOutSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: fieldRequiredMessage })
+    .email("Please enter a valid email"),
+  firstName: z.string().min(1, { message: fieldRequiredMessage }),
+  lastName: z.string().min(1, { message: fieldRequiredMessage }),
+  postcode: z
+    .string()
+    .regex(
+      /^([A-Za-z]{2}[\d]{1,2}[A-Za-z]?)[\s]+([\d][A-Za-z]{2})$/,
+      "invalid postcode"
+    )
+    .min(1, { message: fieldRequiredMessage }),
+  addressLine1: z.string().min(1, { message: fieldRequiredMessage }),
+  addressLine2: z.string().min(1, { message: fieldRequiredMessage }),
+  town: z.string().min(1, { message: fieldRequiredMessage }),
+});
+
+type TCheckOut = z.infer<typeof checkOutSchema>;
+
 export const CheckOut = () => {
-  const [emailValid, setEmailValid] = useState<boolean | null>(null);
-  const [postcodeValid, setPostcodeValid] = useState<boolean | null>(null);
   const { cartItems } = useCartContext();
   const { currentUser } = useAuthContext();
-  const { setOrderNr, setDeliveryDay } = useOrderContext();
-  //const { saturday, sunday, monday } = useDate("checkOut");
+  const { setOrderNr } = useOrderContext();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -45,7 +78,6 @@ export const CheckOut = () => {
     addressLine1: currentUser.userDetails[0].addressLine1 ?? "",
     addressLine2: currentUser.userDetails[0].addressLine2 ?? "",
     town: currentUser.userDetails[0].town ?? "",
-    deliveryDay: "",
   };
 
   const {
@@ -53,9 +85,10 @@ export const CheckOut = () => {
     handleSubmit,
     getValues,
     formState: { isValid },
-  } = useForm<ICheckOut>({
+  } = useForm<TCheckOut>({
     defaultValues,
-    reValidateMode: "onChange",
+    mode: "onChange",
+    resolver: zodResolver(checkOutSchema),
   });
 
   const handleOnSubmit = async (
@@ -64,9 +97,6 @@ export const CheckOut = () => {
   ) => {
     event?.preventDefault();
     const email = getValues("email");
-    const deliveryDay = getValues("deliveryDay");
-    console.log({ deliveryDay });
-    console.log({ email });
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
@@ -82,7 +112,6 @@ export const CheckOut = () => {
       .then(async (session) => {
         const stripe = await getStripe();
         setOrderNr(session.id);
-        setDeliveryDay(deliveryDay);
         return await stripe?.redirectToCheckout({ sessionId: session.id });
       })
       .then((result) => {
@@ -95,36 +124,10 @@ export const CheckOut = () => {
     //succesful then add order to db
   };
 
-  const handleValidateEmail = (event: {
-    preventDefault: () => void;
-    target: { value: any };
-  }) => {
-    event.preventDefault();
-    const value = event.target.value;
-    if (value) {
-      setEmailValid(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value));
-    }
-  };
-
-  const handleValidatePostcode = (event: {
-    preventDefault: () => void;
-    target: { value: any };
-  }) => {
-    event.preventDefault();
-    const value = event.target.value;
-    if (value) {
-      setPostcodeValid(
-        /^([A-Za-z]{2}[\d]{1,2}[A-Za-z]?)[\s]+([\d][A-Za-z]{2})$/.test(value)
-      );
-    }
-  };
-
   return (
-    <Grid container>
+    <>
       <Grid
-        item
         container
-        xs={12}
         gap={1}
         component="form"
         display="flex"
@@ -139,22 +142,14 @@ export const CheckOut = () => {
           <Controller
             name="email"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
-                type="email"
                 label="Email Address"
-                name="email"
-                onBlur={handleValidateEmail}
-                error={emailValid === false}
-                color={emailValid ? "success" : "primary"}
-                helperText={
-                  emailValid || emailValid == null
-                    ? ""
-                    : "Please enter a valid email address."
-                }
+                error={!!error}
+                helperText={error?.message ?? ""}
                 autoFocus
               />
             )}
@@ -164,15 +159,15 @@ export const CheckOut = () => {
           <Controller
             name="firstName"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
                 type="text"
                 label="First Name"
-                error={!!fieldState.error?.message}
-                helperText={fieldState.error?.message}
+                error={!!error}
+                helperText={error?.message ?? ""}
               />
             )}
           />
@@ -181,15 +176,14 @@ export const CheckOut = () => {
           <Controller
             name="lastName"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
-                type="text"
                 label="Last Name"
-                error={!!fieldState.error?.message}
-                helperText={fieldState.error?.message}
+                error={!!error}
+                helperText={error?.message ?? ""}
               />
             )}
           />
@@ -198,22 +192,15 @@ export const CheckOut = () => {
           <Controller
             name="postcode"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
                 name="postcode"
-                onBlur={handleValidatePostcode}
-                color={postcodeValid ? "success" : "primary"}
-                error={postcodeValid === false}
-                helperText={
-                  postcodeValid || postcodeValid == null
-                    ? ""
-                    : "Please enter a valid postcode, including spaces. "
-                }
+                error={!!error}
+                helperText={error?.message ?? ""}
                 label="Postcode"
-                type="text"
               />
             )}
           />
@@ -222,15 +209,14 @@ export const CheckOut = () => {
           <Controller
             name="addressLine1"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
-                type="text"
                 label="Address Line 1"
-                error={!!fieldState.error?.message}
-                helperText={fieldState.error?.message}
+                error={!!error}
+                helperText={error?.message ?? ""}
               />
             )}
           />
@@ -239,15 +225,14 @@ export const CheckOut = () => {
           <Controller
             name="addressLine2"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
-                type="text"
                 label="Address Line 2"
-                error={!!fieldState.error?.message}
-                helperText={fieldState.error?.message}
+                error={!!error}
+                helperText={error?.message ?? ""}
               />
             )}
           />
@@ -256,15 +241,14 @@ export const CheckOut = () => {
           <Controller
             name="town"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 required
                 fullWidth
-                type="text"
                 label="Town"
-                error={!!fieldState.error?.message}
-                helperText={fieldState.error?.message}
+                error={!!error}
+                helperText={error?.message ?? ""}
               />
             )}
           />
@@ -313,6 +297,6 @@ export const CheckOut = () => {
         </Grid>
       </Grid>
       <DevTool control={control} />
-    </Grid>
+    </>
   );
 };
