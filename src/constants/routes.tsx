@@ -4,6 +4,7 @@ import { CheckOut } from "../pages/checkOut";
 import Contact from "../pages/contact";
 import Home from "../pages/home";
 import LogOut from "../pages/logOut";
+import { MyDetails } from "../pages/myDetails";
 import { Orders } from "../pages/orders";
 import Category from "../pages/shop/category";
 import Shop from "../pages/shop/shop";
@@ -68,8 +69,20 @@ export const routes: { [key: string]: IRoute } = {
     superUser: false,
   },
   LOG_OUT: {
-    path: "/logout",
+    path: "/profile/logout",
     label: "Log out",
+    component: <LogOut />,
+    superUser: false,
+  },
+  MY_DETAILS: {
+    path: "/profile/mydetails",
+    label: "Log out",
+    component: <MyDetails />,
+    superUser: false,
+  },
+  PROIFLE: {
+    path: "/profile",
+    label: "",
     component: <LogOut />,
     superUser: false,
   },

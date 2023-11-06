@@ -57,6 +57,7 @@ const Home = () => {
         }}
       >
         <Box flex="1" p={4}>
+          <Typography variant="h6" color='red'>This website is under construction!</Typography>
           <Typography variant="h5">About us</Typography>
           <Typography variant="body2" pt={1}>
             Tom and Tessa Green, founded Round the Field market garden in

@@ -73,8 +73,6 @@ function SignInSide() {
     }
   };
 
-  console.log({ isValid });
-
   useEffect(() => {
     if (error) {
       toast.error(error);

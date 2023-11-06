@@ -29,24 +29,18 @@ const getStripe = async () => {
   return stripePromise;
 };
 
-const fieldRequiredMessage = "This field is required";
+export const fieldRequiredMessage = "This field is required";
 
-interface ICheckOut {
-  firstName: string;
-  lastName: string;
-  email: string;
-  postcode: string;
-  addressLine1: string;
-  addressLine2: string;
-  town: string;
-  deliveryDay: string;
-}
-
-const checkOutSchema = z.object({
+export const checkOutSchema = z.object({
   email: z
     .string()
     .min(1, { message: fieldRequiredMessage })
     .email("Please enter a valid email"),
+  phone: z
+    .string()
+    .min(11, { message: fieldRequiredMessage })
+    .max(11, "No more than 11 numbers in this field")
+    .regex(/^\d+$/, "numbers only, no spaces"),
   firstName: z.string().min(1, { message: fieldRequiredMessage }),
   lastName: z.string().min(1, { message: fieldRequiredMessage }),
   postcode: z
@@ -71,28 +65,23 @@ export const CheckOut = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const defaultValues = {
-    firstName: currentUser.userDetails[0].firstName ?? "",
-    lastName: currentUser.userDetails[0].lastName ?? "",
-    email: currentUser.user?.email ?? "",
-    postcode: currentUser.userDetails[0].postcode ?? "",
-    addressLine1: currentUser.userDetails[0].addressLine1 ?? "",
-    addressLine2: currentUser.userDetails[0].addressLine2 ?? "",
-    town: currentUser.userDetails[0].town ?? "",
+    firstName: currentUser?.userDetails[0]?.firstName ?? "",
+    lastName: currentUser?.userDetails[0]?.lastName ?? "",
+    email: currentUser?.user?.email ?? "",
+    phone: currentUser?.user?.phone ?? "",
+    postcode: currentUser?.userDetails[0]?.postcode ?? "",
+    addressLine1: currentUser?.userDetails[0]?.addressLine1 ?? "",
+    addressLine2: currentUser?.userDetails[0]?.addressLine2 ?? "",
+    town: currentUser?.userDetails[0]?.town ?? "",
   };
 
-  const {
-    control,
-    handleSubmit,
-    getValues,
-    formState: { isValid },
-  } = useForm<TCheckOut>({
+  const { control, handleSubmit, getValues } = useForm<TCheckOut>({
     defaultValues,
-    mode: "onChange",
     resolver: zodResolver(checkOutSchema),
   });
 
   const handleOnSubmit = async (
-    data: ICheckOut,
+    data: TCheckOut,
     event?: BaseSyntheticEvent<object, any, any>
   ) => {
     event?.preventDefault();
@@ -151,6 +140,25 @@ export const CheckOut = () => {
                 error={!!error}
                 helperText={error?.message ?? ""}
                 autoFocus
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Phone number"
+                error={!!error}
+                helperText={
+                  error?.message ??
+                  "numbers only, no spaces 07***********"
+                }
               />
             )}
           />
@@ -258,25 +266,6 @@ export const CheckOut = () => {
             You can order for tomorrow. Cut off time is 4pm. We wil deliver the
             next day between 7am and 12pm.
           </Box>
-          {/* <Box sx={{ flex: 1 }}>
-            <Controller
-              name="deliveryDay"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Select
-                  {...field}
-                  required
-                  fullWidth
-                  label="Delivery Day"
-                  error={!!fieldState.error?.message}
-                >
-                  <MenuItem value={saturday as unknown as string}>{`Saturday ${saturday}`}</MenuItem>
-                  <MenuItem value={sunday as unknown as string}>{`Sunday ${sunday}`}</MenuItem>
-                  <MenuItem value={monday as unknown as string}>{`Monday ${monday}`}</MenuItem>
-                </Select>
-              )}
-            />
-          </Box> */}
         </Box>
         <Grid
           item
@@ -285,12 +274,7 @@ export const CheckOut = () => {
           sx={{ display: "flex", justifyContent: "center" }}
         >
           <Box sx={{ display: "flex", justifyContent: "center", gap: 4 }}>
-            <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              disabled={!isValid}
-            >
+            <Button type="submit" color="primary" variant="contained">
               Proceed to checkout
             </Button>
           </Box>

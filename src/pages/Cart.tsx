@@ -13,6 +13,7 @@ import { ReactNode, useState } from "react";
 import { CartItem } from "../components/CartItem";
 import { useCartContext } from "../context/CartContext";
 import { CheckOut } from "./checkOut";
+import { Toast } from "../components/Snackbar";
 
 export const TableCellStyled = ({
   children,

@@ -24,6 +24,8 @@ type AuthProviderProps = {
 
 export interface IUserDetails {
   uid: string;
+  phone: string;
+  email: string;
   firstName: string;
   lastName: string;
   postcode: string;
@@ -40,6 +42,7 @@ export interface IUser {
 
 export interface IAuthSignUp {
   email: string;
+  phone: string;
   password: string;
   passwordConfirmation: string;
   firstName: string;
@@ -63,6 +66,8 @@ const defaultUserDetails = [
     addressLine1: "",
     addressLine2: "",
     town: "",
+    phone: "",
+    email: "",
   },
 ];
 
@@ -77,6 +82,7 @@ type AuthContextTypes = {
   setCurrentUser: React.Dispatch<React.SetStateAction<IUser>>;
   signUp: (
     email: string,
+    phone: string,
     password: string,
     firstName: string,
     lastName: string,
@@ -125,6 +131,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signUp(
     email: string,
+    phone: string,
     password: string,
     firstName: string,
     lastName: string,
@@ -148,6 +155,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         addressLine1,
         addressLine2,
         town,
+        phone,
+        email,
       });
     } catch (err) {
       setError(`Sign up credentials are not correct.`);

@@ -138,6 +138,17 @@ export const useFirebase = () => {
     }));
   };
 
+  // check for existing accounts
+  const existingAccount = async (
+    context: QueryFunctionContext
+  ): Promise<boolean> => {
+    const [, email] = context.queryKey;
+    const q = query(database.users, where("email", "==", email));
+    const querySnapShot = await getDocs(q);
+    console.log(querySnapShot.docs)
+    return querySnapShot.docs.length > 0;
+  };
+
   //delete user details
 
   //-----------orders----------//
@@ -147,15 +158,16 @@ export const useFirebase = () => {
     const modifiedOrder = {
       name: `${currentUser.userDetails[0].firstName} ${currentUser.userDetails[0].lastName}`,
       email: currentUser.user?.email,
-      phone: "",
+      phone: currentUser.userDetails[0].phone,
       addressLineOne: currentUser.userDetails[0].addressLine1,
       addressLineTwo: currentUser.userDetails[0].addressLine2,
       postcode: currentUser.userDetails[0].postcode,
       price: cartTotal,
       town: currentUser.userDetails[0].town,
-      orderNr: '',
+      orderNr: "",
       processed: false,
-      order: JSON.stringify([{radish: 3}]) //cartItems),
+      timestamp: new Date().toISOString(),
+      order: JSON.stringify(cartItems),
     };
 
     try {
@@ -175,27 +187,94 @@ export const useFirebase = () => {
     context: QueryFunctionContext
   ): Promise<IAddOrder[] | undefined> => {
     const productRef = collection(db, "orders");
-    const q = query(productRef, where("processed", "==", false));
+    const q = query(
+      productRef,
+      where("processed", "==", false),
+      where("timestamp", ">=", "2023-11-02T15:56:51.887Z"),
+      where("timestamp", "<=", "2023-11-06T12:56:51.887Z")
+      //where("timestamp", ">=", ordersRange().start),
+      //where("timestamp", "<=", ordersRange().end),
+    );
     const querySnapShot = await getDocs(q);
-    console.log({ querySnapShot });
-    return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const orders = querySnapShot?.docs.map(
+      (doc: { id: string; data: () => any }) => ({
+        id: doc.id,
+        ...doc.data(),
+      })
+    );
+    return orders;
   };
 
   //update field to processed
   const setOrdersToProcessed = async () => {
     const productRef = collection(db, "orders");
-    const q = query(productRef, where("processed", "==", false));
+    const q = query(
+      productRef,
+      where("processed", "==", false),
+      where("timestamp", ">", ordersRange().start),
+      where("timestamp", "<", ordersRange().end)
+    );
     const querySnapShot = await getDocs(q);
     querySnapShot.docs.forEach(async (order) => {
       const docRef = doc(db, "orders", order.id);
       await updateDoc(docRef, { processed: true });
     });
+    // if day is monday, delete orders for previous week
+    if (new Date().getDay() === 0) {
+      try {
+        await deleteOrders();
+      } catch (err) {
+        console.error(err);
+      }
+    }
   };
 
   //delete orders
+  const deleteOrders = async () => {
+    const productRef = collection(db, "orders");
+    const q = query(
+      productRef,
+      where("processed", "==", true),
+      where("timestamp", ">", deleteRange().start),
+      where("timestamp", "<", deleteRange().end)
+    );
+    const querySnapShot = await getDocs(q);
+    querySnapShot?.docs.map((doc) => deleteDoc(doc.ref));
+
+    console.log(
+      `Deleting orders in range ${new Date(deleteRange().start)} - ${new Date(
+        deleteRange().end
+      )}: ${querySnapShot}`
+    );
+  };
+
+  // helpers
+  const deleteRange = () => {
+    const date = new Date();
+    date.setHours(parseFloat("16"));
+    date.setMinutes(parseFloat("00"));
+    date.setSeconds(parseFloat("00"));
+    const start = date.setDate(date.getDate() - 21);
+    const end = date.setDate(date.getDate() - 14);
+
+    return {
+      start: new Date(start).toISOString(),
+      end: new Date(end).toISOString(),
+    };
+  };
+
+  const ordersRange = () => {
+    const date = new Date();
+    date.setHours(parseFloat("16"));
+    date.setMinutes(parseFloat("00"));
+    date.setSeconds(parseFloat("00"));
+    const start = date.setDate(date.getDate() - (date.getDay() === 0 ? 2 : 1));
+
+    return {
+      start: new Date(start).toISOString(),
+      end: date.toISOString(),
+    };
+  };
 
   // useEffect(() => {
   //   if (firebaseLoading) {
@@ -215,6 +294,7 @@ export const useFirebase = () => {
     deleteProduct,
     addUserDetails,
     getUserDetails,
+    existingAccount,
     addOrder,
     getOrders,
     setOrdersToProcessed,

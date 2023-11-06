@@ -3,9 +3,16 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
 import { useAuthContext } from "../context/AuthContext";
+import { useCartContext } from "../context/CartContext";
 
 export default function LogOut() {
   const { logOut, loading } = useAuthContext();
+  const {clearCart} = useCartContext();
+
+  function handleLogOut() {
+    clearCart(); // Clear cart before logging out.
+    logOut();
+  }
 
   return (
     <Grid container sx={{ minHeight: "calc(100vh - 13rem)" }}>
@@ -28,7 +35,7 @@ export default function LogOut() {
         </Grid>
         <Grid item>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button onClick={() => logOut()} color="primary" variant="contained" disabled={loading}>
+            <Button onClick={handleLogOut} color="primary" variant="contained" disabled={loading}>
               Log Out
             </Button>
           </Box>

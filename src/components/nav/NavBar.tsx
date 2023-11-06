@@ -39,19 +39,21 @@ function NavBar({ shouldFix }) {
         >
           {Object.values(routes).map((route) => {
             if (
-              (!currentUser.user && route.label === "Log out") ||
+              (!currentUser.user && route.path === "/profile") ||
               (currentUser.user && route.label === "Sign in") ||
               (!currentUser.superUser && route.label === "Admin") ||
               (!currentUser.superUser && route.label === "Orders") ||
               route.label === "Sign up" ||
               route.path === "/checkout" ||
+              route.path === "/profile/logout" ||
+              route.path === "/profile/mydetails" ||
               route.path === "/afterstripe" ||
               route.path === "/afterstripe/:result"
             ) {
               return null;
             }
-            if (route.path === "/shop") {
-              return <DropdownLink key={route.label} {...route} />;
+            if (route.path === "/shop" || route.path === "/profile") {
+              return <DropdownLink key={route.path} {...route} />;
             }
 
             if (route.path === "/") {
