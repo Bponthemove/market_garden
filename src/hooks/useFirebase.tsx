@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -14,6 +15,7 @@ import { IUserDetails, useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
 import { database, db } from "../firebase";
+import { TMyDetailsWithID } from "../pages/myDetails";
 import {
   IAddOrder,
   IAddProduct,
@@ -121,8 +123,9 @@ export const useFirebase = () => {
 
   //add user details
   const addUserDetails = async (user: IUserDetails) => {
-    const addedUserRef = await addDoc(collection(db, "users"), user);
-    console.log("Document written with ID: ", addedUserRef.id);
+    const addedUserRef = doc(collection(db, "users"), user.uid);
+    const response = await setDoc(addedUserRef, user);
+    console.log("Document written with ID: ", response);
   };
 
   //get user details
@@ -145,8 +148,27 @@ export const useFirebase = () => {
     const [, email] = context.queryKey;
     const q = query(database.users, where("email", "==", email));
     const querySnapShot = await getDocs(q);
-    console.log(querySnapShot.docs)
+    console.log(querySnapShot.docs);
     return querySnapShot.docs.length > 0;
+  };
+
+  //update user
+  const updateUserDetails = async (toUpdate: TMyDetailsWithID) => {
+    setFirebaseLoading(true);
+    let firebaseResp;
+    const { id, ...rest } = toUpdate;
+    try {
+      if (id) {
+        firebaseResp = await updateDoc(doc(db, "users", id), {
+          ...rest,
+        });
+      }
+    } catch (err) {
+      setFirebaseError(`Error updating user: id ${id}`);
+    } finally {
+      setFirebaseLoading(false);
+    }
+    console.log({ firebaseResp });
   };
 
   //delete user details
@@ -294,6 +316,7 @@ export const useFirebase = () => {
     deleteProduct,
     addUserDetails,
     getUserDetails,
+    updateUserDetails,
     existingAccount,
     addOrder,
     getOrders,

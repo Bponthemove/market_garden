@@ -15,7 +15,8 @@ import { useToast } from "../hooks/useToast";
 import { checkOutSchema, fieldRequiredMessage } from "./checkOut";
 import { useFirebase } from "../hooks/useFirebase";
 import { useQuery } from "@tanstack/react-query";
-const signUpSchema = checkOutSchema
+
+export const signUpSchema = checkOutSchema
   .extend({
     password: z
       .string()

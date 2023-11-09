@@ -152,7 +152,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         firstName,
         lastName,
         postcode,
-        addressLine1,
+        addressLine1, 
         addressLine2,
         town,
         phone,

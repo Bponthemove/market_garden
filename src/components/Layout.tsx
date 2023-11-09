@@ -121,7 +121,7 @@ export const Layout = ({
           backgroundColor: theme.palette.light.main,
           display: "inline-block",
           minHeight:
-            pathname !== "/contact"
+            pathname !== "/contact" && !pathname.includes("/mydetails")
               ? "calc(100vh - 5.75rem)"
               : { xs: "calc(80vh - 10.75rem)", sm: "calc(80vh - 8rem)" },
           width: "100vw",

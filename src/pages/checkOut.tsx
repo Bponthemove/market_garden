@@ -68,7 +68,7 @@ export const CheckOut = () => {
     firstName: currentUser?.userDetails[0]?.firstName ?? "",
     lastName: currentUser?.userDetails[0]?.lastName ?? "",
     email: currentUser?.user?.email ?? "",
-    phone: currentUser?.user?.phone ?? "",
+    phone: currentUser?.userDetails[0]?.phone ?? "",
     postcode: currentUser?.userDetails[0]?.postcode ?? "",
     addressLine1: currentUser?.userDetails[0]?.addressLine1 ?? "",
     addressLine2: currentUser?.userDetails[0]?.addressLine2 ?? "",
