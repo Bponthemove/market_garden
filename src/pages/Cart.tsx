@@ -13,7 +13,6 @@ import { ReactNode, useState } from "react";
 import { CartItem } from "../components/CartItem";
 import { useCartContext } from "../context/CartContext";
 import { CheckOut } from "./checkOut";
-import { Toast } from "../components/Snackbar";
 
 export const TableCellStyled = ({
   children,
@@ -95,7 +94,7 @@ export function Cart() {
                 ))}
                 <TableRow>
                   <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>delivery  =</TableCellStyled>
+                  <TableCellStyled>delivery =</TableCellStyled>
 
                   <TableCellStyled>
                     {cartTotal <= 25 ? 3.99 : "Free Delivery"}
@@ -103,7 +102,7 @@ export function Cart() {
                 </TableRow>
                 <TableRow>
                   <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>Total  =</TableCellStyled>
+                  <TableCellStyled>Total =</TableCellStyled>
 
                   <TableCellStyled>
                     {`£ ${

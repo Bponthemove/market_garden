@@ -1,5 +1,10 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import {
+  EmailAuthProvider,
+  deleteUser,
+  reauthenticateWithCredential,
+} from "firebase/auth";
+import {
   addDoc,
   collection,
   deleteDoc,
@@ -11,6 +16,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useState } from "react";
+import { TAuthSignIn } from "../components/SignInForm";
 import { IUserDetails, useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
@@ -27,7 +33,7 @@ export const useFirebase = () => {
   const [firebaseLoading, setFirebaseLoading] = useState<boolean>(false);
   const [firebaseError, setFirebaseError] = useState<string>("");
   const { cartItems, cartTotal } = useCartContext();
-  const { currentUser } = useAuthContext();
+  const { currentUser, logOut } = useAuthContext();
   const { orderNr } = useOrderContext();
 
   //------------------CRUD------------//
@@ -172,6 +178,36 @@ export const useFirebase = () => {
   };
 
   //delete user details
+  const deleteThisUser = async (credentials: TAuthSignIn) => {
+    let response;
+    if (!credentials.email) {
+      try {
+        await deleteUser(currentUser.user);
+        response = { status: 200, message: "user deleted successfully" };
+        await deleteDoc(doc(db, "users", currentUser.user.uid));
+        logOut()
+      } catch (err) {
+        console.log("Error deleting this user: ", err);
+        response = { status: 500, message: err.toString() };
+      } finally {
+        return response;
+      }
+    } else {
+      try {
+        const credential = await EmailAuthProvider.credential(
+          credentials.email,
+          credentials.password
+        );
+        const response = await reauthenticateWithCredential(
+          currentUser.user,
+          credential
+        );
+        console.log(response, "hiep");
+      } catch (err) {
+        console.log(err, "line193");
+      }
+    }
+  };
 
   //-----------orders----------//
 
@@ -317,6 +353,7 @@ export const useFirebase = () => {
     addUserDetails,
     getUserDetails,
     updateUserDetails,
+    deleteThisUser,
     existingAccount,
     addOrder,
     getOrders,

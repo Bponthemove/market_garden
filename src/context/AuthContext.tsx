@@ -40,10 +40,13 @@ export interface IUser {
   userDetails: IUserDetails[];
 }
 
-export interface IAuthSignUp {
+export interface IAuthSignIn {
   email: string;
-  phone: string;
   password: string;
+}
+
+export interface IAuthSignUp extends IAuthSignIn {
+  phone: string;
   passwordConfirmation: string;
   firstName: string;
   lastName: string;
@@ -54,8 +57,6 @@ export interface IAuthSignUp {
 }
 
 const superUsers = JSON.parse(import.meta.env.VITE_APP_EMAIL_ADMIN);
-
-// const superUsers = ["Tom.green1@yahoo.co.uk", "bpvanzalk@hotmail.com"];
 
 const defaultUserDetails = [
   {

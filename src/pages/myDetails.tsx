@@ -1,14 +1,36 @@
 import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import SignInForm from "../components/SignInForm";
 import { useAuthContext } from "../context/AuthContext";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
 import { fieldRequiredMessage } from "./checkOut";
+
+const modalStyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export const myDetailsSchema = z.object({
   phone: z
@@ -37,9 +59,10 @@ type TID = {
 export type TMyDetailsWithID = TMyDetails & TID;
 
 export function MyDetails() {
+  const [open, setOpen] = useState<boolean>(false);
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
-  const { updateUserDetails } = useFirebase();
+  const { updateUserDetails, deleteThisUser } = useFirebase();
   const toast = useToast();
 
   const details = currentUser?.userDetails[0];
@@ -47,8 +70,8 @@ export function MyDetails() {
   const email = details.email;
   const id = details.uid;
 
-  const { mutateAsync, isLoading, isError } = useMutation(
-    (toUpdate: TMyDetailsWithID) => updateUserDetails(toUpdate)
+  const { mutateAsync, isLoading } = useMutation((toUpdate: TMyDetailsWithID) =>
+    updateUserDetails(toUpdate)
   );
 
   const defaultValues = {
@@ -87,6 +110,24 @@ export function MyDetails() {
     }
   };
 
+  const handleDelete = async () => {
+    const response = await deleteThisUser({ email: "", password: "" });
+    if (response.message.includes("requires-recent-login")) {
+      setOpen(!open);
+    } else if (response.status === 500) {
+      toast.error(
+        "We could not delete your account. Please try again later or contact Round the Field via email or Instagram"
+      );
+    } else {
+      toast.info("Your account has been  deleted. Thank you for your support.");
+      navigate("/");
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(!open);
+  };
+
   return (
     <>
       <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
@@ -110,6 +151,9 @@ export function MyDetails() {
           <Grid item xs={8}>
             <Typography>Email : {email}</Typography>
             <Typography>Name: {name}</Typography>
+            <Button onClick={handleDelete}>
+              <Typography color="error">Delete my account</Typography>
+            </Button>
           </Grid>
           <Grid item xs={8}>
             <Controller
@@ -196,14 +240,29 @@ export function MyDetails() {
             />
           </Grid>
           <Box>
-            {isDirty && (
+            {isDirty && !isLoading && (
               <Button type="submit" color="primary" variant="contained">
                 Update your details
               </Button>
             )}
+            {isLoading && <CircularProgress />}
           </Box>
         </Grid>
       </Grid>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Please sign in again before you can delete your account
+          </Typography>
+          <SignInForm initial={false} />
+        </Box>
+      </Modal>
       <DevTool control={control} />
     </>
   );
