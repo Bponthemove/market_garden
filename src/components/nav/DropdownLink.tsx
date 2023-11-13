@@ -1,4 +1,5 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -53,11 +54,11 @@ const DropdownLink = (props) => {
           },
         })}
       >
-        {props.label ? props.label : <AccountCircleIcon />}
+        {props.path === '/profile' ?  <AccountCircleIcon /> : props.path === '/admin' ? <BuildCircleIcon /> : props.label}
       </Button>
 
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        {props.label === "Shop"
+        {props.path === "/shop"
           ? categories.map((cat, idx) => (
               <MenuItem
                 key={cat.label}
@@ -67,7 +68,7 @@ const DropdownLink = (props) => {
                 {cat.label}
               </MenuItem>
             ))
-          : [
+          : props.path === '/profile' ? ([
               <MenuItem
                 key="PROFILE - MYDETAILS"
                 selected={0 === selectedIndex}
@@ -86,7 +87,35 @@ const DropdownLink = (props) => {
               >
                 Log out
               </MenuItem>,
-            ]}
+            ]) : props.path === '/admin' ? ([
+              <MenuItem
+                key="ADMIN - PRODUCTS"
+                selected={0 === selectedIndex}
+                onClick={(event) =>
+                  handleMenuItemClick(event, "/admin/products", 0)
+                }
+              >
+                Products Admin
+              </MenuItem>,
+              <MenuItem
+                key="ADMIN - ORDERS"
+                selected={1 === selectedIndex}
+                onClick={(event) =>
+                  handleMenuItemClick(event, "/admin/orders", 1)
+                }
+              >
+                Orders
+              </MenuItem>,
+              <MenuItem
+                key="ADMIN - STOCK"
+                selected={2 === selectedIndex}
+                onClick={(event) =>
+                  handleMenuItemClick(event, "/admin/stock", 2)
+                }
+              >
+                Stock Levels
+              </MenuItem>
+            ]) : null}
       </Menu>
     </Box>
   );

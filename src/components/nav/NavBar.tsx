@@ -41,18 +41,20 @@ function NavBar({ shouldFix }) {
             if (
               (!currentUser.user && route.path === "/profile") ||
               (currentUser.user && route.label === "Sign in") ||
-              (!currentUser.superUser && route.label === "Admin") ||
-              (!currentUser.superUser && route.label === "Orders") ||
+              (!currentUser.superUser && route.path === "/admin") ||
               route.label === "Sign up" ||
               route.path === "/checkout" ||
               route.path === "/profile/logout" ||
               route.path === "/profile/mydetails" ||
+              route.path === "/admin/orders" ||
+              route.path === "/admin/products" ||
+              route.path === "/admin/stock" ||
               route.path === "/afterstripe" ||
               route.path === "/afterstripe/:result"
             ) {
               return null;
             }
-            if (route.path === "/shop" || route.path === "/profile") {
+            if (route.path === "/shop" || route.path === "/profile" || route.path === '/admin') {
               return <DropdownLink key={route.path} {...route} />;
             }
 

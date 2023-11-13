@@ -1,4 +1,4 @@
-import Admin from "../pages/admin";
+import Admin from "../pages/products";
 import { AfterStripe } from "../pages/afterStripe";
 import { CheckOut } from "../pages/checkOut";
 import Contact from "../pages/contact";
@@ -11,6 +11,7 @@ import Shop from "../pages/shop/shop";
 import SignInSide from "../pages/signIn";
 import SignUp from "../pages/signUp";
 import { categories } from "./categories";
+import Products from "../pages/products";
 
 interface IChildrenRoute {
   childPath: string;
@@ -88,12 +89,24 @@ export const routes: { [key: string]: IRoute } = {
   },
   ADMIN: {
     path: "/admin",
+    label: "",
+    component: <Products />,
+    superUser: true,
+  },
+  PRODUCTS: {
+    path: "/admin/products",
     label: "Admin",
-    component: <Admin />,
+    component: <Products />,
+    superUser: true,
+  },
+  STOCK: {
+    path: "/admin/stock",
+    label: "Stock Levels",
+    component: <Products />,
     superUser: true,
   },
   ORDERS: {
-    path: "/orders`",
+    path: "/admin/orders",
     label: "Orders",
     component: <Orders />,
     superUser: true,

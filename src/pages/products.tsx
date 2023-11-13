@@ -48,7 +48,7 @@ const defaultValues: IAddProduct = {
 
 //Still need to add a patch request when updating;
 
-export default function Admin() {
+export default function Products() {
   const [showProduct, setShowProduct] = useState<IProduct | IGetProduct>({
     id: "",
     ...defaultValues,
