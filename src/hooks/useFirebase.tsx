@@ -55,8 +55,20 @@ export const useFirebase = () => {
     }
   };
 
+  // get all products for stock levels
+  const getProductsForStock = async (
+    context: QueryFunctionContext
+  ): Promise<IGetProduct[] | undefined> => {
+    const productRef = collection(db, "product");
+    const querySnapShot = await getDocs(productRef);
+    return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  };
+
   // read all products in category
-  const getProducts = async (
+  const getProductsByCategory = async (
     context: QueryFunctionContext
   ): Promise<IGetProduct[] | undefined> => {
     const [queryKey] = context.queryKey;
@@ -110,6 +122,22 @@ export const useFirebase = () => {
       setFirebaseLoading(false);
     }
     console.log({ firebaseResp, stripeResp });
+  };
+
+  const updateProductStockLevel = async (product: IUpdateProduct) => {
+    setFirebaseLoading(true);
+    const { id, stockLevel } = product;
+    try {
+      if (id) {
+        await updateDoc(doc(db, "product", id), {
+          stockLevel,
+        });
+      }
+    } catch (err) {
+      setFirebaseError(`Error updating product: id ${id}`);
+    } finally {
+      setFirebaseLoading(false);
+    }
   };
 
   //delete product
@@ -185,7 +213,7 @@ export const useFirebase = () => {
         await deleteUser(currentUser.user);
         response = { status: 200, message: "user deleted successfully" };
         await deleteDoc(doc(db, "users", currentUser.user.uid));
-        logOut()
+        logOut();
       } catch (err) {
         console.log("Error deleting this user: ", err);
         response = { status: 500, message: err.toString() };
@@ -346,9 +374,11 @@ export const useFirebase = () => {
     firebaseLoading,
     firebaseError,
     addProduct,
-    getProducts,
+    getProductsForStock,
+    getProductsByCategory,
     getProductById,
     updateProduct,
+    updateProductStockLevel,
     deleteProduct,
     addUserDetails,
     getUserDetails,

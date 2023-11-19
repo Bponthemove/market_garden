@@ -73,7 +73,7 @@ export default function Products() {
       reValidateMode: "onBlur",
     });
 
-  const { addProduct, getProducts, deleteProduct, updateProduct } =
+  const { addProduct, getProductsByCategory, deleteProduct, updateProduct } =
     useFirebase();
   const toast = useToast();
 
@@ -82,7 +82,7 @@ export default function Products() {
     isLoading: isLoadingGet,
     isError: isErrorGet,
     refetch: refetchGet,
-  } = useQuery([category], getProducts, {
+  } = useQuery([category], getProductsByCategory, {
     enabled: updateAddDelete !== "add",
   });
 

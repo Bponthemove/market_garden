@@ -80,42 +80,46 @@ export function Cart() {
           sx={{ paddingX: { xs: "0", sm: "3.5rem", md: "6.5rem" } }}
         >
           <Box pt={2} display="flex" flexDirection="column">
-            <Table
-              sx={{
-                "&.MuiTable-root": {
-                  borderCollapse: "separate",
-                  borderSpacing: "0 1rem",
-                },
-              }}
-            >
-              <TableBody>
-                {cartItems.map((item, idx) => (
-                  <CartItem item={item} key={idx} />
-                ))}
-                <TableRow>
-                  <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>delivery =</TableCellStyled>
+            {cartItems.length === 0 ? (
+              <Box>Please add some items to your cart.</Box>
+            ) : (
+              <Table
+                sx={{
+                  "&.MuiTable-root": {
+                    borderCollapse: "separate",
+                    borderSpacing: "0 1rem",
+                  },
+                }}
+              >
+                <TableBody>
+                  {cartItems.map((item, idx) => (
+                    <CartItem item={item} key={idx} />
+                  ))}
+                  <TableRow>
+                    <TableCellStyled>{""}</TableCellStyled>
+                    <TableCellStyled>delivery =</TableCellStyled>
 
-                  <TableCellStyled>
-                    {cartTotal <= 25 ? 3.99 : "Free Delivery"}
-                  </TableCellStyled>
-                </TableRow>
-                <TableRow>
-                  <TableCellStyled>{""}</TableCellStyled>
-                  <TableCellStyled>Total =</TableCellStyled>
+                    <TableCellStyled>
+                      {cartTotal <= 25 ? 3.99 : "Free Delivery"}
+                    </TableCellStyled>
+                  </TableRow>
+                  <TableRow>
+                    <TableCellStyled>{""}</TableCellStyled>
+                    <TableCellStyled>Total =</TableCellStyled>
 
-                  <TableCellStyled>
-                    {`£ ${
-                      cartTotal <= 25
-                        ? (Math.round((cartTotal * 100) / 100) + 3.99).toFixed(
-                            2
-                          )
-                        : cartTotal.toFixed(2)
-                    }`}
-                  </TableCellStyled>
-                </TableRow>
-              </TableBody>
-            </Table>
+                    <TableCellStyled>
+                      {`£ ${
+                        cartTotal <= 25
+                          ? (
+                              Math.round((cartTotal * 100) / 100) + 3.99
+                            ).toFixed(2)
+                          : cartTotal.toFixed(2)
+                      }`}
+                    </TableCellStyled>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            )}
             <Box display="flex" alignSelf="center" maxWidth="200px" mt={4}>
               {maxHeight === 0 && (
                 <Box display="flex" flexDirection="column" gap={2}>

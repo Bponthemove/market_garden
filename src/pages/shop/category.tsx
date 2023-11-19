@@ -5,10 +5,10 @@ import { useFirebase } from "../../hooks/useFirebase";
 import { IGetProduct } from "../../types/allTypes";
 
 export default function Category({ cat }: { cat: string }) {
-  const { getProducts } = useFirebase();
+  const { getProductsByCategory } = useFirebase();
   const { data, isLoading, isError } = useQuery<IGetProduct[] | undefined>(
     [cat],
-    getProducts
+    getProductsByCategory
   );
 
   const notAvailable = {
