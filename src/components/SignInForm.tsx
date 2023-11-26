@@ -15,9 +15,9 @@ const signInSchema = z.object({
   password: z
     .string()
     .regex(
-      new RegExp("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/"),
-      "Password should be a minumum of 8 characters and consist of at least one Uppercase, one Lowercase and one number"
-    ),
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must contain at least 8 chararcters including one uppercase and one lowercase letter and one number."
+    )
 });
 
 export type TAuthSignIn = z.infer<typeof signInSchema>;
