@@ -7,21 +7,21 @@ import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuthContext } from "../context/AuthContext";
+import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
 import { checkOutSchema, fieldRequiredMessage } from "./checkOut";
-import { useFirebase } from "../hooks/useFirebase";
-import { useQuery } from "@tanstack/react-query";
 
 export const signUpSchema = checkOutSchema
   .extend({
     password: z
       .string()
       .regex(
-        /^(?:(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*)$/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
         "Password must contain at least 8 chararcters including one uppercase and one lowercase letter and one number."
       )
       .min(8, { message: fieldRequiredMessage }),
@@ -30,7 +30,7 @@ export const signUpSchema = checkOutSchema
   .refine((schema) => schema.password === schema.passwordConfirmation, {
     message: "Passwords must match",
     path: ["passwordConfirmation"],
-  })
+  });
 
 export type TSignUp = z.infer<typeof signUpSchema>;
 
@@ -38,35 +38,44 @@ function SignUp() {
   const navigate = useNavigate();
   const { currentUser, signUp, loading } = useAuthContext();
   const { existingAccount } = useFirebase();
-  
-  const { control, handleSubmit, watch, getValues, setError, clearErrors } = useForm<TSignUp>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      password: "",
-      passwordConfirmation: "",
-      postcode: "",
-      addressLine1: "",
-      addressLine2: "",
-      town: "",
-    },
-    resolver: zodResolver(signUpSchema),
-  });
 
-  const watchEmail = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(watch('email'));
+  const { control, handleSubmit, watch, getValues, setError, clearErrors } =
+    useForm<TSignUp>({
+      defaultValues: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        password: "",
+        passwordConfirmation: "",
+        postcode: "",
+        addressLine1: "",
+        addressLine2: "",
+        town: "",
+      },
+      resolver: zodResolver(signUpSchema),
+      mode: "onTouched",
+    });
 
-  useQuery<boolean | undefined>(["email", getValues('email')], existingAccount, {
-    enabled: watchEmail,
-    onSuccess: (data) => {
-       if (data) {
-        setError('email', {type: 'duplicate', message: 'email address already in use'})
-       } else {
-        clearErrors('email')
-       }
-    },
-  });
+  const watchEmail = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(watch("email"));
+
+  useQuery<boolean | undefined>(
+    ["email", getValues("email")],
+    existingAccount,
+    {
+      enabled: watchEmail,
+      onSuccess: (data) => {
+        if (data) {
+          setError("email", {
+            type: "duplicate",
+            message: "email address already in use",
+          });
+        } else {
+          clearErrors("email");
+        }
+      },
+    }
+  );
 
   const toast = useToast();
 
