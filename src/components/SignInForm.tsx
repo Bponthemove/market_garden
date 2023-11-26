@@ -15,7 +15,7 @@ const signInSchema = z.object({
   password: z
     .string()
     .regex(
-      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
+      new RegExp(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*)$/),
       "Password should be a minumum of 8 characters and consist of at least one Uppercase, one Lowercase and one number"
     ),
 });
