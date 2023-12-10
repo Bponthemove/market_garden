@@ -56,7 +56,10 @@ export interface IAuthSignUp extends IAuthSignIn {
   town: string;
 }
 
-const superUsers = JSON.parse(import.meta.env.VITE_APP_EMAIL_ADMIN);
+const superUsers = [
+   import.meta.env.VITE_APP_EMAIL_ADMIN_ONE,
+   import.meta.env.VITE_APP_EMAIL_ADMIN_TWO
+];
 
 const defaultUserDetails = [
   {
