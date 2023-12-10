@@ -15,8 +15,8 @@ const signInSchema = z.object({
   password: z
     .string()
     .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      "Password must contain at least 8 chararcters including one uppercase and one lowercase letter and one number."
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/,
+      "At least 8 characters including a uppercase and a lowercase letter, a number and a special character."
     )
 });
 
@@ -63,8 +63,9 @@ export default function SignInForm({ initial }: { initial: boolean }) {
         const uid = user?.uid || "";
         setUid(uid);
       } catch (err) {
-        console.error(err);
-        toast.error("Error logging in, please try again!");
+        console.error(`Error signing in : ${err}`);
+        console.log(err)
+        toast.error(`Error logging in : ${err.message}`);
       }
     }
   };

@@ -130,7 +130,7 @@ export function MyDetails() {
 
   return (
     <>
-      <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
+      <Grid container sx={{ minHeight: "calc(100% - 12.5rem)" }}>
         <Grid item xs={0} md={1} />
         <Grid
           item

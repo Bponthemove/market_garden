@@ -20,7 +20,7 @@ function NavBar({ shouldFix }) {
         top:
           shouldFix || pathname.includes("/shop") || pathname === "/cart"
             ? 0
-            : "20vh",
+            : "20%",
       }}
     >
       <Toolbar

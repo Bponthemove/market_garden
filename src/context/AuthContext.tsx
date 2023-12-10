@@ -161,7 +161,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
     } catch (err) {
       setError(`Sign up credentials are not correct.`);
-      console.error(`Error signing in : ${err}`);
+      throw new Error(err)      
     } finally {
       setLoading(false);
     }
@@ -200,8 +200,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }));
     } catch (err) {
       if (err && typeof err === "object" && "code" in err) {
-        console.error(`Error signing in : ${err.code}`);
         setError(err.code as string);
+        throw new Error(err);
       }
     } finally {
       setLoading(false);

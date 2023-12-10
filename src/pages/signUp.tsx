@@ -21,8 +21,8 @@ export const signUpSchema = checkOutSchema
     password: z
       .string()
       .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-        "Password must contain at least 8 chararcters including one uppercase and one lowercase letter and one number."
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/,
+        "At least 8 characters including a uppercase and a lowercase letter, a number and a special character."
       )
       .min(8, { message: fieldRequiredMessage }),
     passwordConfirmation: z.string().min(1, { message: fieldRequiredMessage }),
@@ -39,7 +39,7 @@ function SignUp() {
   const { currentUser, signUp, loading } = useAuthContext();
   const { existingAccount } = useFirebase();
 
-  const { control, handleSubmit, watch, getValues, setError, clearErrors } =
+  const { control, handleSubmit, watch, getValues, setError, clearErrors, formState: {isValid, isSubmitting} } =
     useForm<TSignUp>({
       defaultValues: {
         firstName: "",
@@ -117,7 +117,7 @@ function SignUp() {
     <Navigate to={"/logout"} />
   ) : (
     <>
-      <Grid container sx={{ minHeight: "calc(100vh - 12.5rem)" }}>
+      <Grid container sx={{ minHeight: "calc(100% - 12.5rem)" }}>
         <Grid item xs={0} md={1} />
         <Grid
           item
@@ -182,7 +182,7 @@ function SignUp() {
                   fullWidth
                   name="password"
                   error={!!error}
-                  helperText={error?.message ?? ""}
+                  helperText="At least 8 characters including a uppercase and a lowercase letter, a number and a special character."
                   label="Password"
                   type="password"
                 />
@@ -320,7 +320,7 @@ function SignUp() {
                 type="submit"
                 color="primary"
                 variant="contained"
-                disabled={loading}
+                disabled={isSubmitting || !isValid}
                 startIcon={<AssignmentTurnedInIcon />}
               >
                 Sign Up

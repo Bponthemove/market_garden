@@ -40,7 +40,7 @@ export default function Stock() {
   return (
     <Box component="main" mt={4}>
       {products.map((product) => (
-        <StockItem product={product} />
+        <StockItem product={product} refetch={refetch} />
       ))}
     </Box>
   );

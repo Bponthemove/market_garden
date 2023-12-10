@@ -32,7 +32,7 @@ export const Layout = ({
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        height: "100%",
         overflowX: "hidden",
       }}
     >
@@ -42,15 +42,15 @@ export const Layout = ({
           sx={{
             height:
               pathname === "/contact" || (pathname === "/" && animationRan)
-                ? "20vh"
-                : "100vh",
+                ? "20%"
+                : "100%",
 
             "@keyframes transformHome": {
               "0%": {
-                height: "100vh",
+                height: "100%",
               },
               "100%": {
-                height: "20vh",
+                height: "20%",
               },
             },
             width: "100vw",
@@ -122,8 +122,8 @@ export const Layout = ({
           display: "inline-block",
           minHeight:
             pathname !== "/contact" && !pathname.includes("/mydetails")
-              ? "calc(100vh - 5.75rem)"
-              : { xs: "calc(80vh - 10.75rem)", sm: "calc(80vh - 8rem)" },
+              ? "calc(100% - 5.75rem)"
+              : { xs: "calc(80% - 10.75rem)", sm: "calc(80% - 8rem)" },
           width: "100vw",
           paddingY: pathname.includes("/shop")
             ? { xs: "5rem", sm: "6rem" }

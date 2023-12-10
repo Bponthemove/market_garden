@@ -10,10 +10,12 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useFirebase } from "../hooks/useFirebase";
+import { useToast } from "../hooks/useToast";
 import { IAddProduct, IUpdateProduct } from "../types/allTypes";
 
-export default function StockItem({ product }) {
+export default function StockItem({ product, refetch }) {
   const { updateProductStockLevel } = useFirebase();
+  const toast = useToast();
 
   const {
     control,
@@ -29,7 +31,12 @@ export default function StockItem({ product }) {
   );
 
   const handleOnSubmit = async (product: IUpdateProduct) => {
-    await mutateAsync(product);
+    try {
+      await mutateAsync(product);
+      refetch();
+    } catch (err) {
+      toast.error(`Error updating stock: ${err.message}`);
+    }
   };
 
   return (

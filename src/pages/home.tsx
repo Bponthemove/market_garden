@@ -78,7 +78,7 @@ const Home = () => {
           ref={image1Ref}
           flex="1"
           sx={{
-            minHeight: { xs: "75vh", sm: "60vh" },
+            minHeight: { xs: "75%", sm: "60%" },
             width: "100%",
             alignSelf: { xs: "center", sm: "stretch" },
             backgroundImage: `url(${
@@ -103,7 +103,7 @@ const Home = () => {
           ref={image2Ref}
           flex="1"
           sx={{
-            minHeight: { xs: "50vh", sm: "60vh" },
+            minHeight: { xs: "50%", sm: "60%" },
             width: "100%",
             alignSelf: { xs: "center", sm: "stretch" },
             backgroundImage: `url(${

@@ -15,7 +15,7 @@ export default function LogOut() {
   }
 
   return (
-    <Grid container sx={{ minHeight: "calc(100vh - 13rem)" }}>
+    <Grid container sx={{ minHeight: "calc(100%- 13rem)" }}>
       <Grid item xs={0} md={1} />
       <Grid
         item
