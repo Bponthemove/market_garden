@@ -78,7 +78,7 @@ const Home = () => {
           ref={image1Ref}
           flex="1"
           sx={{
-            minHeight: { xs: "75%", sm: "60%" },
+            minHeight: { xs: "75vh", sm: "60vh" },
             width: "100%",
             alignSelf: { xs: "center", sm: "stretch" },
             backgroundImage: `url(${
@@ -97,13 +97,14 @@ const Home = () => {
           display: "flex",
           flexDirection: { xs: "column-reverse", sm: "row" },
           width: { xs: "100%" },
+          height: "100%"
         }}
       >
         <Box
           ref={image2Ref}
           flex="1"
           sx={{
-            minHeight: { xs: "50%", sm: "60%" },
+            minHeight: { xs: "50vh", sm: "60vh" },
             width: "100%",
             alignSelf: { xs: "center", sm: "stretch" },
             backgroundImage: `url(${

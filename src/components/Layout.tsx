@@ -119,7 +119,6 @@ export const Layout = ({
         ref={pathname === "/" ? homeRef : null}
         sx={(theme) => ({
           backgroundColor: theme.palette.light.main,
-          display: "inline-block",
           minHeight:
             pathname !== "/contact" && !pathname.includes("/mydetails")
               ? "calc(100% - 5.75rem)"
