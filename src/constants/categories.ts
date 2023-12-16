@@ -1,6 +1,6 @@
 export const categories = [
   {
-    label: 'Veg Box',
+    label: 'Subscription veg box',
     path: '/shop/vegbox',
     cat: 'vegbox',
   },
@@ -10,19 +10,19 @@ export const categories = [
     cat: 'vegetables',
   },
   {
-    label: 'Eggs',
-    path: '/shop/eggs',
-    cat: 'eggs',
+    label: 'Herbs and edible flowers',
+    path: '/shop/herbsflowers',
+    cat: 'herbsFlowers',
   },
   {
-    label: 'Organic Meat',
+    label: 'Meat',
     path: '/shop/meat',
     cat: 'meat',
   },
   {
-    label: 'More',
-    path: '/shop/more',
-    cat: 'more',
+    label: 'Store cupboard',
+    path: '/shop/storecupboard',
+    cat: 'storeCupboard',
   },  
 ] as const;
 

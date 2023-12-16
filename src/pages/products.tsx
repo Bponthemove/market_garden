@@ -34,6 +34,7 @@ import {
   IProduct,
   IUpdateProduct,
 } from "../types/allTypes";
+import { categories } from "../constants/categories";
 
 const defaultValues: IAddProduct = {
   category: "vegetables",
@@ -326,8 +327,7 @@ export default function Products() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                <MenuItem value="herbs">Herbs</MenuItem>
-                <MenuItem value="vegetables">Vegetables</MenuItem>
+                {categories.map(({cat, label}) => <MenuItem value={cat}>{label}</MenuItem>)}
               </Select>
             </Grid>
             <Grid item>
@@ -440,11 +440,7 @@ export default function Products() {
                         required
                         onBlur={handleOnBlur}
                       >
-                        <MenuItem value="herbs">Herbs</MenuItem>
-                        <MenuItem value="vegetables">Vegetables</MenuItem>
-                        {/* <MenuItem value="fruit">Fruit</MenuItem>
-                  <MenuItem value="mushrooms">Mushrooms</MenuItem>
-                  <MenuItem value="cheese">Cheese</MenuItem> */}
+                        {categories.map(({cat, label}) => <MenuItem value={cat}>{label}</MenuItem>)}
                       </Select>
                     </FormControl>
                   )}

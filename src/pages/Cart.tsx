@@ -81,7 +81,7 @@ export function Cart() {
         >
           <Box pt={2} display="flex" flexDirection="column">
             {cartItems.length === 0 ? (
-              <Box>Please add some items to your cart.</Box>
+              <Box>Please add some items to your crate.</Box>
             ) : (
               <Table
                 sx={{
@@ -120,13 +120,12 @@ export function Cart() {
                 </TableBody>
               </Table>
             )}
-            <Box display="flex" alignSelf="center" maxWidth="200px" mt={4}>
+            <Box display="flex" flexDirection='column' gap={2} alignSelf="center" maxWidth="200px" mt={4}>
               {maxHeight === 0 && (
                 <Box display="flex" flexDirection="column" gap={2}>
                   <Typography variant="subtitle2">
-                    Minimum order of £25 for free delivery, otherwise delivery
-                    is £3.99.
-                  </Typography>
+                    Free delivery on orders over £25
+                         </Typography>
                   <Button
                     disabled={!cartQuantity}
                     variant="contained"
@@ -136,6 +135,17 @@ export function Cart() {
                   </Button>
                 </Box>
               )}
+              <Box
+          
+          sx={{
+            minHeight: "100px",
+            width: "100%",
+            backgroundImage: "url('https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FFree%20delivery%20RESIZED.jpg?alt=media&token=e238a890-3492-436a-a8ac-b38cf2e7613a')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
             </Box>
           </Box>
         </Grid>

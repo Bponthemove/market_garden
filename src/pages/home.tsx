@@ -53,40 +53,46 @@ const Home = () => {
         mb={6}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
+          flexDirection: { xs: "column", sm: "row-reverse" },
         }}
       >
         <Box flex="1" p={4}>
-          <Typography variant="h6" color='red'>This website is under construction!</Typography>
+          <Typography variant="h6" color="red">
+            This website is under construction!
+          </Typography>
           <Typography variant="h5">About us</Typography>
-          <Typography variant="body2" pt={1}>
+          <Typography variant="body2" pt={1} sx={{
+            textAlign: "justify",
+            textJustify: "inter-word"
+          }}>
             Tom and Tessa Green, founded Round the Field market garden in
             October 2022 where by following regenerative agriculture and
             holistic growing practices created a no dig garden to produce high
-            quality, local tasty fruit and veg. But forming no-dig beds and
-            avoiding the act of tilling or turning the soil this creates an
-            amazing environment for good bacteria and mycorrhizal fungi; this in
-            turn created healthier fruit and veg for your table. Packed full of
-            nutrients and vitamins we aim to deliver our produce to you as
-            quickly as possible so you can benefit the most from the freshness!
-            We are working towards our organic accreditation with The Soil
-            Association. Currently unofficially organic. No pesticides or
-            herbicides are used on our market garden.
+            quality and local fruit, vegetables and more. By forming no-dig beds
+            and avoiding the act of tilling or turning the soil this in turn
+            creates the perfect environment for good bacteria and mycorrhizal
+            fungi. This grows healthier and tastier fruit, vegetables for your
+            table and creates more biodiverse pasture where our poultry graze
+            providing better quality and happier eggs and meat. We are currently
+            in organic conversion with The Soil Association. No pesticides or
+            herbicides are used in our market garden, our produce is 100%
+            naturally grown. We aim to pick and deliver our produce as quickly
+            as possible so you can benefit the most from the freshness! Almost
+            all of our produce is picked within 12 hours of delivery.
           </Typography>
         </Box>
         <Box
           ref={image1Ref}
           flex="1"
           sx={{
-            minHeight: { xs: "75vh", sm: "60vh" },
+            minHeight: {xs: "75vh", sm: "85vh"},
             width: "100%",
-            alignSelf: { xs: "center", sm: "stretch" },
             backgroundImage: `url(${
               image1Load
                 ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fcfc4bcc1-f300-4990-826e-705a845f2f5d.jpg?alt=media&token=2b2f0c03-d217-47be-ac40-c8fbe833a0d5"
                 : ""
             })`,
-            backgroundPosition: { xs: "center", sm: "right" },
+            backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
         />
@@ -95,9 +101,9 @@ const Home = () => {
         mb={6}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column-reverse", sm: "row" },
+          flexDirection: { xs: "column-reverse", sm: "row-reverse" },
           width: { xs: "100%" },
-          height: "100%"
+          height: "100%",
         }}
       >
         <Box
@@ -109,31 +115,33 @@ const Home = () => {
             alignSelf: { xs: "center", sm: "stretch" },
             backgroundImage: `url(${
               image2Load
-                ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_0086.jpg?alt=media&token=65e9b4e3-d609-43f3-919e-c2a41a311e17"
+                ? "https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FHolding%20radishes%20photo%20V.jpg?alt=media&token=63b02ffa-6d3a-447f-a88d-340111f30fc4"
                 : ""
             })`,
             backgroundSize: "cover",
+            backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
         />
         <Box flex="1" p={4}>
           <Typography variant="h5">How it works</Typography>
-          <Typography variant="body2" pt={1}>
-            Our subscription seasonal veg boxes are coming soon but in the
-            meantime just select the produce you like to add to your crate,
-            proceed to checkout and order before 4pm to receive next day deliver
-            between 7am to 12pm.
+          <Typography variant="body2" pt={1} sx={{
+            textAlign: "justify",
+            textJustify: "inter-word"
+          }}>
+            Just select the products from the shop to add to your crate, proceed
+            to checkout and order before 4pm to receive next day delivery
+            between 7am to 12pm - Monday to Saturday (excluding bank holidays).
           </Typography>
           <br />
-          <Typography variant="body2">
+          <Typography variant="body2" sx={{
+            textAlign: "justify",
+            textJustify: "inter-word"
+          }}>
             {" "}
-            We deliver mainly in West-Berkshire. Check below to see if we
-            deliver to your postcode.
-          </Typography>
-          <Typography variant="body2">
-            {" "}
-            Please <Link href="/contact">contact us</Link> if you're a business
-            and not in our area and we can discuss a tailored solution.
+            Next day delivery! Check below to see if we deliver to your
+            postcode. If you're a business and not in our postcode area, please 
+            <span> <Link href="/contact">contact us here</Link></span> to arrange delivery.
           </Typography>
           <Box display="flex" gap={2} mt={2}>
             <TextField

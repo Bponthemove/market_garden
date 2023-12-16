@@ -3,7 +3,7 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { useCartContext } from "../context/CartContext";
 
-function ProductTile(props: { product: any }) {
+function ProductTile(props: { product: any; idx: number }) {
   const {
     id,
     label,

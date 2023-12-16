@@ -23,7 +23,7 @@ const Contact = () => {
       </Box>
       <Box>
         <Typography variant="h5">
-          Or follow us on instagram!{" "}
+          Follow us on instagram!{" "}
           <Link to="http://www.instagram.com/roundthefield_marketgarden">
             <InstagramIcon sx={iconStyles} fontSize="large" />
           </Link>
