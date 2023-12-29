@@ -84,8 +84,8 @@ function ProductTile(props: { product: any; idx: number }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            bottom: { xs: "12px", sm: "34%" },
-            left: { xs: "4rem", sm: "0.1rem" },
+            bottom: { xs: "11px", sm: "34%" },
+            left: { xs: "4.5rem", sm: "0.1rem" },
             borderRadius: "5%",
             backgroundColor: palette.error.light,
           })}
@@ -123,17 +123,22 @@ function ProductTile(props: { product: any; idx: number }) {
         sx={{ width: { xs: "50%", sm: "100%" } }}
       >
         <Box
-          py={2}
-          px={1}
+          
+          p={1}
           display="flex"
           flexDirection="column"
           alignItems="center"
-          sx={{
-            height: "100%",
-          }}
+          maxHeight="60%"
+          minHeight="60%"
         >
           <Typography variant="h6">{label}</Typography>
-          <Typography variant="subtitle2" pt={1}>
+          <Typography variant="subtitle2" pt={1} sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: '3',
+            WebkitBoxOrient: 'vertical',
+          }}>
             {description}
           </Typography>
         </Box>
