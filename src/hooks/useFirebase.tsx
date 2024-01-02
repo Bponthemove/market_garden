@@ -44,7 +44,7 @@ export const useFirebase = () => {
     const addedProductRef = await addDoc(collection(db, "product"), product);
     try {
       const response = await fetch(
-        `.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }

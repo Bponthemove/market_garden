@@ -31,9 +31,9 @@ export function CartItem({ item }: { item: ICartItem }) {
       </TableCellStyled>
       <TableCellStyled>{`${label ?? "-"} x ${
         quantity ?? 0
-      }  =`}</TableCellStyled>
+      }  :`}</TableCellStyled>
       <TableCellStyled>
-        {`£ ${price ? (quantity * Math.round(price * 100)) / 100 : 0}`}
+        {`£ ${price ? ((quantity * Math.round(price * 100)) / 100).toFixed(2) : 0.00}`}
       </TableCellStyled>
     </TableRow>
   );

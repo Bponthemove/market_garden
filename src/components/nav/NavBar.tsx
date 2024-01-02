@@ -25,9 +25,9 @@ function NavBar({ shouldFix }) {
     >
       <Toolbar
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
           minHeight: { xs: "2.5rem" },
+          width: { xs: "100%", md: "50%" },
+          alignSelf: { xs: "center", md: "flex-end" },
         }}
       >
         <Box
@@ -54,7 +54,11 @@ function NavBar({ shouldFix }) {
             ) {
               return null;
             }
-            if (route.path === "/shop" || route.path === "/profile" || route.path === '/admin') {
+            if (
+              route.path === "/shop" ||
+              route.path === "/profile" ||
+              route.path === "/admin"
+            ) {
               return <DropdownLink key={route.path} {...route} />;
             }
 

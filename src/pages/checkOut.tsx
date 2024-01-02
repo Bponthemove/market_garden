@@ -17,6 +17,7 @@ import { useOrderContext } from "../context/OrderContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { z } from "zod";
+import { nextDayDelivery } from "../utils/nextDayDelivery";
 
 let stripePromise: Stripe | null;
 
@@ -263,8 +264,9 @@ export const CheckOut = () => {
         </Grid>
         <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
           <Box sx={{ flex: 3 }}>
-            You can order for tomorrow. Cut off time is 4pm. We wil deliver the
+            We do next day delivery. Cut off time is 4pm. We wil deliver the
             next day between 7am and 12pm.
+            <p>Your delivery will be {nextDayDelivery()}</p>
           </Box>
         </Box>
         <Grid

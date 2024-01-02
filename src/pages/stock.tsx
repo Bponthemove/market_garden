@@ -13,7 +13,17 @@ export default function Stock() {
 
   const products =
     data && data.length
-      ? data.sort((a, b) => a.category.localeCompare(b.category))
+      ? data
+          .map((product) => { // add space after slash for better readability
+            const index = product.label.indexOf("/");
+            if (index > -1 && product.label[index + 1] !== " ") {
+              const arr = product.label.split("");
+              arr.splice(index, 0, " ");
+              product.label = arr.join("");
+            }
+            return product;
+          })
+          .sort((a, b) => a.category.localeCompare(b.category))
       : [];
 
   if (isLoading) {
