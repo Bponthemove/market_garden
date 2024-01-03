@@ -97,14 +97,14 @@ export const Layout = ({
           >
             <Typography
               component="h1"
-              variant="h3"
+              variant="h2"
               sx={({ palette }) => ({ color: palette.light.main })}
             >
               Round The Field
             </Typography>
             <Typography
               component="h3"
-              variant="h5"
+              variant="h4"
               sx={({ palette }) => ({ color: palette.light.main })}
             >
               Market Garden

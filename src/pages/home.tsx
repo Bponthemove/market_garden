@@ -61,7 +61,7 @@ const Home = () => {
             This website is under construction!
           </Typography>
           <Typography variant="h5">About us</Typography>
-          <Typography variant="body2" pt={1} sx={{
+          <Typography variant="body1" pt={1} sx={{
             textAlign: "justify",
             textJustify: "inter-word"
           }}>
@@ -93,6 +93,7 @@ const Home = () => {
                 : ""
             })`,
             backgroundPosition: "center",
+            backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
           }}
         />
@@ -125,7 +126,7 @@ const Home = () => {
         />
         <Box flex="1" p={4}>
           <Typography variant="h5">How it works</Typography>
-          <Typography variant="body2" pt={1} sx={{
+          <Typography variant="body1" pt={1} sx={{
             textAlign: "justify",
             textJustify: "inter-word"
           }}>
@@ -134,7 +135,7 @@ const Home = () => {
             between 7am to 12pm - Monday to Saturday (excluding bank holidays).
           </Typography>
           <br />
-          <Typography variant="body2" sx={{
+          <Typography variant="body1" sx={{
             textAlign: "justify",
             textJustify: "inter-word"
           }}>
@@ -175,12 +176,12 @@ const Home = () => {
           <br />
           <Typography variant="body1">{deliver}</Typography>
           <br />
-          <Typography variant="body2">
+          <Typography variant="body1">
             We grow all our own produce in the heart of West-Berkshire, in the
             beautiful village of Bucklebury.
           </Typography>
           <br />
-          <Typography variant="body2">
+          <Typography variant="body1">
             Personal, fast and reliable, we deliver our own products to you.
           </Typography>
         </Box>

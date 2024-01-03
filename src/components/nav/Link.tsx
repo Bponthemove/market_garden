@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ButtonBase from "@mui/material/ButtonBase";
 import { PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
@@ -38,7 +38,7 @@ const Link = (props: PropsWithChildren<ILinkProps>) => {
           },
         })}
       >
-        {children ?? label}
+        <Typography variant="body1">{children ?? label}</Typography>
       </ButtonBase>
     </Box>
   );

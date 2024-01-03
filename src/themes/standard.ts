@@ -39,12 +39,6 @@ export const appTheme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
-    h6: {
-      fontSize: "15px",
-    },
-    subtitle2: {
-      fontSize: "11px",
-    },
     button: {
       textTransform: "none",
     },
@@ -71,6 +65,27 @@ export const appTheme = createTheme({
     },
   },
 });
+
+appTheme.typography.h2 = {
+  fontSize: "2.4rem",
+  [appTheme.breakpoints.up("md")]: {
+    fontSize: "3.75rem",
+  },
+};
+
+appTheme.typography.h4 = {
+  fontSize: "1.6rem",
+  [appTheme.breakpoints.up("md")]: {
+    fontSize: "2.125rem",
+  },
+};
+
+appTheme.typography.body1 = {
+  fontSize: "1rem",
+  [appTheme.breakpoints.up("md")]: {
+    fontSize: "1.25rem",
+  },
+};
 
 export const mainStyles = (theme: {
   pallete: { secondary: { main: any } };

@@ -1,6 +1,6 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import BuildCircleIcon from '@mui/icons-material/BuildCircle';
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import BuildCircleIcon from "@mui/icons-material/BuildCircle";
+import { Box, Button, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { categories } from "../../constants/categories";
@@ -54,7 +54,15 @@ const DropdownLink = (props) => {
           },
         })}
       >
-        {props.path === '/profile' ?  <AccountCircleIcon /> : props.path === '/admin' ? <BuildCircleIcon /> : props.label}
+        <Typography variant="body1">
+          {props.path === "/profile" ? (
+            <AccountCircleIcon />
+          ) : props.path === "/admin" ? (
+            <BuildCircleIcon />
+          ) : (
+            props.label
+          )}
+        </Typography>
       </Button>
 
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
@@ -68,7 +76,8 @@ const DropdownLink = (props) => {
                 {cat.label}
               </MenuItem>
             ))
-          : props.path === '/profile' ? ([
+          : props.path === "/profile"
+          ? [
               <MenuItem
                 key="PROFILE - MYDETAILS"
                 selected={0 === selectedIndex}
@@ -87,7 +96,9 @@ const DropdownLink = (props) => {
               >
                 Log out
               </MenuItem>,
-            ]) : props.path === '/admin' ? ([
+            ]
+          : props.path === "/admin"
+          ? [
               <MenuItem
                 key="ADMIN - PRODUCTS"
                 selected={0 === selectedIndex}
@@ -114,8 +125,9 @@ const DropdownLink = (props) => {
                 }
               >
                 Stock Levels
-              </MenuItem>
-            ]) : null}
+              </MenuItem>,
+            ]
+          : null}
       </Menu>
     </Box>
   );
