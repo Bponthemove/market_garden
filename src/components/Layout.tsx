@@ -120,9 +120,9 @@ export const Layout = ({
         sx={(theme) => ({
           backgroundColor: theme.palette.light.main,
           minHeight:
-            pathname !== "/contact" && !pathname.includes("/mydetails")
-              ? "calc(100% - 5.75rem)"
-              : { xs: "calc(80% - 10.75rem)", sm: "calc(80% - 8rem)" },
+            pathname !== "/contact"
+              ? {xs: "calc(100% - 11.75rem)", sm: "calc(100% - 9rem)"}
+              : { xs: "calc(80% - 11.25rem)", sm: "calc(80% - 9.25rem)" },
           width: "100vw",
           paddingY: pathname.includes("/shop")
             ? { xs: "5rem", sm: "6rem" }

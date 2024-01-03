@@ -13,7 +13,7 @@ const DropdownLink = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const open = Boolean(anchorEl);
 
-  const active = pathname.includes("shop");
+  const active = pathname.includes(props.path);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -54,7 +54,7 @@ const DropdownLink = (props) => {
           },
         })}
       >
-        <Typography variant="body1">
+        <Typography variant="body1" display='flex'>
           {props.path === "/profile" ? (
             <AccountCircleIcon />
           ) : props.path === "/admin" ? (

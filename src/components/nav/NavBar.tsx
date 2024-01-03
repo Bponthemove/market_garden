@@ -25,7 +25,7 @@ function NavBar({ shouldFix }) {
     >
       <Toolbar
         sx={{
-          minHeight: { xs: "2.5rem" },
+          minHeight: { xs: "3.5rem" },
           width: { xs: "100%", md: "50%" },
           alignSelf: { xs: "center", md: "flex-end" },
         }}
