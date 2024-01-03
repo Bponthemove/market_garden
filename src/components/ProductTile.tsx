@@ -39,8 +39,8 @@ function ProductTile(props: { product: any; idx: number }) {
       position="relative"
       key={id}
       sx={({ palette }) => ({
-        height: { xs: "12rem", sm: "22.5rem" },
-        width: { xs: "100%", sm: "10rem" },
+        height: { xs: "12rem", sm: "18rem", md: "25rem" },
+        width: { xs: "100%", sm: "10rem", md: "18rem" },
         display: "flex",
         flexDirection: { xs: "row", sm: "column" },
         alignItems: { sm: "center" },
