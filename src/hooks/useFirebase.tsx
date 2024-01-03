@@ -107,7 +107,7 @@ export const useFirebase = () => {
         if (Object.keys(toUpdate).includes("label" || "price")) {
           const { label, price } = toUpdate;
           stripeResp = await fetch(
-            `.netlify/functions/stripeUpdateProduct?id=${id}&name=${
+            `/.netlify/functions/stripeUpdateProduct?id=${id}&name=${
               label || ""
             }&price=${price || ""}`,
             {
@@ -145,7 +145,7 @@ export const useFirebase = () => {
     console.log(id);
     const firebaseResp = await deleteDoc(doc(db, "product", id));
     const stripeResp = await fetch(
-      `.netlify/functions/stripeDeleteProduct?id=${id}`,
+      `/.netlify/functions/stripeDeleteProduct?id=${id}`,
       {
         method: "POST",
       }
