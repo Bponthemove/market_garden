@@ -84,8 +84,8 @@ function ProductTile(props: { product: any; idx: number }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            bottom: { xs: "11px", sm: "34%" },
-            left: { xs: "4.5rem", sm: "0.1rem" },
+            bottom: { xs: "17px", sm: "34%" },
+            left: { xs: "2.5rem", sm: "0.1rem" },
             borderRadius: "5%",
             backgroundColor: palette.error.light,
           })}

@@ -91,7 +91,7 @@ export const Layout = ({
             position="absolute"
             width="100%"
             sx={{
-              top: pathname === "/" ? { xs: "2rem", sm: "1rem" } : "1rem",
+              top: pathname === "/" ? { xs: "3rem", sm: "1rem" } : "1rem",
               left: "1rem",
             }}
           >
@@ -119,10 +119,10 @@ export const Layout = ({
         ref={pathname === "/" ? homeRef : null}
         sx={(theme) => ({
           backgroundColor: theme.palette.light.main,
-          minHeight:
+          minHeight: 
             pathname !== "/contact"
-              ? {xs: "calc(100% - 11.75rem)", sm: "calc(100% - 9rem)"}
-              : { xs: "calc(80% - 11.25rem)", sm: "calc(80% - 9.25rem)" },
+              ? {xs: "calc(100% - 8.4rem)", sm: "calc(100% - 5.25rem)"}
+              : { xs: "calc(80% - 11.5rem)", sm: "calc(80% - 9.25rem)" },
           width: "100vw",
           paddingY: pathname.includes("/shop")
             ? { xs: "5rem", sm: "6rem" }

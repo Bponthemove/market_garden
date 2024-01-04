@@ -12,6 +12,20 @@ declare module "@mui/material/styles" {
   }
 }
 
+const fontFamily = [
+  "Lora",
+  "-apple-system",
+  "BlinkMacSystemFont",
+  '"Segoe UI"',
+  "Roboto",
+  '"Helvetica Neue"',
+  "Arial",
+  "sans-serif",
+  '"Apple Color Emoji"',
+  '"Segoe UI Emoji"',
+  '"Segoe UI Symbol"',
+].join(",");
+
 export const appTheme = createTheme({
   palette: {
     primary: {
@@ -26,19 +40,7 @@ export const appTheme = createTheme({
     dark: { main: "#000" },
   },
   typography: {
-    fontFamily: [
-      "Lora",
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
+    fontFamily,
     button: {
       textTransform: "none",
     },
@@ -71,6 +73,7 @@ appTheme.typography.h2 = {
   [appTheme.breakpoints.up("md")]: {
     fontSize: "3.75rem",
   },
+  fontFamily
 };
 
 appTheme.typography.h4 = {
@@ -78,13 +81,15 @@ appTheme.typography.h4 = {
   [appTheme.breakpoints.up("md")]: {
     fontSize: "2.125rem",
   },
+  fontFamily
 };
 
 appTheme.typography.body1 = {
   fontSize: "1rem",
   [appTheme.breakpoints.up("md")]: {
-    fontSize: "1.25rem",
+    fontSize: "1.45rem",
   },
+  fontFamily
 };
 
 export const mainStyles = (theme: {

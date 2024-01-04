@@ -6,7 +6,7 @@ import SignInForm from "../components/SignInForm";
 
 function SignInSide() {
   return (
-    <Grid container mt={2} sx={{ minHeight: "calc(100% - 12.5rem)" }}>
+    <Grid container mt={2}>
       <Grid item xs={8}>
         <Typography component="h1" variant="h3">
           Sign In

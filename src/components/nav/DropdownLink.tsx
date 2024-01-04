@@ -51,6 +51,7 @@ const DropdownLink = (props) => {
           "&.MuiButton-root": {
             minWidth: 0,
             borderRadius: 0,
+            lineHeight: 1.15
           },
         })}
       >
