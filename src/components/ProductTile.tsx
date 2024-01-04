@@ -32,6 +32,7 @@ function ProductTile(props: { product: any; idx: number }) {
   };
 
   const soldOut = stockLevel - itemQuantity === 0;
+  const itemsLeft = stockLevel - itemQuantity;
 
   return (
     <Grid
@@ -76,7 +77,7 @@ function ProductTile(props: { product: any; idx: number }) {
         </Box>
       )}
 
-      {banner || (stockLevel && stockLevel - itemQuantity < 10) ? (
+      {banner || (stockLevel && itemsLeft < 10) ? (
         <Box
           position="absolute"
           display="flex"
@@ -84,7 +85,7 @@ function ProductTile(props: { product: any; idx: number }) {
           alignItems="center"
           p={0.5}
           sx={({ palette }) => ({
-            bottom: { xs: "17px", sm: "34%" },
+            bottom: { xs: "17px", sm: "84%" },
             left: { xs: "2.5rem", sm: "0.1rem" },
             borderRadius: "5%",
             backgroundColor: palette.error.light,
@@ -93,8 +94,8 @@ function ProductTile(props: { product: any; idx: number }) {
           <Typography variant="subtitle2">
             {soldOut
               ? "Sold Out"
-              : stockLevel && stockLevel - itemQuantity < 10
-              ? `Only ${stockLevel - itemQuantity} items left`
+              : stockLevel && itemsLeft < 10
+              ? `Only ${itemsLeft} item${itemsLeft === 1 ? '' : 's'} left`
               : fromCamelCaseToNormal(banner)}
           </Typography>
         </Box>

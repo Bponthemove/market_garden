@@ -276,10 +276,10 @@ export const useFirebase = () => {
     const q = query(
       productRef,
       where("processed", "==", false),
-      where("timestamp", ">=", "2023-11-02T15:56:51.887Z"),
-      where("timestamp", "<=", "2023-11-06T12:56:51.887Z")
-      //where("timestamp", ">=", ordersRange().start),
-      //where("timestamp", "<=", ordersRange().end),
+      // where("timestamp", ">=", "2024-01-03T16:00:00.000Z"),
+      // where("timestamp", "<=", "2024-01-04T15:99:99.999Z")
+      where("timestamp", ">=", ordersRange().start),
+      where("timestamp", "<=", ordersRange().end),
     );
     const querySnapShot = await getDocs(q);
     const orders = querySnapShot?.docs.map(
@@ -358,7 +358,7 @@ export const useFirebase = () => {
 
     return {
       start: new Date(start).toISOString(),
-      end: date.toISOString(),
+      end: new Date().toISOString(),
     };
   };
 
