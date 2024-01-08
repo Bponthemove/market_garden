@@ -17,7 +17,7 @@ const signInSchema = z.object({
     .regex(
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/,
       "At least 8 characters including a uppercase and a lowercase letter, a number and a special character."
-    )
+    ),
 });
 
 export type TAuthSignIn = z.infer<typeof signInSchema>;
@@ -25,7 +25,7 @@ export type TAuthSignIn = z.infer<typeof signInSchema>;
 export default function SignInForm({ initial }: { initial: boolean }) {
   const navigate = useNavigate();
   const { getUserDetails, deleteThisUser } = useFirebase();
-  const { signIn, loading } = useAuthContext();
+  const { signIn, loading, resetPassword } = useAuthContext();
   const toast = useToast();
   const [uid, setUid] = useState<string>("");
 
@@ -43,7 +43,12 @@ export default function SignInForm({ initial }: { initial: boolean }) {
   const {
     control,
     handleSubmit,
-    formState: { isValid },
+    getValues,
+    formState: {
+      isValid,
+      errors: { email: emailErrors },
+      dirtyFields: { email: dirtyEmail },
+    },
   } = useForm<TAuthSignIn>({
     defaultValues: {
       email: "",
@@ -64,7 +69,7 @@ export default function SignInForm({ initial }: { initial: boolean }) {
         setUid(uid);
       } catch (err) {
         console.error(`Error signing in : ${err}`);
-        console.log(err)
+        console.log(err);
         toast.error(`Error logging in : ${err.message}`);
       }
     }
@@ -73,6 +78,16 @@ export default function SignInForm({ initial }: { initial: boolean }) {
   const handleOnSubmitRequiresRecentLogin = async (values: TAuthSignIn) => {
     const response = await deleteThisUser(values);
     console.log(response);
+  };
+
+  const handlePasswordReset = () => {
+    if (dirtyEmail && !emailErrors) {
+      const myEmail = getValues("email");
+      resetPassword(myEmail);
+      toast.info(`Please check ${myEmail} for a reset link`);
+    } else {
+      toast.error("Please enter your valid email address");
+    }
   };
 
   return (
@@ -140,6 +155,15 @@ export default function SignInForm({ initial }: { initial: boolean }) {
           disabled={!isValid}
         >
           Sign In
+        </Button>
+      </Grid>
+      <Grid item xs={8}>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={handlePasswordReset}
+        >
+          Reset Password
         </Button>
       </Grid>
     </Grid>

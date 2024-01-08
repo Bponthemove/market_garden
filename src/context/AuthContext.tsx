@@ -2,7 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   User,
   createUserWithEmailAndPassword,
+  getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import {
@@ -17,6 +19,10 @@ import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useToast } from "../hooks/useToast";
+import { error } from "console";
+import logOut from "../pages/logOut";
+import signIn from "../pages/signIn";
+import signUp from "../pages/signUp";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -97,6 +103,7 @@ type AuthContextTypes = {
   ) => Promise<any>;
   logOut: () => void;
   signIn: (email: string, password: string) => Promise<any>;
+  resetPassword: (email: string) => void;
   error: string | undefined;
   setError: React.Dispatch<React.SetStateAction<string | undefined>>;
   loading: boolean;
@@ -211,6 +218,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function resetPassword(email) {
+    const auth = getAuth();
+    try {
+      await sendPasswordResetEmail(auth, email)
+      console.log('email sent!!!!')
+    } catch(error)  {
+    console.error(error)
+    // ..
+    };
+  }
+
   useEffect(() => {
     if (!loading) {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -236,6 +254,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         signUp,
         logOut,
         signIn,
+        resetPassword,
         loading,
         error,
         setError,
