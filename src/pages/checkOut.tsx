@@ -264,8 +264,7 @@ export const CheckOut = () => {
         </Grid>
         <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
           <Box sx={{ flex: 3 }}>
-            We do next day delivery. Cut off time is 4pm. We wil deliver the
-            next day between 7am and 12pm.
+            Order before 4pm for next day delivery. Deliveries are made between 7am and 12pm.
             <p>Your delivery will be {nextDayDelivery()}</p>
           </Box>
         </Box>

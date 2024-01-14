@@ -21,13 +21,11 @@ const Contact = () => {
           <Typography variant="subtitle1">email@roundthefield.co.uk</Typography>
         </Link>
       </Box>
-      <Box>
-        <Typography variant="h5">
-          Follow us on instagram!{" "}
-          <Link to="http://www.instagram.com/roundthefield_marketgarden">
-            <InstagramIcon sx={iconStyles} fontSize="large" />
-          </Link>
-        </Typography>
+      <Box display="flex" gap={3}>
+        <Link to="http://www.instagram.com/roundthefield_marketgarden">
+          <InstagramIcon sx={iconStyles} fontSize="large" style={{ color: '#000' }}/>
+        </Link>
+        <Typography variant="h5">Follow us on instagram! </Typography>
       </Box>
     </Box>
   );

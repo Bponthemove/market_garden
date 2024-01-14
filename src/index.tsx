@@ -2,9 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { AutoClearCart } from "./components/autoClearCart";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { OrderProvider } from "./context/OrderContext";
+import { ClosedProvider } from "./context/closedContext";
 import { ToastProvider } from "./hooks/useToast";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
@@ -21,7 +23,10 @@ root.render(
         <AuthProvider>
           <CartProvider>
             <OrderProvider>
-              <App />
+              <ClosedProvider>
+                <AutoClearCart />
+                <App />
+              </ClosedProvider>
             </OrderProvider>
           </CartProvider>
         </AuthProvider>

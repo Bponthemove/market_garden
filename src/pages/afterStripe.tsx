@@ -1,32 +1,31 @@
-import { Typography } from "@mui/material";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
 import { useOrderContext } from "../context/OrderContext";
 import { useFirebase } from "../hooks/useFirebase";
 
 export const AfterStripe = () => {
-  const { orderNr, setOrderNr } =
-    useOrderContext();
+  const { orderNr, setOrderNr } = useOrderContext();
 
   const { result } = useParams();
   const { cartItems, clearCart } = useCartContext();
   const { addOrder } = useFirebase();
   const [repeated, setRepeated] = useState(0);
-  const [orderNotProcessed, setOrderNotProcessed] = useState(cartItems.length > 0 && orderNr ? true : false);
-  
+  const [orderNotProcessed, setOrderNotProcessed] = useState(
+    cartItems.length > 0 && orderNr ? true : false
+  );
+
   useEffect(() => {
-    
-    if (result === 'failed') {
-      return
+    if (result === "failed") {
+      return;
     }
-    
+
     if (repeated > 3) {
       clearCart();
       setOrderNr("");
     }
-    
+
     async function addOrderToDB() {
       setOrderNotProcessed(false);
       try {
@@ -37,8 +36,8 @@ export const AfterStripe = () => {
         setOrderNotProcessed(true);
         setRepeated((prev) => prev++);
       }
-    };
-  
+    }
+
     if (orderNotProcessed && repeated <= 3) {
       addOrderToDB();
     }
@@ -54,15 +53,24 @@ export const AfterStripe = () => {
       ) : (
         <>
           <Box>
-            <Typography variant="h5">Your payment has succeeded</Typography>
+            <Typography variant="h5">Thank you!</Typography>
           </Box>
           <Box>
-            <Typography variant="body1">Thank you for your order.</Typography>
             <Typography variant="body1">
-              You will receive a confirmation email shortly.
+              Your payment has been successful.
+            </Typography>
+            <Typography variant="body1">
+              You will receive your email confirmation shortly.
             </Typography>
             <Typography variant="body2">
-              Any questions, please contact us on blabla@email.com
+              Any questions, please contact us on
+              <span>
+                <Link to="mailto:email@roundthefield.co.uk">
+                  <Typography variant="subtitle1">
+                    email@roundthefield.co.uk
+                  </Typography>
+                </Link>
+              </span>
             </Typography>
           </Box>
         </>

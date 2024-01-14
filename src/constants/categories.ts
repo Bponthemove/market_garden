@@ -23,6 +23,11 @@ export const categories = [
     label: 'Store cupboard',
     path: '/shop/storecupboard',
     cat: 'storeCupboard',
+  }, 
+  {
+    label: 'Eggs',
+    path: '/shop/eggs',
+    cat: 'eggs',
   },  
 ] as const;
 
