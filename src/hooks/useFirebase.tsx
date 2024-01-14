@@ -19,6 +19,7 @@ import { useState } from "react";
 import { TAuthSignIn } from "../components/SignInForm";
 import { IUserDetails, useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
+import { useDeliveryContext } from "../context/DeliveryContext";
 import { useOrderContext } from "../context/OrderContext";
 import { database, db } from "../firebase";
 import { TMyDetailsWithID } from "../pages/myDetails";
@@ -34,6 +35,7 @@ export const useFirebase = () => {
   const [firebaseError, setFirebaseError] = useState<string>("");
   const { cartItems, cartTotal } = useCartContext();
   const { currentUser, logOut } = useAuthContext();
+  const { deliveryDetails } = useDeliveryContext();
   const { orderNr } = useOrderContext();
 
   //------------------CRUD------------//
@@ -242,14 +244,14 @@ export const useFirebase = () => {
   //create order
   const addOrder = async () => {
     const modifiedOrder = {
-      name: `${currentUser.userDetails[0].firstName} ${currentUser.userDetails[0].lastName}`,
-      email: currentUser.user?.email,
-      phone: currentUser.userDetails[0].phone,
-      addressLineOne: currentUser.userDetails[0].addressLine1,
-      addressLineTwo: currentUser.userDetails[0].addressLine2,
-      postcode: currentUser.userDetails[0].postcode,
+      name: `${deliveryDetails?.firstName ?? currentUser.userDetails[0].firstName} ${deliveryDetails?.lastName ?? currentUser.userDetails[0].lastName}`,
+      email: deliveryDetails?.email ?? currentUser.user?.email,
+      phone: deliveryDetails?.phone ?? currentUser.userDetails[0].phone,
+      addressLineOne: deliveryDetails?.addressLine1 ?? currentUser.userDetails[0].addressLine1,
+      addressLineTwo: deliveryDetails?.addressLine2 ?? currentUser.userDetails[0].addressLine2,
+      postcode: deliveryDetails?.postcode ?? currentUser.userDetails[0].postcode,
       price: cartTotal,
-      town: currentUser.userDetails[0].town,
+      town: deliveryDetails?.town ?? currentUser.userDetails[0].town,
       orderNr: "",
       processed: false,
       timestamp: new Date().toISOString(),
@@ -275,11 +277,10 @@ export const useFirebase = () => {
     const productRef = collection(db, "orders");
     const q = query(
       productRef,
-      where("processed", "==", false),
-      // where("timestamp", ">=", "2024-01-03T16:00:00.000Z"),
-      // where("timestamp", "<=", "2024-01-04T15:99:99.999Z")
-      where("timestamp", ">=", ordersRange().start),
-      where("timestamp", "<=", ordersRange().end),
+      where("processed", "==", false)
+
+      // where("timestamp", ">=", ordersRange().start),
+      // where("timestamp", "<=", ordersRange().end),
     );
     const querySnapShot = await getDocs(q);
     const orders = querySnapShot?.docs.map(
@@ -288,6 +289,7 @@ export const useFirebase = () => {
         ...doc.data(),
       })
     );
+    console.log(orders);
     return orders;
   };
 

@@ -5,6 +5,7 @@ import App from "./App";
 import { AutoClearCart } from "./components/autoClearCart";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { DeliveryProvider } from "./context/DeliveryContext";
 import { OrderProvider } from "./context/OrderContext";
 import { ClosedProvider } from "./context/closedContext";
 import { ToastProvider } from "./hooks/useToast";
@@ -23,10 +24,12 @@ root.render(
         <AuthProvider>
           <CartProvider>
             <OrderProvider>
-              <ClosedProvider>
-                <AutoClearCart />
-                <App />
-              </ClosedProvider>
+              <DeliveryProvider>
+                <ClosedProvider>
+                  <AutoClearCart />
+                  <App />
+                </ClosedProvider>
+              </DeliveryProvider>
             </OrderProvider>
           </CartProvider>
         </AuthProvider>

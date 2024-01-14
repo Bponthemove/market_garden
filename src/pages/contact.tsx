@@ -23,7 +23,7 @@ const Contact = () => {
       </Box>
       <Box display="flex" gap={3}>
         <Link to="http://www.instagram.com/roundthefield_marketgarden">
-          <InstagramIcon sx={iconStyles} fontSize="large" style={{ color: '#000' }}/>
+          <InstagramIcon sx={iconStyles} fontSize="large" style={{ color: '#000', borderColor: '#000' }}/>
         </Link>
         <Typography variant="h5">Follow us on instagram! </Typography>
       </Box>

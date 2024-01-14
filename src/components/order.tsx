@@ -1,46 +1,91 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+
+const days = {
+  0: "Sunday",
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday",
+};
 
 export function Order(props) {
-  const id = props.idx + 1
-  
+  const {
+    orderNr,
+    order,
+    price,
+    idx,
+    timestamp,
+    name,
+    phone,
+    email,
+    addressLineOne,
+    addressLineTwo,
+    town,
+    postcode,
+  } = props;
+  const id = idx + 1;
+
+  const tomorrow = 24 * 60 * 60 * 1000;
+  const dayAfterTomorrow = 48 * 60 * 60 * 1000;
+  const before4pm = new Date(timestamp).getHours() <= 15;
+
+  const deliveryTimestamp = new Date(
+    new Date(timestamp).getTime() + (before4pm ? tomorrow : dayAfterTomorrow)
+  );
+  const deliveryDate =
+    deliveryTimestamp.getDay() === 0
+      ? new Date(
+          new Date(deliveryTimestamp).getTime() + tomorrow
+        ).toLocaleDateString()
+      : deliveryTimestamp.toLocaleDateString();
+  const deliveryDay =
+    deliveryTimestamp.getDay() === 0 ? 1 : deliveryTimestamp.getDay();
+
   return (
-    <Box 
-      sx={{borderBottom: '1px solid black', marginBottom: '2rem'}}
-    >
-      <Typography variant="h5">{id}</Typography>
-      <Box display="flex" alignItems="center" gap='10px'>
+    <Box sx={{ borderBottom: "1px solid black", marginBottom: "2rem" }}>
+      <Box display="flex" alignItems='center' justifyContent='space-between'>
+        <Typography variant="h5">{id}</Typography>
+        <Typography variant="body1">
+          {" "}
+          {days[deliveryDay]} {deliveryDate}
+        </Typography>
+        <Button variant="contained">Processed</Button>
+      </Box>
+      <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Name:</Typography>
-        <Typography>{props.name}</Typography>
+        <Typography>{name}</Typography>
       </Box>
-      <Box display="flex" alignItems="center" gap='10px'>
+      <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Telephone:</Typography>
-        <Typography>{props.phone}</Typography>
+        <Typography>{phone}</Typography>
       </Box>
-      <Box display="flex" alignItems="center" gap='10px'>
+      <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Email:</Typography>
-        <Typography>{props.email}</Typography>
+        <Typography>{email}</Typography>
       </Box>
       <Box>
         <Typography variant="h6">Address:</Typography>
-        <ul style={{listStyleType: 'none', paddingLeft: '1rem'}}>
-          <li>{props.addressLineOne}</li>
-          <li>{props.addressLineTwo}</li>
-          <li>{props.town}</li>
-          <li>{props.postcode}</li>
+        <ul style={{ listStyleType: "none", paddingLeft: "1rem" }}>
+          <li>{addressLineOne}</li>
+          <li>{addressLineTwo}</li>
+          <li>{town}</li>
+          <li>{postcode}</li>
         </ul>
       </Box>
-      <Box display="flex" alignItems="center" gap='10px'>
+      <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Order Total:</Typography>
-        <Typography>{props.price}</Typography>
+        <Typography>{price}</Typography>
       </Box>
-      <Box display="flex" alignItems="center" gap='10px'>
+      <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Order number:</Typography>
-        <Typography>{props.orderNr}</Typography>
+        <Typography>{orderNr}</Typography>
       </Box>
       <Box>
         <Typography variant="h6">Order:</Typography>
         <ul>
-          {props.order.split(",").map((product, idx) =>(
+          {order.split(",").map((product, idx) => (
             <li key={idx}>{product}</li>
           ))}
         </ul>

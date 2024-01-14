@@ -17,6 +17,7 @@ import { useOrderContext } from "../context/OrderContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { z } from "zod";
+import { useDeliveryContext } from "../context/DeliveryContext";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
 
 let stripePromise: Stripe | null;
@@ -56,12 +57,13 @@ export const checkOutSchema = z.object({
   town: z.string().min(1, { message: fieldRequiredMessage }),
 });
 
-type TCheckOut = z.infer<typeof checkOutSchema>;
+export type TCheckOut = z.infer<typeof checkOutSchema>;
 
 export const CheckOut = () => {
   const { cartItems } = useCartContext();
   const { currentUser } = useAuthContext();
   const { setOrderNr } = useOrderContext();
+  const { updateDetails } = useDeliveryContext();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -87,6 +89,16 @@ export const CheckOut = () => {
   ) => {
     event?.preventDefault();
     const email = getValues("email");
+    updateDetails({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      addressLine1: data.addressLine1,
+      addressLine2: data.addressLine2,
+      town: data.town,
+      postcode: data.postcode,
+      email
+    });
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
@@ -157,8 +169,7 @@ export const CheckOut = () => {
                 label="Phone number"
                 error={!!error}
                 helperText={
-                  error?.message ??
-                  "numbers only, no spaces 07***********"
+                  error?.message ?? "numbers only, no spaces 07***********"
                 }
               />
             )}
@@ -264,7 +275,8 @@ export const CheckOut = () => {
         </Grid>
         <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
           <Box sx={{ flex: 3 }}>
-            Order before 4pm for next day delivery. Deliveries are made between 7am and 12pm.
+            Order before 4pm for next day delivery. Deliveries are made between
+            7am and 12pm.
             <p>Your delivery will be {nextDayDelivery()}</p>
           </Box>
         </Box>
