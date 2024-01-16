@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -114,11 +115,10 @@ export function useAuthContext() {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  // const [currentUser, setCurrentUser] = useLocalStorage<IUser>(
-  //   "user",
-  //   defaultNoUser
-  // );
-  const [currentUser, setCurrentUser] = useState<IUser>(defaultNoUser);
+  const [currentUser, setCurrentUser] = useLocalStorage<IUser>(
+    "user",
+    defaultNoUser
+  );
   const navigate = useNavigate();
   const { addUserDetails, getUserDetails } = useFirebase();
 
