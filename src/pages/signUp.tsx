@@ -81,7 +81,6 @@ function SignUp() {
 
   const handleOnSubmit = async (values: TSignUp) => {
     //first check for existing account
-    console.log({ values }, "submit signing up");
     const email = values?.email;
     const phone = values?.phone;
     const password = values?.password;

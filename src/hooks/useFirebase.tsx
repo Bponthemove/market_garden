@@ -38,8 +38,6 @@ export const useFirebase = () => {
   const { deliveryDetails } = useDeliveryContext();
   const { orderNr } = useOrderContext();
 
-  console.log('Bram', deliveryDetails)
-
   //------------------CRUD------------//
   //----------------PRODUCTS----------//
   //create product
@@ -53,7 +51,6 @@ export const useFirebase = () => {
           method: "POST",
         }
       );
-      console.log(response);
     } catch (err) {
       console.error("Item not added to Stripe: " + err);
     }
@@ -124,7 +121,6 @@ export const useFirebase = () => {
     } finally {
       setFirebaseLoading(false);
     }
-    console.log({ firebaseResp, stripeResp });
   };
 
   const updateProductStockLevel = async (product: IUpdateProduct) => {
@@ -145,7 +141,6 @@ export const useFirebase = () => {
 
   //delete product
   const deleteProduct = async (id: string) => {
-    console.log(id);
     const firebaseResp = await deleteDoc(doc(db, "product", id));
     const stripeResp = await fetch(
       `/.netlify/functions/stripeDeleteProduct?id=${id}`,
@@ -153,7 +148,6 @@ export const useFirebase = () => {
         method: "POST",
       }
     );
-    console.log({ firebaseResp, stripeResp });
   };
 
   //-----------------USER--------------//
@@ -162,7 +156,6 @@ export const useFirebase = () => {
   const addUserDetails = async (user: IUserDetails) => {
     const addedUserRef = doc(collection(db, "users"), user.uid);
     const response = await setDoc(addedUserRef, user);
-    console.log("Document written with ID: ", response);
   };
 
   //get user details
@@ -185,7 +178,6 @@ export const useFirebase = () => {
     const [, email] = context.queryKey;
     const q = query(database.users, where("email", "==", email));
     const querySnapShot = await getDocs(q);
-    console.log(querySnapShot.docs);
     return querySnapShot.docs.length > 0;
   };
 
@@ -205,7 +197,6 @@ export const useFirebase = () => {
     } finally {
       setFirebaseLoading(false);
     }
-    console.log({ firebaseResp });
   };
 
   //delete user details
@@ -218,7 +209,6 @@ export const useFirebase = () => {
         await deleteDoc(doc(db, "users", currentUser.user.uid));
         logOut();
       } catch (err) {
-        console.log("Error deleting this user: ", err);
         response = { status: 500, message: err.toString() };
       } finally {
         return response;
@@ -233,9 +223,7 @@ export const useFirebase = () => {
           currentUser.user,
           credential
         );
-        console.log(response, "hiep");
       } catch (err) {
-        console.log(err, "line193");
       }
     }
   };
@@ -264,9 +252,7 @@ export const useFirebase = () => {
         collection(db, "orders"),
         modifiedOrder
       );
-      console.log("Order added with ID: ", addedOrderRef.id);
     } catch (err) {
-      console.log("Error adding order", orderNr, err);
     }
   };
 
@@ -278,10 +264,10 @@ export const useFirebase = () => {
     const productRef = collection(db, "orders");
     const q = query(
       productRef,
-      where("processed", "==", false)
+      // where("processed", "==", false)
 
-      // where("timestamp", ">=", ordersRange().start),
-      // where("timestamp", "<=", ordersRange().end),
+      where("timestamp", ">=", ordersRange().start),
+      where("timestamp", "<=", ordersRange().end),
     );
     const querySnapShot = await getDocs(q);
     const orders = querySnapShot?.docs.map(
@@ -290,7 +276,6 @@ export const useFirebase = () => {
         ...doc.data(),
       })
     );
-    console.log(orders);
     return orders;
   };
 
@@ -330,7 +315,6 @@ export const useFirebase = () => {
     const querySnapShot = await getDocs(q);
     querySnapShot?.docs.map((doc) => deleteDoc(doc.ref));
 
-    console.log(
       `Deleting orders in range ${new Date(deleteRange().start)} - ${new Date(
         deleteRange().end
       )}: ${querySnapShot}`
@@ -357,7 +341,7 @@ export const useFirebase = () => {
     date.setHours(parseFloat("16"));
     date.setMinutes(parseFloat("00"));
     date.setSeconds(parseFloat("00"));
-    const start = date.setDate(date.getDate() - (date.getDay() === 0 ? 2 : 1));
+    const start = date.setDate(date.getDate() - 3); //(date.getDay() === 0 ? 2 : 1));
 
     return {
       start: new Date(start).toISOString(),

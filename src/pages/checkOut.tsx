@@ -119,7 +119,7 @@ export const CheckOut = () => {
       .then((result) => {
         if (result?.error) {
           setOrderNr("");
-          console.log(result?.error);
+          console.error(result?.error);
         }
       });
 

@@ -133,23 +133,18 @@ export default function Products() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         ); // update progress
         setPercent(percent);
-        console.log("Upload is " + percent + "% done");
         switch (snapshot.state) {
           case "paused":
-            console.log("Upload is paused");
             break;
           case "running":
-            console.log("Upload is running");
             break;
         }
       },
       (err) => console.error(err),
       async () => {
         // download url
-        console.log("completed");
         try {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log(url);
           setImageURL(url);
           setShowProduct((prevState) => ({
             ...prevState,
@@ -164,7 +159,6 @@ export default function Products() {
   };
 
   const handleOnSubmit = async (values: IAddProduct) => {
-    console.log({ values });
     const product = {
       ...values,
       image: imageURL,
@@ -202,7 +196,6 @@ export default function Products() {
         await mutateAsyncAdd(product);
         toast.info("Product succesfully added.");
       } catch (err) {
-        console.log(`Error adding product: ${err}`);
       }
     }
     reset(defaultValues);
@@ -219,7 +212,6 @@ export default function Products() {
 
   const handleOnBlur = (event: { preventDefault: () => void; target: any }) => {
     event.preventDefault();
-    console.log(event);
     let value;
     if (
       ["price", "description", "label", "category", "eachOrWeigth"].includes(
@@ -264,7 +256,6 @@ export default function Products() {
     } else {
       try {
         const response = await mutateAsyncDelete(itemToUpdateOrDelete);
-        console.log(response);
         setItemToUpdateOrDelete(undefined);
         reset(defaultValues);
         setImageURL("");
@@ -278,7 +269,6 @@ export default function Products() {
         toast.info("Product successfully deleted.");
         refetchGet();
       } catch (err) {
-        console.log(err);
       }
     }
   };
@@ -358,7 +348,6 @@ export default function Products() {
               <Button
                 disabled={!query}
                 onClick={() => {
-                  console.log({ products });
                   const productFound = products.find(
                     (p) => p.label.toLowerCase() === query
                   );

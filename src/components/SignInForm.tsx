@@ -69,7 +69,7 @@ export default function SignInForm({ initial }: { initial: boolean }) {
         setUid(uid);
       } catch (err) {
         console.error(`Error signing in : ${err}`);
-        console.log(err);
+        console.error(err);
         toast.error(`Error logging in : ${err.message}`);
       }
     }
@@ -77,7 +77,6 @@ export default function SignInForm({ initial }: { initial: boolean }) {
 
   const handleOnSubmitRequiresRecentLogin = async (values: TAuthSignIn) => {
     const response = await deleteThisUser(values);
-    console.log(response);
   };
 
   const handlePasswordReset = () => {

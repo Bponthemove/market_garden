@@ -3,10 +3,7 @@ import { HandlerContext, HandlerEvent } from "@netlify/functions";
 const stripe = require("stripe")(process.env.VITE_APP_STRIPE_SECRET_KEY);
 
 const handler = async (event: HandlerEvent, context: HandlerContext) => {
-  console.log({ stripe });
-  console.log({ context });
-  console.log({ event });
-  const checkOut = JSON.parse(event.body ?? "");
+  const checkOut = event.body != null ? JSON.parse(event.body) : '';
   let session: any;
   let status: number;
   if (checkOut.items) {
@@ -25,7 +22,7 @@ const handler = async (event: HandlerEvent, context: HandlerContext) => {
       });
       status = 200;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       status = 400;
       session = {
         message: err,

@@ -6,10 +6,7 @@ const handler = async (
   event: HandlerEvent,
   context: HandlerContext
 ) => {
-  console.log({stripe})
-  console.log({context})
-  console.log({event})
-  const checkOut = JSON.parse(event.body ?? '');
+  const checkOut = event.body != null ? JSON.parse(event.body) : '';
   let session: any;
   let status: number;
   if (checkOut.items) {
@@ -31,7 +28,7 @@ const handler = async (
       });
       status = 200;      
     } catch (err) {
-      console.log(err);
+      console.error(err);
       status = 400
       session = {
         message: err

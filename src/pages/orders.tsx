@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  FormControlLabel,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -50,6 +52,7 @@ export function Orders() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { getOrders } = useFirebase();
   const [csv, getCSV] = useState(false);
+  const [showProcessed, setShowProcessed] = useState(true);
 
   const { data } = useQuery(["getOrders"], getOrders);
 
@@ -93,11 +96,21 @@ export function Orders() {
         >
           Get orders for {nextDeliveryDay()}
         </Button>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={showProcessed}
+              onChange={() => setShowProcessed(!showProcessed)}
+            />
+          }
+          label="Only show unprocessed orders"
+        />
         {isMobile &&
           parsed &&
           parsed.length &&
           parsed
             .filter((order) => order.order)
+            .filter((order) => showProcessed && !order.processed)
             .map((order, idx) => (
               <Order key={order.orderNr} idx={idx} {...order} />
             ))}

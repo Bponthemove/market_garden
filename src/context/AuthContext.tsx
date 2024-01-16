@@ -222,7 +222,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const auth = getAuth();
     try {
       await sendPasswordResetEmail(auth, email)
-      console.log('email sent!!!!')
     } catch(error)  {
     console.error(error)
     // ..

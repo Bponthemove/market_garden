@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
+import { useDeliveryContext } from "../context/DeliveryContext";
 import { useOrderContext } from "../context/OrderContext";
 import { useFirebase } from "../hooks/useFirebase";
 
@@ -10,6 +11,7 @@ export const AfterStripe = () => {
 
   const { result } = useParams();
   const { cartItems, clearCart } = useCartContext();
+  const { clearDetails } = useDeliveryContext();
   const { addOrder } = useFirebase();
   const [repeated, setRepeated] = useState(0);
   const [orderNotProcessed, setOrderNotProcessed] = useState(
@@ -30,6 +32,7 @@ export const AfterStripe = () => {
       setOrderNotProcessed(false);
       try {
         await addOrder();
+        clearDetails();
         clearCart();
         setOrderNr("");
       } catch (err) {

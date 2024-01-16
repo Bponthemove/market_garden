@@ -1,5 +1,4 @@
 export const useDate = (props: string) => {
-  console.log({props})
   const now = new Date();
   const firstDayOfTheWeek = now.getDate() - (now.getDay() - 1);
   const thisWeeksFriday = now.getDate() - (now.getDay() - 1) + 4;

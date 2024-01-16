@@ -14,7 +14,7 @@ const handler: Handler = async (
         active: false,
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
   return {
