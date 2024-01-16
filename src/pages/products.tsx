@@ -171,20 +171,19 @@ export default function Products() {
     };
     if (updateAddDelete === "update" && itemToUpdateOrDelete) {
       try {
-        const dirtyFieldsWithValues = Object.keys(formState.dirtyFields).map(
-          (fieldKey: any) => ({
-            [fieldKey]: getValues(fieldKey),
-          })
-        );
+
+        const dirtyFieldsWithValues = Object.entries(values).filter(([key, value]) => itemToUpdateOrDelete[key] !== value)
 
         let toUpdate = { id: itemToUpdateOrDelete.id } as IUpdateProduct;
 
         dirtyFieldsWithValues.forEach(
-          (value) =>
-            (toUpdate = {
+          (value) => {
+            if (value[0] !== 'image') {
+            toUpdate = {
               ...toUpdate,
-              ...value,
-            })
+              [value[0]]: value[1],
+            }
+          }}
         );
 
         if (imageURL)

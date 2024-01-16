@@ -109,11 +109,10 @@ export const useFirebase = () => {
           ...toUpdate,
         });
         if (Object.keys(toUpdate).includes("label" || "price")) {
-          const { label, price } = toUpdate;
           stripeResp = await fetch(
             `/.netlify/functions/stripeUpdateProduct?id=${id}&name=${
-              label || ""
-            }&price=${price || ""}`,
+              toUpdate.label ?? ""
+            }&price=${toUpdate.price ?? ""}`,
             {
               method: "POST",
             }
