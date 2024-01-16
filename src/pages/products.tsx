@@ -133,12 +133,6 @@ export default function Products() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         ); // update progress
         setPercent(percent);
-        switch (snapshot.state) {
-          case "paused":
-            break;
-          case "running":
-            break;
-        }
       },
       (err) => console.error(err),
       async () => {

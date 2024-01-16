@@ -224,6 +224,7 @@ export const useFirebase = () => {
           credential
         );
       } catch (err) {
+        console.error(err);
       }
     }
   };
@@ -253,6 +254,7 @@ export const useFirebase = () => {
         modifiedOrder
       );
     } catch (err) {
+      console.error(err);
     }
   };
 
@@ -314,11 +316,6 @@ export const useFirebase = () => {
     );
     const querySnapShot = await getDocs(q);
     querySnapShot?.docs.map((doc) => deleteDoc(doc.ref));
-
-      `Deleting orders in range ${new Date(deleteRange().start)} - ${new Date(
-        deleteRange().end
-      )}: ${querySnapShot}`
-    );
   };
 
   // helpers
