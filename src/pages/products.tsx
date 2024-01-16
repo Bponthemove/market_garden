@@ -25,6 +25,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ProductTile from "../components/ProductTile";
+import { categories } from "../constants/categories";
 import { storage } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
@@ -34,7 +35,6 @@ import {
   IProduct,
   IUpdateProduct,
 } from "../types/allTypes";
-import { categories } from "../constants/categories";
 
 const defaultValues: IAddProduct = {
   category: "vegetables",
@@ -155,6 +155,7 @@ export default function Products() {
             ...prevState,
             image: url,
           }));
+          //set field to dirty if it is not
         } catch (err) {
           console.error(err);
         }
@@ -169,8 +170,6 @@ export default function Products() {
       image: imageURL,
     };
     if (updateAddDelete === "update" && itemToUpdateOrDelete) {
-      // we want to update
-      //call mutate with object filled with id and dirty fields
       try {
         const dirtyFieldsWithValues = Object.keys(formState.dirtyFields).map(
           (fieldKey: any) => ({
@@ -178,7 +177,7 @@ export default function Products() {
           })
         );
 
-        let toUpdate = { id: itemToUpdateOrDelete.id };
+        let toUpdate = { id: itemToUpdateOrDelete.id } as IUpdateProduct;
 
         dirtyFieldsWithValues.forEach(
           (value) =>
@@ -188,16 +187,20 @@ export default function Products() {
             })
         );
 
+        if (imageURL)
+          toUpdate = {
+            ...toUpdate,
+            image: imageURL,
+          };
+
         await mutateAsyncUpdate(toUpdate);
         toast.info("Product succesfully updated.");
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     } else {
       try {
-        const data = await mutateAsyncAdd(product);
-        console.log({ data });
-        //add product to stripe
+        await mutateAsyncAdd(product);
         toast.info("Product succesfully added.");
       } catch (err) {
         console.log(`Error adding product: ${err}`);
@@ -327,7 +330,9 @@ export default function Products() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                {categories.map(({cat, label}) => <MenuItem value={cat}>{label}</MenuItem>)}
+                {categories.map(({ cat, label }) => (
+                  <MenuItem value={cat}>{label}</MenuItem>
+                ))}
               </Select>
             </Grid>
             <Grid item>
@@ -440,7 +445,9 @@ export default function Products() {
                         required
                         onBlur={handleOnBlur}
                       >
-                        {categories.map(({cat, label}) => <MenuItem value={cat}>{label}</MenuItem>)}
+                        {categories.map(({ cat, label }) => (
+                          <MenuItem value={cat}>{label}</MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   )}
@@ -629,7 +636,7 @@ export default function Products() {
                 </Button>
               </Grid>
               <Grid item>
-                <ProductTile product={showProduct} />
+                <ProductTile product={showProduct} idx={0} />
               </Grid>
             </Grid>
             <Grid
@@ -644,11 +651,7 @@ export default function Products() {
                   color="primary"
                   variant="contained"
                   disabled={
-                    (updateAddDelete === "add" && !imageURL) ||
-                    (updateAddDelete === "update" &&
-                      (Object.keys(formState.dirtyFields).length === 0 ||
-                        !query)) ||
-                    isLoading
+                    (updateAddDelete === "add" && !imageURL) || isLoading
                   }
                 >
                   {updateAddDelete === "add"
