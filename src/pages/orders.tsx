@@ -50,11 +50,11 @@ const TableCellOrdersStyled = ({
 export function Orders() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { getOrders } = useFirebase();
-  const [csv, getCSV] = useState(false);
-  const [showProcessed, setShowProcessed] = useState(true);
+  const { getOrders, setOrderToProcessed } = useFirebase();
+  const [csv, getCSV] = useState<boolean>(false);
+  const [onlyShowProcessed, setOnlyShowProcessed] = useState<boolean>(true);
 
-  const { data } = useQuery(["getOrders"], getOrders);
+  const { data, refetch } = useQuery(["getOrders"], getOrders);
 
   const orders = data || [];
   const parsed = orders.length
@@ -83,9 +83,19 @@ export function Orders() {
     return now.toDateString();
   };
 
+  const handleProcessing = (id, processed) => {
+    setOrderToProcessed(id, processed);
+    refetch();
+  };
+
   return (
     <>
-      <Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-start"
+        gap={2}
+      >
         <Button
           onClick={handleGetCSV}
           disabled={
@@ -99,8 +109,8 @@ export function Orders() {
         <FormControlLabel
           control={
             <Switch
-              checked={showProcessed}
-              onChange={() => setShowProcessed(!showProcessed)}
+              checked={onlyShowProcessed}
+              onChange={() => setOnlyShowProcessed(!onlyShowProcessed)}
             />
           }
           label="Only show unprocessed orders"
@@ -110,9 +120,14 @@ export function Orders() {
           parsed.length &&
           parsed
             .filter((order) => order.order)
-            .filter((order) => showProcessed && !order.processed)
+            .filter((order) => onlyShowProcessed ? !order.processed : order)
             .map((order, idx) => (
-              <Order key={order.orderNr} idx={idx} {...order} />
+              <Order
+                key={order.id}
+                idx={idx}
+                handleProcessing={handleProcessing}
+                {...order}
+              />
             ))}
         {!isMobile && (
           <Table>

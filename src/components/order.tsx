@@ -24,8 +24,12 @@ export function Order(props) {
     addressLineTwo,
     town,
     postcode,
+    processed,
+    id,
+    handleProcessing,
   } = props;
-  const id = idx + 1;
+
+  const screenId = idx + 1;
 
   const tomorrow = 24 * 60 * 60 * 1000;
   const dayAfterTomorrow = 48 * 60 * 60 * 1000;
@@ -34,24 +38,38 @@ export function Order(props) {
   const deliveryTimestamp = new Date(
     new Date(timestamp).getTime() + (before4pm ? tomorrow : dayAfterTomorrow)
   );
+
   const deliveryDate =
     deliveryTimestamp.getDay() === 0
       ? new Date(
           new Date(deliveryTimestamp).getTime() + tomorrow
         ).toLocaleDateString()
       : deliveryTimestamp.toLocaleDateString();
+
   const deliveryDay =
     deliveryTimestamp.getDay() === 0 ? 1 : deliveryTimestamp.getDay();
 
   return (
-    <Box sx={{ borderBottom: "1px solid black", marginBottom: "2rem" }}>
-      <Box display="flex" alignItems='center' justifyContent='space-between'>
-        <Typography variant="h5">{id}</Typography>
+    <Box
+      sx={{
+        borderBottom: "1px solid black",
+        marginBottom: "2rem",
+        width: "100%",
+      }}
+    >
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Typography variant="h5">{screenId}</Typography>
         <Typography variant="body1">
           {" "}
           {days[deliveryDay]} {deliveryDate}
         </Typography>
-        <Button variant="contained">Processed</Button>
+        <Button
+          variant="contained"
+          color={processed ? "primary" : "error"}
+          onClick={() => handleProcessing(id, !processed)}
+        >
+          {processed ? "Processed ✔" : "Process"}
+        </Button>
       </Box>
       <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Name:</Typography>

@@ -20,7 +20,6 @@ import { TAuthSignIn } from "../components/SignInForm";
 import { IUserDetails, useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { useDeliveryContext } from "../context/DeliveryContext";
-import { useOrderContext } from "../context/OrderContext";
 import { database, db } from "../firebase";
 import { TMyDetailsWithID } from "../pages/myDetails";
 import {
@@ -36,7 +35,6 @@ export const useFirebase = () => {
   const { cartItems, cartTotal } = useCartContext();
   const { currentUser, logOut } = useAuthContext();
   const { deliveryDetails } = useDeliveryContext();
-  const { orderNr } = useOrderContext();
 
   //------------------CRUD------------//
   //----------------PRODUCTS----------//
@@ -45,7 +43,7 @@ export const useFirebase = () => {
     const { label, price } = product;
     const addedProductRef = await addDoc(collection(db, "product"), product);
     try {
-      const response = await fetch(
+      await fetch(
         `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
         {
           method: "POST",
@@ -98,15 +96,15 @@ export const useFirebase = () => {
   //update product
   const updateProduct = async (toUpdate: IUpdateProduct) => {
     setFirebaseLoading(true);
-    let firebaseResp, stripeResp;
+
     const { id } = toUpdate;
     try {
       if (id) {
-        firebaseResp = await updateDoc(doc(db, "product", id), {
+        await updateDoc(doc(db, "product", id), {
           ...toUpdate,
         });
         if (Object.keys(toUpdate).includes("label" || "price")) {
-          stripeResp = await fetch(
+          await fetch(
             `/.netlify/functions/stripeUpdateProduct?id=${id}&name=${
               toUpdate.label ?? ""
             }&price=${toUpdate.price ?? ""}`,
@@ -141,13 +139,10 @@ export const useFirebase = () => {
 
   //delete product
   const deleteProduct = async (id: string) => {
-    const firebaseResp = await deleteDoc(doc(db, "product", id));
-    const stripeResp = await fetch(
-      `/.netlify/functions/stripeDeleteProduct?id=${id}`,
-      {
-        method: "POST",
-      }
-    );
+    await deleteDoc(doc(db, "product", id));
+    await fetch(`/.netlify/functions/stripeDeleteProduct?id=${id}`, {
+      method: "POST",
+    });
   };
 
   //-----------------USER--------------//
@@ -155,7 +150,7 @@ export const useFirebase = () => {
   //add user details
   const addUserDetails = async (user: IUserDetails) => {
     const addedUserRef = doc(collection(db, "users"), user.uid);
-    const response = await setDoc(addedUserRef, user);
+    await setDoc(addedUserRef, user);
   };
 
   //get user details
@@ -184,11 +179,11 @@ export const useFirebase = () => {
   //update user
   const updateUserDetails = async (toUpdate: TMyDetailsWithID) => {
     setFirebaseLoading(true);
-    let firebaseResp;
+
     const { id, ...rest } = toUpdate;
     try {
       if (id) {
-        firebaseResp = await updateDoc(doc(db, "users", id), {
+        await updateDoc(doc(db, "users", id), {
           ...rest,
         });
       }
@@ -219,10 +214,7 @@ export const useFirebase = () => {
           credentials.email,
           credentials.password
         );
-        const response = await reauthenticateWithCredential(
-          currentUser.user,
-          credential
-        );
+        await reauthenticateWithCredential(currentUser.user, credential);
       } catch (err) {
         console.error(err);
       }
@@ -234,12 +226,19 @@ export const useFirebase = () => {
   //create order
   const addOrder = async () => {
     const modifiedOrder = {
-      name: `${deliveryDetails?.firstName ?? currentUser.userDetails[0].firstName} ${deliveryDetails?.lastName ?? currentUser.userDetails[0].lastName}`,
+      name: `${
+        deliveryDetails?.firstName ?? currentUser.userDetails[0].firstName
+      } ${deliveryDetails?.lastName ?? currentUser.userDetails[0].lastName}`,
       email: deliveryDetails?.email ?? currentUser.user?.email,
       phone: deliveryDetails?.phone ?? currentUser.userDetails[0].phone,
-      addressLineOne: deliveryDetails?.addressLine1 ?? currentUser.userDetails[0].addressLine1,
-      addressLineTwo: deliveryDetails?.addressLine2 ?? currentUser.userDetails[0].addressLine2,
-      postcode: deliveryDetails?.postcode ?? currentUser.userDetails[0].postcode,
+      addressLineOne:
+        deliveryDetails?.addressLine1 ??
+        currentUser.userDetails[0].addressLine1,
+      addressLineTwo:
+        deliveryDetails?.addressLine2 ??
+        currentUser.userDetails[0].addressLine2,
+      postcode:
+        deliveryDetails?.postcode ?? currentUser.userDetails[0].postcode,
       price: cartTotal,
       town: deliveryDetails?.town ?? currentUser.userDetails[0].town,
       orderNr: "",
@@ -249,10 +248,7 @@ export const useFirebase = () => {
     };
 
     try {
-      await addDoc(
-        collection(db, "orders"),
-        modifiedOrder
-      );
+      await addDoc(collection(db, "orders"), modifiedOrder);
     } catch (err) {
       console.error(err);
     }
@@ -269,7 +265,7 @@ export const useFirebase = () => {
       // where("processed", "==", false)
 
       where("timestamp", ">=", ordersRange().start),
-      where("timestamp", "<=", ordersRange().end),
+      where("timestamp", "<=", ordersRange().end)
     );
     const querySnapShot = await getDocs(q);
     const orders = querySnapShot?.docs.map(
@@ -281,57 +277,72 @@ export const useFirebase = () => {
     return orders;
   };
 
-  //update field to processed
-  const setOrdersToProcessed = async () => {
-    const productRef = collection(db, "orders");
-    const q = query(
-      productRef,
-      where("processed", "==", false),
-      where("timestamp", ">", ordersRange().start),
-      where("timestamp", "<", ordersRange().end)
-    );
-    const querySnapShot = await getDocs(q);
-    querySnapShot.docs.forEach(async (order) => {
-      const docRef = doc(db, "orders", order.id);
-      await updateDoc(docRef, { processed: true });
-    });
-    // if day is monday, delete orders for previous week
-    if (new Date().getDay() === 0) {
-      try {
-        await deleteOrders();
-      } catch (err) {
-        console.error(err);
+  const setOrderToProcessed = async (id: string, processed: boolean) => {
+    setFirebaseLoading(true);
+    try {
+      if (id) {
+        await updateDoc(doc(db, "orders", id), {
+          processed,
+        });
       }
+    } catch (err) {
+      setFirebaseError(`Error processing order: id ${id}`);
+    } finally {
+      setFirebaseLoading(false);
     }
   };
 
+  //update field to processed
+  // const setOrdersToProcessed = async () => {
+  //   const productRef = collection(db, "orders");
+  //   const q = query(
+  //     productRef,
+  //     where("processed", "==", false),
+  //     where("timestamp", ">", ordersRange().start),
+  //     where("timestamp", "<", ordersRange().end)
+  //   );
+  //   const querySnapShot = await getDocs(q);
+  //   querySnapShot.docs.forEach(async (order) => {
+  //     const docRef = doc(db, "orders", order.id);
+  //     await updateDoc(docRef, { processed: true });
+  //   });
+  // if day is monday, delete orders for previous week
+  // if (new Date().getDay() === 0) {
+  //   try {
+  //     await deleteOrders();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
+  //};
+
   //delete orders
-  const deleteOrders = async () => {
-    const productRef = collection(db, "orders");
-    const q = query(
-      productRef,
-      where("processed", "==", true),
-      where("timestamp", ">", deleteRange().start),
-      where("timestamp", "<", deleteRange().end)
-    );
-    const querySnapShot = await getDocs(q);
-    querySnapShot?.docs.map((doc) => deleteDoc(doc.ref));
-  };
+  // const deleteOrders = async () => {
+  //   const productRef = collection(db, "orders");
+  //   const q = query(
+  //     productRef,
+  //     where("processed", "==", true),
+  //     where("timestamp", ">", deleteRange().start),
+  //     where("timestamp", "<", deleteRange().end)
+  //   );
+  //   const querySnapShot = await getDocs(q);
+  //   querySnapShot?.docs.map((doc) => deleteDoc(doc.ref));
+  // };
 
   // helpers
-  const deleteRange = () => {
-    const date = new Date();
-    date.setHours(parseFloat("16"));
-    date.setMinutes(parseFloat("00"));
-    date.setSeconds(parseFloat("00"));
-    const start = date.setDate(date.getDate() - 21);
-    const end = date.setDate(date.getDate() - 14);
+  // const deleteRange = () => {
+  //   const date = new Date();
+  //   date.setHours(parseFloat("16"));
+  //   date.setMinutes(parseFloat("00"));
+  //   date.setSeconds(parseFloat("00"));
+  //   const start = date.setDate(date.getDate() - 21);
+  //   const end = date.setDate(date.getDate() - 14);
 
-    return {
-      start: new Date(start).toISOString(),
-      end: new Date(end).toISOString(),
-    };
-  };
+  //   return {
+  //     start: new Date(start).toISOString(),
+  //     end: new Date(end).toISOString(),
+  //   };
+  // };
 
   const ordersRange = () => {
     const date = new Date();
@@ -371,6 +382,6 @@ export const useFirebase = () => {
     existingAccount,
     addOrder,
     getOrders,
-    setOrdersToProcessed,
+    setOrderToProcessed,
   };
 };
