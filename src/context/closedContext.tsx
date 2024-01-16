@@ -23,7 +23,7 @@ export function useClosedContext() {
 }
 
 export function ClosedProvider({ children }: ClosedProviderProps) {
-  const [ticked, setTicked] = useState(false);
+  const [ticked, setTicked] = useState(true);
 
   return (
     <ClosedContext.Provider

@@ -38,6 +38,8 @@ export const useFirebase = () => {
   const { deliveryDetails } = useDeliveryContext();
   const { orderNr } = useOrderContext();
 
+  console.log('Bram', deliveryDetails)
+
   //------------------CRUD------------//
   //----------------PRODUCTS----------//
   //create product
