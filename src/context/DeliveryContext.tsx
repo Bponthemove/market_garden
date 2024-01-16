@@ -27,7 +27,7 @@ export function DeliveryProvider({ children }: DeliveryProviderProps) {
   function updateDetails(item) {
     setDeliveryDetails({
       ...deliveryDetails,
-      item,
+      ...item,
     });
   }
 
