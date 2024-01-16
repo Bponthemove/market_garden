@@ -249,7 +249,7 @@ export const useFirebase = () => {
     };
 
     try {
-      const addedOrderRef = await addDoc(
+      await addDoc(
         collection(db, "orders"),
         modifiedOrder
       );

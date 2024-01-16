@@ -17,12 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useToast } from "../hooks/useToast";
-import { error } from "console";
-import logOut from "../pages/logOut";
-import signIn from "../pages/signIn";
-import signUp from "../pages/signUp";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -63,8 +58,8 @@ export interface IAuthSignUp extends IAuthSignIn {
 }
 
 const superUsers = [
-   import.meta.env.VITE_APP_EMAIL_ADMIN_ONE,
-   import.meta.env.VITE_APP_EMAIL_ADMIN_TWO
+  import.meta.env.VITE_APP_EMAIL_ADMIN_ONE,
+  import.meta.env.VITE_APP_EMAIL_ADMIN_TWO,
 ];
 
 const defaultUserDetails = [
@@ -119,10 +114,11 @@ export function useAuthContext() {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useLocalStorage<IUser>(
-    "user",
-    defaultNoUser
-  );
+  // const [currentUser, setCurrentUser] = useLocalStorage<IUser>(
+  //   "user",
+  //   defaultNoUser
+  // );
+  const [currentUser, setCurrentUser] = useState<IUser>(defaultNoUser);
   const navigate = useNavigate();
   const { addUserDetails, getUserDetails } = useFirebase();
 
@@ -163,7 +159,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         firstName,
         lastName,
         postcode,
-        addressLine1, 
+        addressLine1,
         addressLine2,
         town,
         phone,
@@ -171,7 +167,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
     } catch (err) {
       setError(`Sign up credentials are not correct.`);
-      throw new Error(err)      
+      throw new Error(err);
     } finally {
       setLoading(false);
     }
@@ -221,11 +217,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function resetPassword(email) {
     const auth = getAuth();
     try {
-      await sendPasswordResetEmail(auth, email)
-    } catch(error)  {
-    console.error(error)
-    // ..
-    };
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      console.error(error);
+      // ..
+    }
   }
 
   useEffect(() => {
