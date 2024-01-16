@@ -1,5 +1,4 @@
-import { createContext, ReactNode, useContext } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { TCheckOut } from "../pages/checkOut";
 
 type DeliveryProviderProps = {
@@ -19,10 +18,12 @@ export function useDeliveryContext() {
 }
 
 export function DeliveryProvider({ children }: DeliveryProviderProps) {
-  const [deliveryDetails, setDeliveryDetails] = useLocalStorage<TCheckOut | {}>(
-    "delivery-details",
-    {}
-  );
+  // const [deliveryDetails, setDeliveryDetails] = useLocalStorage<TCheckOut | {}>(
+  //   "delivery-details",
+  //   {}
+  // );
+
+  const [deliveryDetails, setDeliveryDetails] = useState<TCheckOut | {}>({});
 
   function updateDetails(item) {
     setDeliveryDetails({
