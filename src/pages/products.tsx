@@ -159,20 +159,20 @@ export default function Products() {
     };
     if (updateAddDelete === "update" && itemToUpdateOrDelete) {
       try {
-
-        const dirtyFieldsWithValues = Object.entries(values).filter(([key, value]) => itemToUpdateOrDelete[key] !== value)
+        const dirtyFieldsWithValues = Object.entries(values).filter(
+          ([key, value]) => itemToUpdateOrDelete[key] !== value
+        );
 
         let toUpdate = { id: itemToUpdateOrDelete.id } as IUpdateProduct;
 
-        dirtyFieldsWithValues.forEach(
-          (value) => {
-            if (value[0] !== 'image') {
+        dirtyFieldsWithValues.forEach((value) => {
+          if (value[0] !== "image") {
             toUpdate = {
               ...toUpdate,
               [value[0]]: value[1],
-            }
-          }}
-        );
+            };
+          }
+        });
 
         if (imageURL)
           toUpdate = {
@@ -189,8 +189,7 @@ export default function Products() {
       try {
         await mutateAsyncAdd(product);
         toast.info("Product succesfully added.");
-      } catch (err) {
-      }
+      } catch (err) {}
     }
     reset(defaultValues);
     setImageURL("");
@@ -262,8 +261,7 @@ export default function Products() {
         window.scrollTo(0, 0);
         toast.info("Product successfully deleted.");
         refetchGet();
-      } catch (err) {
-      }
+      } catch (err) {}
     }
   };
 
@@ -334,7 +332,6 @@ export default function Products() {
                     label="Search products"
                     InputProps={{
                       ...params.InputProps,
-                      type: "search",
                     }}
                   />
                 )}

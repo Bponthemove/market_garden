@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { categories } from "../../constants/categories";
 
@@ -21,16 +21,9 @@ const Shop = () => {
           }}
         />
       </Box>
-      <Grid
-        pt={3}
-        container
-        display="flex"
-        columnGap={4}
-        rowGap={7}
-        justifyContent="center"
-      >
+      <Box>
         <Outlet />
-      </Grid>
+      </Box>
     </Box>
   );
 };
