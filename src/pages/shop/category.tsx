@@ -46,49 +46,59 @@ export default function Category({ cat }: { cat: string }) {
   }
 
   return (
-    <Grid
-      pt={3}
-      container
-      display="flex"
-      columnGap={4}
-      rowGap={7}
-      justifyContent="center"
-    >
-      <Autocomplete
-        fullWidth
-        options={products}
-        getOptionLabel={(option) => option.label}
-        filterOptions={(options) =>
-          options.filter((opt) => opt.label.toLowerCase().includes(query))
-        }
-        onInputChange={(_, value) => {
-          console.log("BRAM2", value);
-          setQuery(value.toLowerCase());
-          const itemFound = products.find(
-            (product) => product.label.toLowerCase() === value.toLowerCase()
-          );
-          if (itemFound) setFilteredOption(itemFound);
-          if (!value) setFilteredOption(null);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Search products"
-            InputProps={{
-              ...params.InputProps,
+    <>
+      <Box maxWidth="400px" margin='1rem auto'>
+        {cat === "vegetables" && (
+          <Autocomplete
+            fullWidth
+            options={products}
+            getOptionLabel={(option) => option.label}
+            filterOptions={(options) =>
+              options.filter((opt) => opt.label.toLowerCase().includes(query))
+            }
+            onInputChange={(_, value) => {
+              console.log("BRAM2", value);
+              setQuery(value.toLowerCase());
+              const itemFound = products.find(
+                (product) => product.label.toLowerCase() === value.toLowerCase()
+              );
+              if (itemFound) setFilteredOption(itemFound);
+              if (!value) setFilteredOption(null);
             }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Search products"
+                InputProps={{
+                  ...params.InputProps,
+                }}
+              />
+            )}
           />
         )}
-      />
-      {!filteredOption ? (
-        products
-          .sort((a, b) => b.stockLevel - a.stockLevel)
-          .map((product, idx) => (
-            <ProductTile product={product} key={product.id} idx={idx} />
-          ))
-      ) : (
-        <ProductTile product={filteredOption} key={filteredOption.id} idx={0} />
-      )}
-    </Grid>
+      </Box>
+      <Grid
+        pt={3}
+        container
+        display="flex"
+        columnGap={4}
+        rowGap={7}
+        justifyContent="center"
+      >
+        {!filteredOption ? (
+          products
+            .sort((a, b) => b.stockLevel - a.stockLevel)
+            .map((product, idx) => (
+              <ProductTile product={product} key={product.id} idx={idx} />
+            ))
+        ) : (
+          <ProductTile
+            product={filteredOption}
+            key={filteredOption.id}
+            idx={0}
+          />
+        )}
+      </Grid>
+    </>
   );
 }
