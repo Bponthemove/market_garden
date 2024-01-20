@@ -68,11 +68,10 @@ export default function Products() {
   >();
   const [query, setQuery] = useState("");
 
-  const { control, handleSubmit, reset, formState, getValues } =
-    useForm<IAddProduct>({
-      defaultValues,
-      reValidateMode: "onBlur",
-    });
+  const { control, handleSubmit, reset } = useForm<IAddProduct>({
+    defaultValues,
+    reValidateMode: "onBlur",
+  });
 
   const { addProduct, getProductsByCategory, deleteProduct, updateProduct } =
     useFirebase();
@@ -187,9 +186,20 @@ export default function Products() {
       }
     } else {
       try {
-        await mutateAsyncAdd(product);
+        let updatedProduct;
+        if (typeof product.price === "number") {
+          updatedProduct = {
+            ...product,
+            price: product.price.toFixed(2),
+          };
+        } else {
+          updatedProduct = { ...product };
+        }
+        await mutateAsyncAdd(updatedProduct);
         toast.info("Product succesfully added.");
-      } catch (err) {}
+      } catch (err) {
+        toast.error("Error adding product, contact Bram");
+      }
     }
     reset(defaultValues);
     setImageURL("");

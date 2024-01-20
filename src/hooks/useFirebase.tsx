@@ -47,9 +47,8 @@ export const useFirebase = () => {
       console.error("Item not added to DB" + err)
     }
     const { label, price } = product;
-    // const priceFixed = price.toFixed(2);
     console.log(price);
-    console.log(price.toFixed(2))
+    
     if (!addedProductRef) throw new Error('Error adding product to DB')
     try {
       await fetch(
@@ -115,10 +114,7 @@ export const useFirebase = () => {
         const toUpdateKeys = Object.keys(toUpdate);
         let url = `/.netlify/functions/stripeUpdateProduct?id=${id}`;
         if (toUpdateKeys.includes("label")) url += `&name=${toUpdate.label}`;
-        if (toUpdateKeys.includes("price")) {
-          const priceFixed = toUpdate.price.toFixed(2);
-          url += `&price=${priceFixed}`;
-        }
+        if (toUpdateKeys.includes("price")) url += `&price=${toUpdate.price}`;
         await fetch(url, {
           method: "POST",
         });

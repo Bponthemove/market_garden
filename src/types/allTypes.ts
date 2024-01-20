@@ -10,7 +10,7 @@ export interface IMinProduct {
   label: string;
   description: string;
   stockLevel: number;
-  price: number;
+  price: number | string;
   eachOrWeigth: string;
   banner: string;
   image: string;
@@ -26,7 +26,7 @@ export interface IUpdateProduct extends IId {
   label?: string;
   description?: string;
   stockLevel?: number;
-  price?: number;
+  price?: string | number;
   eachOrWeigth?: string;
   banner?: "";
   image?: string;
