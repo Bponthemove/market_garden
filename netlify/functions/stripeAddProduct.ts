@@ -41,14 +41,19 @@ const handler: Handler = async (
   }
 
   const { id, price, name } = params;
-  
+
   try {
     const product = await stripe.products.create({
       id,
       name,
       default_price_data: {
         currency: "gbp",
-        unit_amount_decimal: price && typeof price === 'number' ? price * 100 : 0,
+        unit_amount_decimal:
+          price && typeof price === "number"
+            ? price
+              ? price * 100
+              : parseFloat(price) * 100
+            : 0,
       },
     });
     return {
