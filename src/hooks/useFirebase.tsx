@@ -40,13 +40,13 @@ export const useFirebase = () => {
   //----------------PRODUCTS----------//
   //create product
   const addProduct = async (product: IAddProduct) => {
-    const { label, price } = product;
     const addedProductRef = await addDoc(collection(db, "product"), product);
+    const { label, price } = product;
+    const priceFixed = price.toFixed(2);
+    console.log(priceFixed);
     try {
       await fetch(
-        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price.toFixed(
-          2
-        )}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${priceFixed}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }
@@ -108,7 +108,10 @@ export const useFirebase = () => {
         const toUpdateKeys = Object.keys(toUpdate);
         let url = `/.netlify/functions/stripeUpdateProduct?id=${id}`;
         if (toUpdateKeys.includes("label")) url += `&name=${toUpdate.label}`;
-        if (toUpdateKeys.includes("price")) url += `&price=${toUpdate.price}`;
+        if (toUpdateKeys.includes("price")) {
+          const priceFixed = toUpdate.price.toFixed(2);
+          url += `&price=${priceFixed}`;
+        }
         await fetch(url, {
           method: "POST",
         });
