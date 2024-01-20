@@ -186,16 +186,7 @@ export default function Products() {
       }
     } else {
       try {
-        let updatedProduct;
-        if (typeof product.price === "number") {
-          updatedProduct = {
-            ...product,
-            price: product.price.toFixed(2),
-          };
-        } else {
-          updatedProduct = { ...product };
-        }
-        await mutateAsyncAdd(updatedProduct);
+        await mutateAsyncAdd(product);
         toast.info("Product succesfully added.");
       } catch (err) {
         toast.error("Error adding product, contact Bram");
