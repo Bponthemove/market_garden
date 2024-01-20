@@ -49,6 +49,7 @@ export const useFirebase = () => {
     const { label, price } = product;
     // const priceFixed = price.toFixed(2);
     console.log(price);
+    console.log(price.toFixed(2))
     if (!addedProductRef) throw new Error('Error adding product to DB')
     try {
       await fetch(
