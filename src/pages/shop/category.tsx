@@ -21,8 +21,6 @@ export default function Category({ cat }: { cat: string }) {
     getProductsByCategory
   );
 
-  console.log("BRAM", filteredOption);
-
   const notAvailable = {
     vegbox:
       "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer. Check back soon!",
@@ -57,7 +55,6 @@ export default function Category({ cat }: { cat: string }) {
               options.filter((opt) => opt.label.toLowerCase().includes(query))
             }
             onInputChange={(_, value) => {
-              console.log("BRAM2", value);
               setQuery(value.toLowerCase());
               const itemFound = products.find(
                 (product) => product.label.toLowerCase() === value.toLowerCase()

@@ -44,7 +44,9 @@ export const useFirebase = () => {
     const addedProductRef = await addDoc(collection(db, "product"), product);
     try {
       await fetch(
-        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price.toFixed(
+          2
+        )}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }
@@ -103,16 +105,13 @@ export const useFirebase = () => {
         await updateDoc(doc(db, "product", id), {
           ...toUpdate,
         });
-        if (Object.keys(toUpdate).includes("label" || "price")) {
-          await fetch(
-            `/.netlify/functions/stripeUpdateProduct?id=${id}&name=${
-              toUpdate.label ?? ""
-            }&price=${toUpdate.price ?? ""}`,
-            {
-              method: "POST",
-            }
-          );
-        }
+        const toUpdateKeys = Object.keys(toUpdate);
+        let url = `/.netlify/functions/stripeUpdateProduct?id=${id}`;
+        if (toUpdateKeys.includes("label")) url += `&name=${toUpdate.label}`;
+        if (toUpdateKeys.includes("price")) url += `&price=${toUpdate.price}`;
+        await fetch(url, {
+          method: "POST",
+        });
       }
     } catch (err) {
       setFirebaseError(`Error updating product: id ${id}`);
