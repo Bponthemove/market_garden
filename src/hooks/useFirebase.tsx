@@ -40,13 +40,19 @@ export const useFirebase = () => {
   //----------------PRODUCTS----------//
   //create product
   const addProduct = async (product: IAddProduct) => {
-    const addedProductRef = await addDoc(collection(db, "product"), product);
+    let addedProductRef;
+    try {
+      addedProductRef = await addDoc(collection(db, "product"), product);
+    } catch (err) {
+      console.error("Item not added to DB" + err)
+    }
     const { label, price } = product;
-    const priceFixed = price.toFixed(2);
-    console.log(priceFixed);
+    // const priceFixed = price.toFixed(2);
+    console.log(price);
+    if (!addedProductRef) throw new Error('Error adding product to DB')
     try {
       await fetch(
-        `/.netlify/functions/stripeAddProduct?name=${label}&price=${priceFixed}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }
