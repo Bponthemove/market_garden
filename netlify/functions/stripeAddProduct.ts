@@ -41,21 +41,21 @@ const handler: Handler = async (
   }
 
   const { id, price, name } = params;
-
+  
   try {
     const product = await stripe.products.create({
       id,
       name,
       default_price_data: {
         currency: "gbp",
-        unit_amount_decimal: Number(price) * 100,
+        unit_amount_decimal: price && typeof price === 'number' ? price * 100 : 0,
       },
     });
     return {
       statusCode: 200,
       body: JSON.stringify({
         product,
-        message: 'succeeded',
+        message: "succeeded",
       }),
     };
   } catch (err) {
@@ -64,7 +64,7 @@ const handler: Handler = async (
       statusCode: 424,
       body: JSON.stringify({
         product: {},
-        message: err.message ?? 'ERROR',
+        message: err.message ?? "ERROR",
       }),
     };
   }

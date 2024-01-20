@@ -46,16 +46,11 @@ export const useFirebase = () => {
     } catch (err) {
       console.error("Item not added to DB" + err)
     }
-    const { label, price } = product;
-    const priceFormatted = {
-      currency: 'gbp',
-      unit_amount: price * 100
-    }
-    
+    const { label, price } = product;    
     if (!addedProductRef) throw new Error('Error adding product to DB')
     try {
       await fetch(
-        `/.netlify/functions/stripeAddProduct?name=${label}&default_price_data=${priceFormatted}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }
