@@ -91,7 +91,7 @@ export const Layout = ({
             position="absolute"
             width="100%"
             sx={{
-              top: pathname === "/" ? { xs: "3rem", sm: "1rem" } : "1rem",
+              top: pathname === "/" || pathname === "/contact" ? { xs: "3rem", sm: "1rem" } : "1rem",
               left: "1rem",
             }}
           >

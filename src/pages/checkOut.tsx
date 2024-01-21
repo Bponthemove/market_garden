@@ -60,7 +60,7 @@ export const checkOutSchema = z.object({
 export type TCheckOut = z.infer<typeof checkOutSchema>;
 
 export const CheckOut = () => {
-  const { cartItems } = useCartContext();
+  const { cartItems, cartTotal } = useCartContext();
   const { currentUser } = useAuthContext();
   const { setOrderNr } = useOrderContext();
   const { updateDetails } = useDeliveryContext();
@@ -102,6 +102,7 @@ export const CheckOut = () => {
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
+        shipping: cartTotal > 25,
         items: cartItems.map((item) => ({
           id: item.id,
           quantity: item.quantity,

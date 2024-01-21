@@ -37,7 +37,7 @@ export default function Category({ cat }: { cat: string }) {
 
   if (notAvailable.hasOwnProperty(cat)) {
     return (
-      <Box px={2}>
+      <Box p={2}>
         <Typography variant="body1">{notAvailable[cat]}</Typography>
       </Box>
     );

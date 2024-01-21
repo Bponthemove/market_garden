@@ -14,7 +14,7 @@ const handler = async (
       price_data:{
         product: item.id,
         currency: 'gbp',
-        unit_amount_decimal: Number(item.price) * 100
+        unit_amount_decimal: Math.round(item.price * 100) 
       },
       quantity: item.quantity
     }))
@@ -22,8 +22,18 @@ const handler = async (
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: modifiedLineItems,
+        shipping_options: {
+          shipping_rate_data: {
+            display_name: 'Delivery cost', 
+            fixed_amount: {
+              amount: checkOut.shipping ? 399 : 0,
+              currency: 'gbp'
+            }
+            }
+          },
         success_url: "https://roundthefield.co.uk/afterstripe/success",
-        cancel_url: "https://roundthefield.co.uk//afterstripe/failed",
+        cancel_url: "https://roundthefield.co.uk/cart",
+        // cancel_url: "https://roundthefield.co.uk//afterstripe/failed",
         customer_email: checkOut.email,
       });
       status = 200;      

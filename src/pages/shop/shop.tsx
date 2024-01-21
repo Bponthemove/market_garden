@@ -6,7 +6,7 @@ const Shop = () => {
   const { pathname } = useLocation();
 
   return pathname === "/shop" ? (
-    <Navigate to={"/shop/vegbox"} />
+    <Navigate to={"/shop/vegetables"} />
   ) : (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box display="flex" flexDirection="column" alignItems="center">
