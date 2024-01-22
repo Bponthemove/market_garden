@@ -79,7 +79,7 @@ export function Cart() {
           width="100%"
           sx={{ paddingX: { xs: "0", sm: "3.5rem", md: "6.5rem" } }}
         >
-          <Box pt={2} display="flex" flexDirection="column">
+          <Box pt={2} display="flex" flexDirection="column" alignItems='center'>
             {cartItems.length === 0 ? (
               <Box>Please add some items to your crate.</Box>
             ) : (
@@ -88,6 +88,7 @@ export function Cart() {
                   "&.MuiTable-root": {
                     borderCollapse: "separate",
                     borderSpacing: "0 1rem",
+                    maxWidth: '800px'
                   },
                 }}
               >

@@ -22,18 +22,19 @@ const handler = async (
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: modifiedLineItems,
-        shipping_options: {
+        shipping_options: [{
           shipping_rate_data: {
-            display_name: 'Delivery cost', 
+            type: 'fixed_amount',
+            display_name: checkOut.shipping ? 'Delivery cost' : ' Free Delivery', 
             fixed_amount: {
               amount: checkOut.shipping ? 399 : 0,
               currency: 'gbp'
             }
             }
-          },
+          }],
         success_url: "https://roundthefield.co.uk/afterstripe/success",
-        cancel_url: "https://roundthefield.co.uk/cart",
-        // cancel_url: "https://roundthefield.co.uk//afterstripe/failed",
+        // cancel_url: "https://roundthefield.co.uk/cart",
+        cancel_url: "https://roundthefield.co.uk//afterstripe/failed",
         customer_email: checkOut.email,
       });
       status = 200;      
