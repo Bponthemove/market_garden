@@ -1,44 +1,32 @@
 import { Box } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import SignInForm from "../components/SignInForm";
 
 function SignInSide() {
   return (
-    <Grid container mt={2}>
-      <Grid item xs={8}>
+    <Box
+      mt={2}
+      display="flex"
+      alignItems="center"
+      sx={{ flexDirection: { xs: "column", sm: "row" } }}
+    >
+      <Box display='flex' flexDirection='column' gap={5} alignItems='center' sx={{width: {xs: "80%", sm: "40%"},}}>
         <Typography component="h1" variant="h3">
           Sign In
         </Typography>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        mt={4}
-        mb={4}
-        container
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Typography variant="caption">Don't have an account?</Typography>
-          <Link to="/signup">Sign Up</Link>
-        </Box>
-      </Grid>
-      <SignInForm initial={true} />
-      <Grid
-        item
-        flexGrow="1"
+        <SignInForm initial={true} />
+        <Typography variant="caption">Don't have an account?</Typography>
+        <Link to="/signup">Sign Up</Link>
+      </Box>
+      <Box
+        
         sx={{
+          marginTop: {xs: '2rem', sm: '0px'},
+          minHeight: "200px",
+          width: {xs: "100%", sm: "60%"},
           backgroundImage:
-            "url(https://firebasestorage.googleapis.com/v0/b/marketgarden-dev.appspot.com/o/files%2Fgarden1.jfif?alt=media&token=e44d8a9c-192e-45fc-a427-956974c79724)",
+            "url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FIMG_5117.JPG?alt=media&token=834117ed-1726-4703-84ed-28951d464b07)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -48,7 +36,7 @@ function SignInSide() {
           backgroundPosition: "center",
         }}
       />
-    </Grid>
+    </Box>
   );
 }
 

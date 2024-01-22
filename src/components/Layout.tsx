@@ -120,7 +120,7 @@ export const Layout = ({
         sx={(theme) => ({
           backgroundColor: theme.palette.light.main,
           minHeight: 
-            pathname !== "/contact"
+            pathname !== "/contact" 
               ? {xs: "calc(100% - 8.4rem)", sm: "calc(100% - 5.25rem)"}
               : { xs: "calc(80% - 11.5rem)", sm: "calc(80% - 9.25rem)" },
           width: "100vw",

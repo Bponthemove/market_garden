@@ -93,8 +93,6 @@ export default function SignInForm({ initial }: { initial: boolean }) {
     <Grid
       item
       container
-      xs={12}
-      md={6.5}
       gap={1}
       component="form"
       display="flex"
