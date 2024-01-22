@@ -68,7 +68,6 @@ export default function Stock() {
             options.filter((opt) => opt.label.toLowerCase().includes(query))
           }
           onInputChange={(_, value) => {
-            console.log("BRAM2", value);
             setQuery(value.toLowerCase());
             const itemFound = products.find(
               (product) => product.label.toLowerCase() === value.toLowerCase()
