@@ -65,7 +65,7 @@ export function Orders() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { getOrders, setOrderToProcessed } = useFirebase();
   const [csv, getCSV] = useState<boolean>(false);
-  const [onlyShowUnprocessed, setOnlyShowUnprocessed] = useState<boolean>(true);
+  const [onlyShowUnprocessed, setOnlyShowUnprocessed] = useState<boolean>(false);
 
   const { data, refetch } = useQuery(["getOrders"], getOrders);
 
