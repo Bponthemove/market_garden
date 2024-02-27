@@ -25,8 +25,7 @@ export default function Category({ cat }: { cat: string }) {
     vegbox:
       "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer. Check back soon!",
     meat: "Coming soon! We are working with fantastic local organic farmers to offer a range of quality high welfare meats. Check back soon!",
-    eggs: "Coming soon! Pastured layers; happy hens allowed to roam on meadow grass. Moved daily so they can forage naturally, producing gorgeous healthy eggs. Check back soon. ",
-    storeCupboard: ["Herbal Teas", <br />, "Honey"],
+    storeCupboard: ["Herbal Teas", <br />, "Honey", <br />, "Beauty"],
   };
 
   const products = data || [];
@@ -45,7 +44,7 @@ export default function Category({ cat }: { cat: string }) {
 
   return (
     <>
-      <Box maxWidth="400px" margin='1rem auto'>
+      <Box maxWidth="400px" margin="1rem auto">
         {cat === "vegetables" && (
           <Autocomplete
             fullWidth
@@ -74,28 +73,78 @@ export default function Category({ cat }: { cat: string }) {
           />
         )}
       </Box>
-      <Grid
-        pt={3}
-        container
-        display="flex"
-        columnGap={4}
-        rowGap={7}
-        justifyContent="center"
-      >
-        {!filteredOption ? (
-          products
-            .sort((a, b) => b.stockLevel - a.stockLevel)
-            .map((product, idx) => (
-              <ProductTile product={product} key={product.id} idx={idx} />
-            ))
-        ) : (
-          <ProductTile
-            product={filteredOption}
-            key={filteredOption.id}
-            idx={0}
-          />
-        )}
-      </Grid>
+      {cat === "eggs" ? (
+        <>
+          <Typography mt={2} variant="body1">
+            Pastured, free range eggs. Moved onto new pasture daily so they can
+            forage naturally, producing super happy eggs.
+          </Typography>
+          <Box
+            display="flex"
+            sx={{ flexDirection: { xs: "column", md: "row" } }}
+            mt={2}
+          >
+            <Box
+              sx={{
+                minHeight: { xs: "30vh", sm: "60vh" },
+                width: "100%",
+                alignSelf: { xs: "center", sm: "stretch" },
+                backgroundImage:
+                  "url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fhens2.jpeg?alt=media&token=1ec08890-0a20-4a1d-a86b-690f5b64e5e3)",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+
+            <Grid
+              container
+              display="flex"
+              columnGap={4}
+              rowGap={7}
+              justifyContent="center"
+              sx={{ paddingTop: { xs: "3rem", md: "0" } }}
+            >
+              {!filteredOption ? (
+                products
+                  .sort((a, b) => b.stockLevel - a.stockLevel)
+                  .map((product, idx) => (
+                    <ProductTile product={product} key={product.id} idx={idx} />
+                  ))
+              ) : (
+                <ProductTile
+                  product={filteredOption}
+                  key={filteredOption.id}
+                  idx={0}
+                />
+              )}
+            </Grid>
+          </Box>
+        </>
+      ) : (
+        <Grid
+          pt={3}
+          container
+          display="flex"
+          columnGap={4}
+          rowGap={7}
+          justifyContent="center"
+        >
+          {!filteredOption ? (
+            products
+              .sort((a, b) => b.stockLevel - a.stockLevel)
+              .map((product, idx) => (
+                <ProductTile product={product} key={product.id} idx={idx} />
+              ))
+          ) : (
+            <ProductTile
+              product={filteredOption}
+              key={filteredOption.id}
+              idx={0}
+            />
+          )}
+        </Grid>
+      )}
     </>
   );
 }

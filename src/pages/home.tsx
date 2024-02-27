@@ -34,11 +34,18 @@ const Home = () => {
 
   const handleCheckPostcode = () => {
     if (postcode) {
-      if (postcodes.indexOf(postcode) >= 0) {
+      if (postcode === "ox447rw") {
         setDeliver("Great! We can deliver to your area!");
       } else {
-        setDeliver("Sorry! We are not in your area yet. Check back soon!");
+        const firstHalf = postcode.slice(0, postcode.length === 7 ? 4 : 3);
+        if (postcodes.indexOf(firstHalf) >= 0) {
+          setDeliver("Great! We can deliver to your area!");
+        } else {
+          setDeliver("Sorry! We are not in your area yet. Check back soon!");
+        }
       }
+    } else {
+      setDeliver("Please enter a postcode");
     }
   };
 
@@ -60,7 +67,11 @@ const Home = () => {
           }}
         >
           <Box flex="1" p={4}>
-            <Typography variant="h5">About us</Typography>
+            <Typography variant="h5">
+              <b>
+                <u>About us</u>
+              </b>
+            </Typography>
             <Typography
               variant="body1"
               pt={1}
@@ -130,7 +141,11 @@ const Home = () => {
             }}
           />
           <Box flex="1" p={4}>
-            <Typography variant="h5">How it works</Typography>
+            <Typography variant="h5">
+              <b>
+                <u>How it works</u>
+              </b>
+            </Typography>
             <Typography
               variant="body1"
               pt={1}

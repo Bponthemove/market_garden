@@ -278,7 +278,7 @@ export const CheckOut = () => {
           <Box sx={{ flex: 3 }}>
             Order before 4pm for next day delivery. Deliveries are made between
             7am and 12pm.
-            <p>Your delivery will be {nextDayDelivery()}</p>
+            <p>Your delivery date will be {nextDayDelivery()}</p>
           </Box>
         </Box>
         <Grid
