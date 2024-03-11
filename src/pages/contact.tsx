@@ -18,7 +18,7 @@ const Contact = () => {
       <Box>
         <Typography variant="h5">Contact us via email: </Typography>
         <Link to="mailto:email@roundthefield.co.uk">
-          <Typography variant="subtitle1">email@roundthefield.co.uk</Typography>
+          <Typography variant="subtitle1">hello@roundthefield.co.uk</Typography>
         </Link>
       </Box>
       <Box display="flex" gap={3}>

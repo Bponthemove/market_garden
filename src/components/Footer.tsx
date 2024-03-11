@@ -60,7 +60,7 @@ function Footer() {
             <Link to="http://www.instagram.com/roundthefield_marketgarden">
               <InstagramIcon sx={iconStyles} fontSize="large" />
             </Link>
-            <Link to="instagram.com/yourusername/">
+            <Link to="mailto:email@roundthefield.co.uk">
               <EmailIcon sx={iconStyles} fontSize="large" />
             </Link>
           </Grid>
