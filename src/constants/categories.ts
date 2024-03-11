@@ -20,9 +20,19 @@ export const categories = [
     cat: 'meat',
   },
   {
-    label: 'Store cupboard',
-    path: '/shop/storecupboard',
-    cat: 'storeCupboard',
+    label: 'Herbal Teas',
+    path: '/shop/herbalteas',
+    cat: 'herbalTeas',
+  }, 
+  {
+    label: 'Honey',
+    path: '/shop/honey',
+    cat: 'honey',
+  }, 
+  {
+    label: 'Skin Care',
+    path: '/shop/skincare',
+    cat: 'skinCare',
   }, 
   {
     label: 'Eggs',

@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { ReactNode, useState } from "react";
 import { CartItem } from "../components/CartItem";
+import { useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { CheckOut } from "./checkOut";
 
@@ -33,7 +34,9 @@ export const TableCellStyled = ({
 
 export function Cart() {
   const [maxHeight, setMaxHeight] = useState<"auto" | 0>(0);
-  const { cartItems, cartTotal, clearCart, cartQuantity } = useCartContext();
+  const { cartItems, cartTotal, clearCart, cartQuantity, discountInMoney } =
+    useCartContext();
+  const { discount } = useAuthContext();
 
   const handleClickOrder = () => {
     setMaxHeight((prev) => (prev === "auto" ? 0 : "auto"));
@@ -79,7 +82,7 @@ export function Cart() {
           width="100%"
           sx={{ paddingX: { xs: "0", sm: "3.5rem", md: "6.5rem" } }}
         >
-          <Box pt={2} display="flex" flexDirection="column" alignItems='center'>
+          <Box pt={2} display="flex" flexDirection="column" alignItems="center">
             {cartItems.length === 0 ? (
               <Box>Please add some items to your crate.</Box>
             ) : (
@@ -88,7 +91,7 @@ export function Cart() {
                   "&.MuiTable-root": {
                     borderCollapse: "separate",
                     borderSpacing: "0 1rem",
-                    maxWidth: '800px'
+                    maxWidth: "800px",
                   },
                 }}
               >
@@ -104,6 +107,16 @@ export function Cart() {
                       {cartTotal <= 25 ? "£ 3.99" : "Free Delivery"}
                     </TableCellStyled>
                   </TableRow>
+                  {discount && (
+                    <TableRow>
+                      <TableCellStyled>{""}</TableCellStyled>
+                      <TableCellStyled>{`Discount (${discount}%) : `}</TableCellStyled>
+
+                      <TableCellStyled>
+                        {`£ ${discountInMoney.toFixed(2)}`}
+                      </TableCellStyled>
+                    </TableRow>
+                  )}
                   <TableRow>
                     <TableCellStyled>{""}</TableCellStyled>
                     <TableCellStyled>Total : </TableCellStyled>
@@ -111,9 +124,7 @@ export function Cart() {
                     <TableCellStyled>
                       {`£ ${
                         cartTotal <= 25
-                          ? (
-                              Math.round((cartTotal * 100) / 100) + 3.99
-                            ).toFixed(2)
+                          ? (cartTotal + 3.99).toFixed(2)
                           : cartTotal.toFixed(2)
                       }`}
                     </TableCellStyled>

@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext } from "react";
 import { IGetProduct } from "../types/allTypes";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useAuthContext } from "./AuthContext";
 
 type CartProviderProps = {
   children: ReactNode;
@@ -14,6 +15,7 @@ type CartContextTypes = {
   clearCart: () => void;
   cartQuantity: number;
   cartTotal: number;
+  discountInMoney: number;
   cartItems: ICartItem[];
   getItemQuantity: (id: string) => number;
   increaseCartQuantity: (product: IGetProduct) => void;
@@ -33,11 +35,19 @@ export function CartProvider({ children }: CartProviderProps) {
     []
   );
 
+  const {discount} = useAuthContext();
+
+  const discountForCalculation = discount ? (parseFloat(discount)/100) : 0;
+
   const cartQuantity = cartItems.reduce((a, c) => c.quantity + a, 0);
 
-  const cartTotal = cartItems.length
+  const cartTotalBeforeDiscount = cartItems.length
     ? cartItems.reduce((a, c) => (c.price || 0) * c.quantity + a, 0)
     : 0;
+
+  const discountInMoney = cartTotalBeforeDiscount * discountForCalculation;
+
+  const cartTotal = Math.round((cartTotalBeforeDiscount - discountInMoney) * 100) / 100;
 
   function getItemQuantity(id: string) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
@@ -89,6 +99,7 @@ export function CartProvider({ children }: CartProviderProps) {
         removeFromCart,
         decreaseCartQuantity,
         increaseCartQuantity,
+        discountInMoney,
         getItemQuantity,
         cartItems,
         cartQuantity,
