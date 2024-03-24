@@ -65,7 +65,8 @@ export function Orders() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { getOrders, setOrderToProcessed } = useFirebase();
   const [csv, getCSV] = useState<boolean>(false);
-  const [onlyShowUnprocessed, setOnlyShowUnprocessed] = useState<boolean>(false);
+  const [onlyShowUnprocessed, setOnlyShowUnprocessed] =
+    useState<boolean>(false);
 
   const { data, refetch } = useQuery(["getOrders"], getOrders);
 
@@ -178,6 +179,7 @@ export function Orders() {
                 <TableCellOrdersStyled head>Name</TableCellOrdersStyled>
                 <TableCellOrdersStyled head>Email</TableCellOrdersStyled>
                 <TableCellOrdersStyled head>Address</TableCellOrdersStyled>
+                <TableCellOrdersStyled head>Leave here</TableCellOrdersStyled>
                 <TableCellOrdersStyled head>Price</TableCellOrdersStyled>
                 <TableCellOrdersStyled head>Products</TableCellOrdersStyled>
                 <TableCellOrdersStyled head>Order Nr</TableCellOrdersStyled>
@@ -222,7 +224,13 @@ export function Orders() {
                           <span>{order.postcode}</span>
                         </TableCellOrdersStyled>
                         <TableCellOrdersStyled head={false}>
+                          {order.deliverySpace}
+                        </TableCellOrdersStyled>
+                        <TableCellOrdersStyled head={false}>
                           {order?.price?.toFixed(2) ?? "-"}
+                        </TableCellOrdersStyled>
+                        <TableCellOrdersStyled head={false}>
+                          {order.orderNr}
                         </TableCellOrdersStyled>
                         <TableCellOrdersStyled head={false}>
                           {order.order ? (

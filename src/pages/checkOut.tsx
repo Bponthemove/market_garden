@@ -32,6 +32,7 @@ const getStripe = async () => {
 };
 
 export const fieldRequiredMessage = "This field is required";
+export const max30charsMessage = "No more than 30 characters";
 
 export const checkOutSchema = z.object({
   email: z
@@ -55,17 +56,20 @@ export const checkOutSchema = z.object({
   addressLine1: z.string().min(1, { message: fieldRequiredMessage }),
   addressLine2: z.string().min(1, { message: fieldRequiredMessage }),
   town: z.string().min(1, { message: fieldRequiredMessage }),
+  deliverySpace: z.string().max(30, { message: max30charsMessage }).optional(),
 });
 
 export type TCheckOut = z.infer<typeof checkOutSchema>;
 
 export const CheckOut = () => {
-  const { cartItems, cartTotal } = useCartContext();
-  const { currentUser } = useAuthContext();
+  const { cartItems, cartTotal, discountInMoney } = useCartContext();
+  const { currentUser, discount } = useAuthContext();
   const { setOrderNr } = useOrderContext();
   const { updateDetails } = useDeliveryContext();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // const navigate = useNavigate();
 
   const defaultValues = {
     firstName: currentUser?.userDetails[0]?.firstName ?? "",
@@ -76,6 +80,7 @@ export const CheckOut = () => {
     addressLine1: currentUser?.userDetails[0]?.addressLine1 ?? "",
     addressLine2: currentUser?.userDetails[0]?.addressLine2 ?? "",
     town: currentUser?.userDetails[0]?.town ?? "",
+    deliverySpace: "",
   };
 
   const { control, handleSubmit, getValues } = useForm<TCheckOut>({
@@ -89,25 +94,38 @@ export const CheckOut = () => {
   ) => {
     event?.preventDefault();
     const email = getValues("email");
+    const {
+      firstName,
+      lastName,
+      phone,
+      addressLine1,
+      addressLine2,
+      town,
+      postcode,
+      deliverySpace,
+    } = data;
     updateDetails({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phone: data.phone,
-      addressLine1: data.addressLine1,
-      addressLine2: data.addressLine2,
-      town: data.town,
-      postcode: data.postcode,
-      email
+      firstName,
+      lastName,
+      phone,
+      addressLine1,
+      addressLine2,
+      town,
+      postcode,
+      email,
+      deliverySpace,
     });
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
         shipping: cartTotal <= 25,
+        discountInMoney,
+        discount,
+        email,
         items: cartItems.map((item) => ({
           id: item.id,
           quantity: item.quantity,
           price: item.price,
-          email,
         })),
       }),
     })
@@ -123,8 +141,9 @@ export const CheckOut = () => {
           console.error(result.error);
         }
       });
-
-    //succesful then add order to db
+    // ---- TEST ---- //
+    // setOrderNr('dfsfgdsg87fgfd')
+    // navigate("/afterstripe/success");
   };
 
   return (
@@ -281,6 +300,27 @@ export const CheckOut = () => {
             <p>Your delivery date will be {nextDayDelivery()}</p>
           </Box>
         </Box>
+        <Grid item xs={12}>
+          <Typography variant="body2">
+            Please let us know if you want us to leave the delivery in a special
+            place.
+          </Typography>
+          <Controller
+            name="deliverySpace"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                multiline
+                label=""
+                error={!!error}
+                helperText={error?.message ?? ""}
+              />
+            )}
+          />
+        </Grid>
         <Grid
           item
           xs={12}

@@ -55,6 +55,7 @@ export interface IOrder {
 
 export interface IAddOrder extends IOrder {
   processed: boolean;
+  deliverySpace: string;
   order: string;
   id: string;
 }

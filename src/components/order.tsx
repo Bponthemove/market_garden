@@ -8,6 +8,7 @@ export function Order(props) {
     idx,
     name,
     deliveryDay,
+    deliverySpace,
     phone,
     email,
     addressLineOne,
@@ -63,6 +64,10 @@ export function Order(props) {
           <li>{town}</li>
           <li>{postcode}</li>
         </ul>
+      </Box>
+      <Box display="flex" alignItems="center" gap="10px">
+        <Typography variant="h6">Leave here:</Typography>
+        <Typography>{deliverySpace}</Typography>
       </Box>
       <Box display="flex" alignItems="center" gap="10px">
         <Typography variant="h6">Order Total:</Typography>

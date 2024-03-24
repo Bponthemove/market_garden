@@ -1,3 +1,4 @@
+import SignInSide from "../../signIn";
 import { AfterStripe } from "../pages/afterStripe";
 import { CheckOut } from "../pages/checkOut";
 import Contact from "../pages/contact";
@@ -8,7 +9,6 @@ import { Orders } from "../pages/orders";
 import Products from "../pages/products";
 import Category from "../pages/shop/category";
 import Shop from "../pages/shop/shop";
-import SignInSide from "../pages/signIn";
 import SignUp from "../pages/signUp";
 import Stock from "../pages/stock";
 import { categories } from "./categories";

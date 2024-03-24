@@ -244,6 +244,7 @@ export const useFirebase = () => {
         deliveryDetails?.postcode ?? currentUser.userDetails[0].postcode,
       price: cartTotal,
       town: deliveryDetails?.town ?? currentUser.userDetails[0].town,
+      deliverySpace: deliveryDetails?.deliverySpace ?? '',
       orderNr: "",
       processed: false,
       timestamp: new Date().toISOString(),
