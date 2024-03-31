@@ -38,7 +38,12 @@ export const categories = [
     label: 'Eggs',
     path: '/shop/eggs',
     cat: 'eggs',
-  },  
+  },
+  {
+    label: 'Store cupboard',
+    path: '/shop/storecupboard',
+    cat: 'storeCupboard',
+  },    
 ] as const;
 
 export type Categories = typeof categories;

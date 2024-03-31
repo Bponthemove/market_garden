@@ -25,9 +25,9 @@ export default function Category({ cat }: { cat: string }) {
     vegbox:
       "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer. Check back soon!",
     meat: "Coming soon! We are working with fantastic local organic farmers to offer a range of quality high welfare meats. Check back soon!",
-    honey: "Honey made from bees foraging in the market garden",
-    skinCare: "Beautiful skin care products",
-    herbalTeas: "Home made teas, relaxing and invigorating"
+    honey: "Local honey",
+    herbalTeas: "Home made teas, relaxing and invigorating",
+    storeCupboard: "Local products, sold locally.",
   };
 
   const products = data || [];
@@ -75,29 +75,32 @@ export default function Category({ cat }: { cat: string }) {
           />
         )}
       </Box>
-      {cat === "eggs" ? (
+      {cat === "eggs" || cat === "skinCare" ? (
         <>
           <Typography mt={2} variant="body1">
-            Pastured, free range eggs. Moved onto new pasture daily so they can
-            forage naturally, producing super happy eggs.
+            {cat === "eggs"
+              ? "Pastured, free range eggs. Moved onto new pasture daily so they can forage naturally, producing super happy eggs."
+              : "100% natural skin care. Hand and homemade. No chemicals and beeswax produced by local beekeepers."}
           </Typography>
           <Box
             display="flex"
             sx={{ flexDirection: { xs: "column", md: "row" } }}
             mt={2}
           >
-            <Box
-              sx={{
-                minHeight: { xs: "30vh", sm: "60vh" },
-                width: "100%",
-                alignSelf: { xs: "center", sm: "stretch" },
-                backgroundImage:
-                  "url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fhens2.jpeg?alt=media&token=1ec08890-0a20-4a1d-a86b-690f5b64e5e3)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-            />
+            {cat === "eggs" && (
+              <Box
+                sx={{
+                  minHeight: { xs: "30vh", sm: "60vh" },
+                  width: "100%",
+                  alignSelf: { xs: "center", sm: "stretch" },
+                  backgroundImage:
+                    "url(https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2Fhens2.jpeg?alt=media&token=1ec08890-0a20-4a1d-a86b-690f5b64e5e3)",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            )}
 
             <Grid
               container
