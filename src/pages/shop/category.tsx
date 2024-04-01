@@ -23,10 +23,11 @@ export default function Category({ cat }: { cat: string }) {
 
   const notAvailable = {
     vegbox:
-      "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer. Check back soon!",
-    meat: "Coming soon! We are working with fantastic local organic farmers to offer a range of quality high welfare meats. Check back soon!",
+      "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer.",
+    meat: "Coming soon! We are working with fantastic local organic farmers to offer a range of quality high welfare meats.",
     honey: "Local honey",
-    herbalTeas: "Home made teas, relaxing and invigorating",
+    herbalTeas:
+      "Homemade herbal teas. Made with ingredients hand picked from the market garden.",
     storeCupboard: "Local products, sold locally.",
   };
 

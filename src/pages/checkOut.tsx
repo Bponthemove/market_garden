@@ -56,7 +56,9 @@ export const checkOutSchema = z.object({
   addressLine1: z.string().min(1, { message: fieldRequiredMessage }),
   addressLine2: z.string().min(1, { message: fieldRequiredMessage }),
   town: z.string().min(1, { message: fieldRequiredMessage }),
-  deliverySpace: z.string().max(30, { message: max30charsMessage }).optional(),
+  deliverySpace: z
+    .string()
+    .max(30, { message: max30charsMessage })
 });
 
 export type TCheckOut = z.infer<typeof checkOutSchema>;
@@ -80,7 +82,7 @@ export const CheckOut = () => {
     addressLine1: currentUser?.userDetails[0]?.addressLine1 ?? "",
     addressLine2: currentUser?.userDetails[0]?.addressLine2 ?? "",
     town: currentUser?.userDetails[0]?.town ?? "",
-    deliverySpace: "",
+    deliverySpace: 'No preference',
   };
 
   const { control, handleSubmit, getValues } = useForm<TCheckOut>({
