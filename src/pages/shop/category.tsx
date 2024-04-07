@@ -37,10 +37,12 @@ export default function Category({ cat }: { cat: string }) {
 
   if (isError) <Box>Error loading</Box>;
 
-  if (notAvailable.hasOwnProperty(cat)) {
+  if (products.length === 0) {
     return (
       <Box p={2}>
-        <Typography variant="body1">{notAvailable[cat]}</Typography>
+        <Typography variant="body1">
+          {notAvailable[cat] ?? "Sorry we have an error getting your products."}
+        </Typography>
       </Box>
     );
   }
