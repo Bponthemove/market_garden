@@ -120,7 +120,7 @@ export const CheckOut = () => {
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
-        shipping: cartTotal <= 25,
+        shipping: cartTotal < 0,
         discountInMoney,
         discount,
         email,

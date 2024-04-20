@@ -104,7 +104,7 @@ export function Cart() {
                     <TableCellStyled>delivery : </TableCellStyled>
 
                     <TableCellStyled>
-                      {cartTotal <= 25 ? "£ 3.99" : "Free Delivery"}
+                      {cartTotal < 0 ? "£ 3.99" : "Free Delivery"}
                     </TableCellStyled>
                   </TableRow>
                   {discount && (
@@ -123,7 +123,7 @@ export function Cart() {
 
                     <TableCellStyled>
                       {`£ ${
-                        cartTotal <= 25
+                        cartTotal < 0
                           ? (cartTotal + 3.99).toFixed(2)
                           : cartTotal.toFixed(2)
                       }`}
@@ -143,7 +143,7 @@ export function Cart() {
               {maxHeight === 0 && (
                 <Box display="flex" flexDirection="column" gap={2}>
                   <Typography variant="subtitle2">
-                    Free delivery on orders over £25
+                    Free delivery in April and May
                   </Typography>
                   <Button
                     disabled={!cartQuantity}
