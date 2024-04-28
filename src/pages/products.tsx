@@ -532,10 +532,7 @@ export default function Products() {
                       <FormLabel id="demo-radio-buttons-group-label">
                         Banner
                       </FormLabel>
-                      <RadioGroup
-                        aria-labelledby="radio-buttons-group-banner"
-                        name="banner"
-                      >
+                      <RadioGroup {...field} aria-labelledby="radio-buttons-group-banner">
                         <FormControlLabel
                           value="isOffer"
                           control={<Radio />}
@@ -547,11 +544,11 @@ export default function Products() {
                           label="Still Growing"
                         />
                         <FormControlLabel
-                          value="soldOut"
+                          value=""
                           control={<Radio />}
-                          label="Sold Out"
+                          label="None"
                         />
-                        <FormControlLabel
+                        {/* <FormControlLabel
                           value="comingSoon"
                           control={<Radio />}
                           label="Coming Soon"
@@ -570,7 +567,7 @@ export default function Products() {
                           value="inSeason"
                           control={<Radio />}
                           label="In Season"
-                        />
+                        /> */}
                       </RadioGroup>
                     </FormControl>
                   )}

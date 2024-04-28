@@ -107,7 +107,7 @@ function SignUp() {
         navigate("/");
       } catch (err) {
         console.error(err);
-        toast.error(`Error siging up, please try again.`);
+        toast.error(`Error siging up, please try again. ${err}`);
       }
     }
   };

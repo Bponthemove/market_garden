@@ -33,6 +33,7 @@ function ProductTile(props: { product: any; idx: number }) {
 
   const soldOut = stockLevel - itemQuantity === 0;
   const itemsLeft = stockLevel - itemQuantity;
+  const stillGrowing = banner === 'stillGrowing';
 
   return (
     <Grid
@@ -92,7 +93,9 @@ function ProductTile(props: { product: any; idx: number }) {
           })}
         >
           <Typography variant="subtitle2">
-            {soldOut
+            {stillGrowing ?
+              fromCamelCaseToNormal(banner)
+              : soldOut
               ? "Sold Out"
               : stockLevel && itemsLeft < 10
               ? `Only ${itemsLeft} item${itemsLeft === 1 ? '' : 's'} left`
@@ -157,7 +160,7 @@ function ProductTile(props: { product: any; idx: number }) {
           maxHeight="2rem"
           alignItems="center"
         >
-          {soldOut ? (
+          {soldOut || stillGrowing ? (
             <Button
               variant="outlined"
               disabled

@@ -111,11 +111,15 @@ export const useFirebase = () => {
         });
         const toUpdateKeys = Object.keys(toUpdate);
         let url = `/.netlify/functions/stripeUpdateProduct?id=${id}`;
-        if (toUpdateKeys.includes("label")) url += `&name=${toUpdate.label}`;
-        if (toUpdateKeys.includes("price")) url += `&price=${toUpdate.price}`;
-        await fetch(url, {
-          method: "POST",
-        });
+        const labelIncl = toUpdateKeys.includes("label");
+        const priceIncl = toUpdateKeys.includes("price");
+        if (priceIncl || labelIncl) {
+          if (labelIncl) url += `&name=${toUpdate.label}`;
+          if (priceIncl) url += `&price=${toUpdate.price}`;
+          await fetch(url, {
+            method: "POST",
+          });
+        }
       }
     } catch (err) {
       setFirebaseError(`Error updating product: id ${id}`);
