@@ -34,7 +34,7 @@ const getStripe = async () => {
 export const fieldRequiredMessage = "This field is required";
 export const max30charsMessage = "No more than 30 characters";
 
-export const checkOutSchema = z.object({
+export const personDetailsSchema = z.object({
   email: z
     .string()
     .min(1, { message: fieldRequiredMessage })
@@ -56,10 +56,13 @@ export const checkOutSchema = z.object({
   addressLine1: z.string().min(1, { message: fieldRequiredMessage }),
   addressLine2: z.string().min(1, { message: fieldRequiredMessage }),
   town: z.string().min(1, { message: fieldRequiredMessage }),
+});
+
+const checkOutSchema = personDetailsSchema.extend({
   deliverySpace: z
     .string()
     .max(30, { message: max30charsMessage })
-});
+})
 
 export type TCheckOut = z.infer<typeof checkOutSchema>;
 

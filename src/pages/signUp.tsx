@@ -8,21 +8,21 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useQuery } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useFormState } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuthContext } from "../context/AuthContext";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
-import { checkOutSchema, fieldRequiredMessage } from "./checkOut";
+import { personDetailsSchema, fieldRequiredMessage } from "./checkOut";
 
-export const signUpSchema = checkOutSchema
+export const signUpSchema = personDetailsSchema
   .extend({
     password: z
       .string()
       .regex(
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/,
-        "At least 8 characters including a uppercase and a lowercase letter, a number and a special character."
+        "At least 8 characters including an uppercase and a lowercase letter, a number and a special character."
       )
       .min(8, { message: fieldRequiredMessage }),
     passwordConfirmation: z.string().min(1, { message: fieldRequiredMessage }),
@@ -39,7 +39,7 @@ function SignUp() {
   const { currentUser, signUp, loading } = useAuthContext();
   const { existingAccount } = useFirebase();
 
-  const { control, handleSubmit, watch, getValues, setError, clearErrors, formState: {isValid, isSubmitting} } =
+  const { control, handleSubmit, watch, getValues, setError, clearErrors, formState: {isValid, isSubmitting, errors, submitCount} } =
     useForm<TSignUp>({
       defaultValues: {
         firstName: "",
@@ -56,6 +56,8 @@ function SignUp() {
       resolver: zodResolver(signUpSchema),
       mode: "onTouched",
     });
+
+    console.log({errors, isValid, submitCount})
 
   const watchEmail = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(watch("email"));
 
