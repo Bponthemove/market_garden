@@ -29,6 +29,7 @@ export default function Category({ cat }: { cat: string }) {
     herbalTeas:
       "Homemade herbal teas. Made with ingredients hand picked from the market garden.",
     storeCupboard: "Local products, sold locally.",
+    cutFlowers: "Beautiful cut flowers, great as a gift or to treat yourself.",
   };
 
   const products = data || [];

@@ -28,7 +28,7 @@ export interface IUpdateProduct extends IId {
   stockLevel?: number;
   price?: number;
   eachOrWeigth?: string;
-  banner?: "";
+  banner?: string;
   image?: string;
 }
 
