@@ -128,6 +128,10 @@ export const CheckOut = () => {
       email,
       deliverySpace,
     });
+
+    // update stock levels
+    cartItems.forEach(item => mutateAsync(item))
+    
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
@@ -148,9 +152,6 @@ export const CheckOut = () => {
         
         // set order nr for return page
         setOrderNr(session.id);
-
-        // update stock levels
-        cartItems.forEach(item => mutateAsync(item))
 
         return await stripe?.redirectToCheckout({ sessionId: session.id });
       })
