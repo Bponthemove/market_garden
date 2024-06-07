@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { ReactNode, useState } from "react";
 import { CartItem } from "../components/CartItem";
-import { useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { CheckOut } from "./checkOut";
 
@@ -34,9 +33,14 @@ export const TableCellStyled = ({
 
 export function Cart() {
   const [maxHeight, setMaxHeight] = useState<"auto" | 0>(0);
-  const { cartItems, cartTotal, clearCart, cartQuantity, discountInMoney } =
-    useCartContext();
-  const { discount } = useAuthContext();
+  const {
+    cartItems,
+    cartTotal,
+    clearCart,
+    cartQuantity,
+    discountInMoney,
+    discount,
+  } = useCartContext();
 
   const handleClickOrder = () => {
     setMaxHeight((prev) => (prev === "auto" ? 0 : "auto"));

@@ -30,6 +30,7 @@ export interface IUpdateProduct extends IId {
   eachOrWeigth?: string;
   banner?: string;
   image?: string;
+  quantityInOrder?: number;
 }
 
 export interface IProduct extends IAddProduct {

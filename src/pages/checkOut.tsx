@@ -19,6 +19,9 @@ import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { z } from "zod";
 import { useDeliveryContext } from "../context/DeliveryContext";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
+import { useFirebase } from "../hooks/useFirebase";
+import { IUpdateProduct } from "../types/allTypes";
+import { useMutation } from "@tanstack/react-query";
 
 let stripePromise: Stripe | null;
 
@@ -68,9 +71,10 @@ export type TCheckOut = z.infer<typeof checkOutSchema>;
 
 export const CheckOut = () => {
   const { cartItems, cartTotal, discountInMoney } = useCartContext();
-  const { currentUser, discount } = useAuthContext();
+  const { currentUser, couponId } = useAuthContext();
   const { setOrderNr } = useOrderContext();
   const { updateDetails } = useDeliveryContext();
+  const { updateProductStockLevel } = useFirebase();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -92,6 +96,10 @@ export const CheckOut = () => {
     defaultValues,
     resolver: zodResolver(checkOutSchema),
   });
+
+  const { mutateAsync } = useMutation(
+    (product: IUpdateProduct) => updateProductStockLevel(product)
+  );
 
   const handleOnSubmit = async (
     data: TCheckOut,
@@ -125,7 +133,7 @@ export const CheckOut = () => {
       body: JSON.stringify({
         shipping: cartTotal < 0,
         discountInMoney,
-        discount,
+        couponId,
         email,
         items: cartItems.map((item) => ({
           id: item.id,
@@ -137,7 +145,13 @@ export const CheckOut = () => {
       .then((res) => res.json())
       .then(async (session) => {
         const stripe = await getStripe();
+        
+        // set order nr for return page
         setOrderNr(session.id);
+
+        // update stock levels
+        cartItems.forEach(item => mutateAsync(item))
+
         return await stripe?.redirectToCheckout({ sessionId: session.id });
       })
       .then((result) => {

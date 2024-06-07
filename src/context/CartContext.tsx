@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
-import { IGetProduct } from "../types/allTypes";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { IGetProduct } from "../types/allTypes";
 import { useAuthContext } from "./AuthContext";
 
 type CartProviderProps = {
@@ -16,6 +16,7 @@ type CartContextTypes = {
   cartQuantity: number;
   cartTotal: number;
   discountInMoney: number;
+  discount: number;
   cartItems: ICartItem[];
   getItemQuantity: (id: string) => number;
   increaseCartQuantity: (product: IGetProduct) => void;
@@ -24,6 +25,17 @@ type CartContextTypes = {
 };
 
 const CartContext = createContext({} as CartContextTypes);
+
+const discounts = [
+  {
+    id: import.meta.env.VITE_APP_DISCOUNT10,
+    value: 10
+  },
+  { 
+    id: import.meta.env.VITE_APP_DISCOUNT20,
+    value: 20 
+  }
+];
 
 export function useCartContext() {
   return useContext(CartContext);
@@ -35,9 +47,11 @@ export function CartProvider({ children }: CartProviderProps) {
     []
   );
 
-  const {discount} = useAuthContext();
+  const { couponId } = useAuthContext();
 
-  const discountForCalculation = discount ? (parseFloat(discount)/100) : 0;
+  const discount = discounts.find(({id}) => id === couponId)?.value ?? 0;
+
+  const discountForCalculation = discount ? discount / 100 : 0;
 
   const cartQuantity = cartItems.reduce((a, c) => c.quantity + a, 0);
 
@@ -47,7 +61,8 @@ export function CartProvider({ children }: CartProviderProps) {
 
   const discountInMoney = cartTotalBeforeDiscount * discountForCalculation;
 
-  const cartTotal = Math.round((cartTotalBeforeDiscount - discountInMoney) * 100) / 100;
+  const cartTotal =
+    Math.round((cartTotalBeforeDiscount - discountInMoney) * 100) / 100;
 
   function getItemQuantity(id: string) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
@@ -100,6 +115,7 @@ export function CartProvider({ children }: CartProviderProps) {
         decreaseCartQuantity,
         increaseCartQuantity,
         discountInMoney,
+        discount,
         getItemQuantity,
         cartItems,
         cartQuantity,

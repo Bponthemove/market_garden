@@ -44,10 +44,10 @@ export const useFirebase = () => {
     try {
       addedProductRef = await addDoc(collection(db, "product"), product);
     } catch (err) {
-      console.error("Item not added to DB" + err)
+      console.error("Item not added to DB" + err);
     }
-    const { label, price } = product;    
-    if (!addedProductRef) throw new Error('Error adding product to DB')
+    const { label, price } = product;
+    if (!addedProductRef) throw new Error("Error adding product to DB");
     try {
       await fetch(
         `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
@@ -131,10 +131,14 @@ export const useFirebase = () => {
   const updateProductStockLevel = async (product: IUpdateProduct) => {
     setFirebaseLoading(true);
     const { id, stockLevel } = product;
+
+    const substractQuantity = product.quantityInOrder ?? 0;
+    // update stock level depending of where the call comes from. Checkout means substract from current level.
+    const updatedStockLevel = stockLevel - substractQuantity;
     try {
       if (id) {
         await updateDoc(doc(db, "product", id), {
-          stockLevel,
+          updatedStockLevel,
         });
       }
     } catch (err) {
@@ -248,7 +252,7 @@ export const useFirebase = () => {
         deliveryDetails?.postcode ?? currentUser.userDetails[0].postcode,
       price: cartTotal,
       town: deliveryDetails?.town ?? currentUser.userDetails[0].town,
-      deliverySpace: deliveryDetails?.deliverySpace ?? '',
+      deliverySpace: deliveryDetails?.deliverySpace ?? "",
       orderNr: "",
       processed: false,
       timestamp: new Date().toISOString(),

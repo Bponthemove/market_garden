@@ -27,7 +27,7 @@ type AuthProviderProps = {
 export interface IUserDetails {
   uid: string;
   phone: string;
-  discount?: string; 
+  couponId?: string; 
   email: string;
   firstName: string;
   lastName: string;
@@ -101,7 +101,7 @@ type AuthContextTypes = {
   logOut: () => void;
   signIn: (email: string, password: string) => Promise<any>;
   resetPassword: (email: string) => void;
-  discount: string;
+  couponId: string;
   error: string | undefined;
   setError: React.Dispatch<React.SetStateAction<string | undefined>>;
   loading: boolean;
@@ -136,7 +136,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   );
 
-  const discount = userDetails ? userDetails[0]?.discount ?? "" : "";
+  const couponId = userDetails ? userDetails[0]?.couponId ?? "" : "";
 
   const toast = useToast();
 
@@ -251,7 +251,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         currentUser,
         setCurrentUser,
         signUp,
-        discount,
+        couponId,
         logOut,
         signIn,
         resetPassword,
