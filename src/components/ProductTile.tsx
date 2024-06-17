@@ -33,7 +33,8 @@ function ProductTile(props: { product: any; idx: number }) {
 
   const soldOut = stockLevel - itemQuantity === 0;
   const itemsLeft = stockLevel - itemQuantity;
-  const stillGrowing = banner === 'stillGrowing';
+  const lessThen10Items = itemsLeft < 10 && itemsLeft > 0;
+  const stillGrowing = banner === "stillGrowing";
 
   return (
     <Grid
@@ -57,7 +58,7 @@ function ProductTile(props: { product: any; idx: number }) {
         },
       })}
     >
-      {itemQuantity > 0 && (
+      {!!itemQuantity && (
         <Box
           position="absolute"
           display="flex"
@@ -78,7 +79,7 @@ function ProductTile(props: { product: any; idx: number }) {
         </Box>
       )}
 
-      {banner || (stockLevel && itemsLeft < 10) ? (
+      {(stillGrowing || lessThen10Items) && (
         <Box
           position="absolute"
           display="flex"
@@ -93,16 +94,12 @@ function ProductTile(props: { product: any; idx: number }) {
           })}
         >
           <Typography variant="subtitle2">
-            {stillGrowing ?
-              fromCamelCaseToNormal(banner)
-              : soldOut
-              ? "Sold Out"
-              : stockLevel && itemsLeft < 10
-              ? `Only ${itemsLeft} item${itemsLeft === 1 ? '' : 's'} left`
-              : fromCamelCaseToNormal(banner)}
+            {stillGrowing
+              ? fromCamelCaseToNormal(banner)
+              : `Only ${itemsLeft} item${itemsLeft === 1 ? "" : "s"} left`}
           </Typography>
         </Box>
-      ) : null}
+      )}
       <Box
         flex={3}
         sx={{
@@ -127,7 +124,6 @@ function ProductTile(props: { product: any; idx: number }) {
         sx={{ width: { xs: "50%", sm: "100%" } }}
       >
         <Box
-          
           p={1}
           display="flex"
           flexDirection="column"
@@ -136,13 +132,17 @@ function ProductTile(props: { product: any; idx: number }) {
           minHeight="60%"
         >
           <Typography variant="h6">{label}</Typography>
-          <Typography variant="subtitle2" pt={1} sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            WebkitLineClamp: '3',
-            WebkitBoxOrient: 'vertical',
-          }}>
+          <Typography
+            variant="subtitle2"
+            pt={1}
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: "3",
+              WebkitBoxOrient: "vertical",
+            }}
+          >
             {description}
           </Typography>
         </Box>

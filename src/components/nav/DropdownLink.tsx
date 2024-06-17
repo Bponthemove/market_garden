@@ -127,6 +127,15 @@ const DropdownLink = (props) => {
               >
                 Stock Levels
               </MenuItem>,
+              <MenuItem
+              key="ADMIN - USERS"
+              selected={3 === selectedIndex}
+              onClick={(event) =>
+                handleMenuItemClick(event, "/admin/users", 3)
+              }
+            >
+              Users
+            </MenuItem>,
             ]
           : null}
       </Menu>

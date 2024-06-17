@@ -17,8 +17,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { useFirebase } from "../hooks/useFirebase";
-import { useToast } from "../hooks/useToast";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useToast } from "../hooks/useToast";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -27,7 +27,7 @@ type AuthProviderProps = {
 export interface IUserDetails {
   uid: string;
   phone: string;
-  couponId?: string; 
+  couponId?: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -99,6 +99,7 @@ type AuthContextTypes = {
     town: string
   ) => Promise<any>;
   logOut: () => void;
+  refetch: () => void;
   signIn: (email: string, password: string) => Promise<any>;
   resetPassword: (email: string) => void;
   couponId: string;
@@ -128,7 +129,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     (user: IUserDetails) => addUserDetails(user)
   );
 
-  const { data: userDetails } = useQuery<IUserDetails[]>(
+  const { data: userDetails, refetch } = useQuery<IUserDetails[]>(
     ["userDetails", currentUser?.user?.uid],
     getUserDetails,
     {
@@ -136,7 +137,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   );
 
-  const couponId = userDetails ? userDetails[0]?.couponId ?? "" : "";
+  const couponIdRaw = userDetails && userDetails[0]?.couponId;
+
+  const couponId = couponIdRaw && couponIdRaw !== "none" ? couponIdRaw : "";
+
+  console.log({ couponId });
 
   const toast = useToast();
 
@@ -259,6 +264,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         error,
         setError,
         userDetails,
+        refetch,
       }}
     >
       {children}

@@ -49,6 +49,7 @@ function NavBar({ shouldFix }) {
               route.path === "/admin/orders" ||
               route.path === "/admin/products" ||
               route.path === "/admin/stock" ||
+              route.path === "/admin/users" ||
               route.path === "/afterstripe" ||
               route.path === "/afterstripe/:result"
             ) {

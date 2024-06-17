@@ -23,10 +23,10 @@ const handler = async (event: HandlerEvent, context: HandlerContext) => {
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: modifiedLineItems,
-        // discounts: [{
+        discounts: couponId ? [{
           // add coupon to Stripe dashboard, add coupon id to user in db
-        //   coupon: couponId
-        // }],
+          coupon: couponId
+        }] : null,
         shipping_options: [
           {
             shipping_rate_data: {

@@ -56,7 +56,12 @@ type TID = {
   uid: string;
 };
 
+type TCouponId = {
+  couponId?: string;
+}
+
 export type TMyDetailsWithID = TMyDetails & TID;
+export type TMyDetailsWithIDAndCouponId = TMyDetailsWithID & TCouponId;
 
 export function MyDetails() {
   const [open, setOpen] = useState<boolean>(false);

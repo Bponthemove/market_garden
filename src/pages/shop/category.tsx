@@ -34,16 +34,18 @@ export default function Category({ cat }: { cat: string }) {
 
   const products = data || [];
 
-  if (isLoading) <CircularProgress />;
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
-  if (isError) <Box>Error loading</Box>;
+  if (isError) {
+    return <Box>Error loading</Box>;
+  }
 
   if (products.length === 0) {
     return (
       <Box p={2}>
-        <Typography variant="body1">
-          {notAvailable[cat] ?? "Sorry we have an error getting your products."}
-        </Typography>
+        <Typography variant="body1">{notAvailable[cat]}</Typography>
       </Box>
     );
   }

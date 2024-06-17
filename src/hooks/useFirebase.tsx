@@ -174,6 +174,18 @@ export const useFirebase = () => {
     await setDoc(addedUserRef, user);
   };
 
+  //get all users
+  const getAllUsers = async (
+    context: QueryFunctionContext
+  ): Promise<IUserDetails[] | undefined> => {
+    const productRef = collection(db, "users");
+    const querySnapShot = await getDocs(productRef);
+    return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  };
+
   //get user details
   const getUserDetails = async (
     context: QueryFunctionContext
@@ -398,6 +410,7 @@ export const useFirebase = () => {
     updateProductStockLevel,
     deleteProduct,
     addUserDetails,
+    getAllUsers,
     getUserDetails,
     updateUserDetails,
     deleteThisUser,

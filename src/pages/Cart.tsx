@@ -9,8 +9,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { CartItem } from "../components/CartItem";
+import { useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
 import { CheckOut } from "./checkOut";
 
@@ -41,10 +42,15 @@ export function Cart() {
     discountInMoney,
     discount,
   } = useCartContext();
+  const { refetch: refetchUser } = useAuthContext();
 
   const handleClickOrder = () => {
     setMaxHeight((prev) => (prev === "auto" ? 0 : "auto"));
   };
+
+  useEffect(() => {
+    refetchUser();
+  }, [refetchUser]);
 
   return (
     <Box pt={6}>
@@ -111,7 +117,7 @@ export function Cart() {
                       {cartTotal < 0 ? "£ 3.99" : "Free Delivery"}
                     </TableCellStyled>
                   </TableRow>
-                  {discount && (
+                  {!!discount && (
                     <TableRow>
                       <TableCellStyled>{""}</TableCellStyled>
                       <TableCellStyled>{`Discount (${discount}%) : `}</TableCellStyled>
@@ -146,9 +152,7 @@ export function Cart() {
             >
               {maxHeight === 0 && (
                 <Box display="flex" flexDirection="column" gap={2}>
-                  <Typography variant="subtitle2">
-                    Free delivery in April and May
-                  </Typography>
+                  <Typography variant="subtitle2">Free delivery</Typography>
                   <Button
                     disabled={!cartQuantity}
                     variant="contained"

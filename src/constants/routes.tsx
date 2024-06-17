@@ -5,12 +5,13 @@ import Home from "../pages/home";
 import LogOut from "../pages/logOut";
 import { MyDetails } from "../pages/myDetails";
 import { Orders } from "../pages/orders";
-import SignInSide from "../pages/signIn";
 import Products from "../pages/products";
 import Category from "../pages/shop/category";
 import Shop from "../pages/shop/shop";
+import SignInSide from "../pages/signIn";
 import SignUp from "../pages/signUp";
 import Stock from "../pages/stock";
+import Users from "../pages/users";
 import { categories } from "./categories";
 
 interface IChildrenRoute {
@@ -109,6 +110,12 @@ export const routes: { [key: string]: IRoute } = {
     path: "/admin/orders",
     label: "Orders",
     component: <Orders />,
+    superUser: true,
+  },
+  USERS: {
+    path: "/admin/users",
+    label: "Users",
+    component: <Users />,
     superUser: true,
   },
   AFTER_STRIPE: {
