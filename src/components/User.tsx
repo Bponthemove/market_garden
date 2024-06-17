@@ -10,31 +10,14 @@ import {
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
-import { useAuthContext } from "../context/AuthContext";
+import { discountsAsArray } from "../constants/discounts";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
 import { TMyDetailsWithIDAndCouponId } from "../pages/myDetails";
 
-const discounts = {
-  "0": {
-    id: "none",
-    value: 0,
-  },
-  "10": {
-    id: import.meta.env.VITE_APP_DISCOUNT10,
-    value: 10,
-  },
-  "20": {
-    id: import.meta.env.VITE_APP_DISCOUNT20,
-    value: 20,
-  },
-};
-
 export default function User({ user, refetch: refetchAllUSers }) {
   const { updateUserDetails } = useFirebase();
   const toast = useToast();
-
-  const discountsAsArray = Object.values(discounts);
 
   const {
     control,

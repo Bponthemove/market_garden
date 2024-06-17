@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext } from "react";
+import { discountsAsArray } from "../constants/discounts";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { IGetProduct } from "../types/allTypes";
 import { useAuthContext } from "./AuthContext";
@@ -26,17 +27,6 @@ type CartContextTypes = {
 
 const CartContext = createContext({} as CartContextTypes);
 
-const discounts = [
-  {
-    id: import.meta.env.VITE_APP_DISCOUNT10,
-    value: 10
-  },
-  { 
-    id: import.meta.env.VITE_APP_DISCOUNT20,
-    value: 20 
-  }
-];
-
 export function useCartContext() {
   return useContext(CartContext);
 }
@@ -49,7 +39,8 @@ export function CartProvider({ children }: CartProviderProps) {
 
   const { couponId } = useAuthContext();
 
-  const discount = discounts.find(({id}) => id === couponId)?.value ?? 0;
+  const discount =
+    discountsAsArray.find((discount) => discount.id === couponId)?.value ?? 0;
 
   const discountForCalculation = discount ? discount / 100 : 0;
 
