@@ -8,7 +8,7 @@ const handler = async (event: HandlerEvent, context: HandlerContext) => {
   let status: number;
   if (checkOut.items) {
     const { email, couponId, items } = checkOut;
-    console.log({email, couponId})
+    console.log({ email, couponId });
     const modifiedLineItems = items.map(
       (item: { quantity: number; id: string; price: number }) => ({
         price_data: {
@@ -23,10 +23,12 @@ const handler = async (event: HandlerEvent, context: HandlerContext) => {
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: modifiedLineItems,
-        discounts: couponId ? [{
-          // add coupon to Stripe dashboard, add coupon id to user in db
-          coupon: couponId
-        }] : null,
+        discounts: [
+          {
+            // add coupon to Stripe dashboard, add coupon id to user in db
+            coupon: couponId ?? null,
+          },
+        ],
         shipping_options: [
           {
             shipping_rate_data: {
