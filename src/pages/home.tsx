@@ -1,7 +1,7 @@
 import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { ClosedNextDayModal } from "../components/closedModal";
-import { postcodes } from "../constants/postcodes";
+import { postcodes, outsideAreaPostcodes } from "../constants/postcodes";
 import { useIsVisible } from "../hooks/useIsVisible";
 
 const rootMarginImg = "200px";
@@ -33,20 +33,18 @@ const Home = () => {
   };
 
   const handleCheckPostcode = () => {
-    if (postcode) {
-      if (postcode === "ox447rw") {
+    
+    if (!postcode) {
+      setDeliver("Please enter a postcode");
+    } else {
+      const firstHalf = postcode.slice(0, postcode.length === 7 ? 4 : 3);
+      const weDeliver = outsideAreaPostcodes.includes(postcode) || postcodes.indexOf(firstHalf) >= 0;
+      if (weDeliver) {
         setDeliver("Great! We can deliver to your area!");
       } else {
-        const firstHalf = postcode.slice(0, postcode.length === 7 ? 4 : 3);
-        if (postcodes.indexOf(firstHalf) >= 0) {
-          setDeliver("Great! We can deliver to your area!");
-        } else {
-          setDeliver("Sorry! We are not in your area yet. Check back soon!");
-        }
+        setDeliver("Sorry! We are not in your area yet. Check back soon!")
       }
-    } else {
-      setDeliver("Please enter a postcode");
-    }
+    } 
   };
 
   useEffect(() => {

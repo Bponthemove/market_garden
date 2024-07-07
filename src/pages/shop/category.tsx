@@ -32,7 +32,13 @@ export default function Category({ cat }: { cat: string }) {
     cutFlowers: "Beautiful cut flowers, great as a gift or to treat yourself.",
   };
 
-  const products = data || [];
+  const products =
+    data
+      ?.filter((product) => product.stockLevel)
+      // @ts-ignore
+      .filter((product) => product.stockLevel !== '0') || [];
+
+  console.group({ products });
 
   if (isLoading) {
     return <CircularProgress />;

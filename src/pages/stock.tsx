@@ -20,12 +20,14 @@ export default function Stock() {
     getProductsForStock
   );
 
+  // console.log(data)
+
   const products =
     data && data.length
       ? data
           .map((product) => {
             // add space after slash for better readability
-            const index = product.label.indexOf("/");
+            const index = product?.label ? product.label.indexOf("/") : -1;
             if (index > -1 && product.label[index + 1] !== " ") {
               const arr = product.label.split("");
               arr.splice(index, 0, " ");
@@ -88,7 +90,7 @@ export default function Stock() {
       </Box>
       {!filteredOption ? (
         products.map((product) => (
-          <StockItem product={product} refetch={refetch} />
+          <StockItem key={product.id} product={product} refetch={refetch} />
         ))
       ) : (
         <StockItem product={filteredOption} refetch={refetch} />
