@@ -5,19 +5,18 @@ import {
   SetStateAction,
   useContext,
 } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useSessionStorage } from "../hooks/useSessionStorage";
 
 type OrderProviderProps = {
   children: ReactNode;
 };
 
 type OrderContextTypes = {
-  orderNr: string,
-  deliveryDay: string,
-  setOrderNr: Dispatch<SetStateAction<string>>,
-  setDeliveryDay: Dispatch<SetStateAction<string>>
-}
-
+  orderNr: string;
+  deliveryDay: string;
+  setOrderNr: Dispatch<SetStateAction<string>>;
+  setDeliveryDay: Dispatch<SetStateAction<string>>;
+};
 
 const OrderContext = createContext({} as OrderContextTypes);
 
@@ -26,13 +25,10 @@ export function useOrderContext() {
 }
 
 export function OrderProvider({ children }: OrderProviderProps) {
-  const [orderNr, setOrderNr] = useLocalStorage<string>(
-    "order",
-    ''
-  );
-  const [deliveryDay, setDeliveryDay] = useLocalStorage<string>(
+  const [orderNr, setOrderNr] = useSessionStorage<string>("order", "");
+  const [deliveryDay, setDeliveryDay] = useSessionStorage<string>(
     "deliveryDay",
-    ''
+    ""
   );
 
   return (
@@ -41,7 +37,7 @@ export function OrderProvider({ children }: OrderProviderProps) {
         orderNr,
         deliveryDay,
         setOrderNr,
-        setDeliveryDay
+        setDeliveryDay,
       }}
     >
       {children}

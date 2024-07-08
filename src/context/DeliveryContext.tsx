@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
+import { useSessionStorage } from "../hooks/useSessionStorage";
 import { TCheckOut } from "../pages/checkOut";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type DeliveryProviderProps = {
   children: ReactNode;
@@ -19,10 +19,9 @@ export function useDeliveryContext() {
 }
 
 export function DeliveryProvider({ children }: DeliveryProviderProps) {
-  const [deliveryDetails, setDeliveryDetails] = useLocalStorage<TCheckOut | {}>(
-    "delivery-details",
-    {}
-  );
+  const [deliveryDetails, setDeliveryDetails] = useSessionStorage<
+    TCheckOut | {}
+  >("delivery-details", {});
 
   function updateDetails(item) {
     setDeliveryDetails({

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
 import { discountsAsArray } from "../constants/discounts";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useSessionStorage } from "../hooks/useSessionStorage";
 import { IGetProduct } from "../types/allTypes";
 import { useAuthContext } from "./AuthContext";
 
@@ -32,7 +32,7 @@ export function useCartContext() {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
-  const [cartItems, setCartItems] = useLocalStorage<ICartItem[]>(
+  const [cartItems, setCartItems] = useSessionStorage<ICartItem[]>(
     "shopping-cart",
     []
   );
