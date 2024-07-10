@@ -2,6 +2,8 @@ import { DevTool } from "@hookform/devtools";
 import {
   Box,
   Button,
+  List,
+  ListItem,
   TextField,
   Typography,
   useMediaQuery,
@@ -16,12 +18,12 @@ import { useOrderContext } from "../context/OrderContext";
 //import { useDate } from "../hooks/useDate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { useDeliveryContext } from "../context/DeliveryContext";
-import { nextDayDelivery } from "../utils/nextDayDelivery";
 import { useFirebase } from "../hooks/useFirebase";
 import { IUpdateProduct } from "../types/allTypes";
-import { useMutation } from "@tanstack/react-query";
+import { nextDayDelivery } from "../utils/nextDayDelivery";
 
 let stripePromise: Stripe | null;
 
@@ -42,11 +44,9 @@ export const personDetailsSchema = z.object({
     .string()
     .min(1, { message: fieldRequiredMessage })
     .email("Please enter a valid email"),
-  phone: z
-    .string()
-    .min(11, { message: fieldRequiredMessage })
-    .max(11, "No more than 11 numbers in this field")
-    .regex(/^\d+$/, "numbers only, no spaces"),
+  phone: z.string().min(1, { message: fieldRequiredMessage }),
+  // .max(11, "No more than 11 numbers in this field")
+  // .regex(/^\d+$/, "numbers only, no spaces"),
   firstName: z.string().min(1, { message: fieldRequiredMessage }),
   lastName: z.string().min(1, { message: fieldRequiredMessage }),
   postcode: z
@@ -62,10 +62,8 @@ export const personDetailsSchema = z.object({
 });
 
 const checkOutSchema = personDetailsSchema.extend({
-  deliverySpace: z
-    .string()
-    .max(30, { message: max30charsMessage })
-})
+  deliverySpace: z.string().max(30, { message: max30charsMessage }),
+});
 
 export type TCheckOut = z.infer<typeof checkOutSchema>;
 
@@ -89,16 +87,24 @@ export const CheckOut = () => {
     addressLine1: currentUser?.userDetails[0]?.addressLine1 ?? "",
     addressLine2: currentUser?.userDetails[0]?.addressLine2 ?? "",
     town: currentUser?.userDetails[0]?.town ?? "",
-    deliverySpace: 'No preference',
+    deliverySpace: "No preference",
   };
 
-  const { control, handleSubmit, getValues } = useForm<TCheckOut>({
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<TCheckOut>({
     defaultValues,
     resolver: zodResolver(checkOutSchema),
   });
 
-  const { mutateAsync } = useMutation(
-    (product: IUpdateProduct) => updateProductStockLevel(product)
+  const errorArr = Object.keys(errors);
+  const hasError = errorArr.length;
+
+  const { mutateAsync } = useMutation((product: IUpdateProduct) =>
+    updateProductStockLevel(product)
   );
 
   const handleOnSubmit = async (
@@ -130,8 +136,8 @@ export const CheckOut = () => {
     });
 
     // update stock levels
-    cartItems.forEach(item => mutateAsync(item))
-    
+    cartItems.forEach((item) => mutateAsync(item));
+
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",
       body: JSON.stringify({
@@ -149,7 +155,7 @@ export const CheckOut = () => {
       .then((res) => res.json())
       .then(async (session) => {
         const stripe = await getStripe();
-        
+
         // set order nr for return page
         setOrderNr(session.id);
 
@@ -347,8 +353,47 @@ export const CheckOut = () => {
           container
           sx={{ display: "flex", justifyContent: "center" }}
         >
-          <Box sx={{ display: "flex", justifyContent: "center", gap: 4 }}>
-            <Button type="submit" color="primary" variant="contained">
+          {hasError ? (
+            <List>
+              {errorArr.map((err, idx) => (
+                <ListItem>
+                  <Typography color="red">
+                    {idx === 0
+                      ? `You have an error with the ${err} field`
+                      : ` and the ${err} field`}
+                  </Typography>
+                </ListItem>
+              ))}
+              <ListItem>
+                <Typography color="red">
+                  Please address th{errorArr.length === 1 ? "is" : "ese"} before
+                  proceeding
+                </Typography>
+              </ListItem>
+            </List>
+          ) : (
+            <></>
+          )}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          container
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 4,
+            }}
+          >
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              disabled={!!hasError}
+            >
               Proceed to checkout
             </Button>
           </Box>
