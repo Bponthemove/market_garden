@@ -1,4 +1,4 @@
-import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import { Handler, HandlerContext, HandlerEvent } from "@netlify/functions";
 
 const stripe = require("stripe")(process.env.VITE_APP_STRIPE_PUBLISHABLE_KEY);
 
@@ -6,16 +6,36 @@ const handler: Handler = async (
   event: HandlerEvent,
   context: HandlerContext
 ) => {
-  let response;
-  try {
-    response = await stripe.products.update("prod_NeYFHWpkmM28Jr", {
-      metadata: { order_id: "6735" },
-    });
-  } catch (err) {
-    console.error(err);
+  let response = "Error updating in Stripe api";
+  let statusCode = 400;
+
+  const params = event?.queryStringParameters ?? {};
+
+  const canUpdateName = params.id && params.name;
+  const canUpdatePrice = params.priceId && params.price;
+
+  if (canUpdatePrice || canUpdateName) {
+    try {
+      if (canUpdateName) {
+        response = await stripe.products.update(params.id, {
+          name: params.name,
+        });
+      }
+      if (canUpdatePrice) {
+        response = await stripe.products.update(params.id, {
+          name: params.name,
+        });
+      }
+      response = "product updated successfully";
+      statusCode = 200;
+    } catch (err) {
+      console.error(err);
+      response = `Error updating in Stripe api ${err}`;
+      statusCode = 400;
+    }
   }
   return {
-    statusCode: 200,
+    statusCode,
     body: JSON.stringify({
       response,
     }),

@@ -141,8 +141,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const couponId = couponIdRaw && couponIdRaw !== "none" ? couponIdRaw : "";
 
-  console.log({ couponId });
-
   const toast = useToast();
 
   async function signUp(

@@ -134,22 +134,27 @@ export const useFirebase = () => {
   const updateProductStockLevel = async (product: IUpdateProduct) => {
     setFirebaseLoading(true);
 
+    console.log({product})
+
     const { id, stockLevel } = product;
 
     const substractQuantity = product.quantity ?? 0;
     // update stock level depending of where the call comes from. Checkout means substract from current level.
     // set all to strings
 
-    let updatedStockLevel: number;
+    let updatedStockLevel: string;
 
     if (typeof(stockLevel) === 'string') {
-      updatedStockLevel = parseInt(stockLevel) - substractQuantity;
+      console.log({stockLevel})
+      updatedStockLevel = (parseInt(stockLevel) - substractQuantity).toString();
     } else {
-      updatedStockLevel = stockLevel - substractQuantity;
+      console.log('else')
+      updatedStockLevel = (stockLevel - substractQuantity).toString();
     }
 
     try {
       if (id) {
+        console.log({id, updatedStockLevel})
         await updateDoc(doc(db, "product", id), {
           stockLevel: updatedStockLevel,
         });
