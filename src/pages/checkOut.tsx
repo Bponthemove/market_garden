@@ -141,7 +141,6 @@ export const CheckOut = () => {
     // update stock levels
     cartItems.forEach((item) => mutateAsync(item));
 
-    try {
       await fetch(".netlify/functions/stripePayCart", {
         method: "POST",
         body: JSON.stringify({
@@ -170,14 +169,15 @@ export const CheckOut = () => {
             setOrderNr("");
             console.error(result.error);
           }
-        });
+        })
+        .catch((err) => {
+          toast.error(`Error: ${err}`);
+          console.error(err)
+        })
       // ---- TEST ---- //
       // setOrderNr('dfsfgdsg87fgfd')
       // navigate("/afterstripe/success");
-    } catch (err) {
-      toast.error(`Error: ${err}`);
-      console.error(err)
-    }
+
   };
 
   return (

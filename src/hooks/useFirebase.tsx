@@ -28,6 +28,7 @@ import {
   IGetProduct,
   IUpdateProduct,
 } from "../types/allTypes";
+import { useToast } from "./useToast";
 
 export const useFirebase = () => {
   const [firebaseLoading, setFirebaseLoading] = useState<boolean>(false);
@@ -35,6 +36,7 @@ export const useFirebase = () => {
   const { cartItems, cartTotal } = useCartContext();
   const { currentUser, logOut } = useAuthContext();
   const { deliveryDetails } = useDeliveryContext();
+  const toast = useToast();
 
   //------------------CRUD------------//
   //----------------PRODUCTS----------//
@@ -57,6 +59,7 @@ export const useFirebase = () => {
       );
     } catch (err) {
       console.error("Item not added to Stripe: " + err);
+      toast.error('error adding this item, contact Bram')
     }
   };
 
