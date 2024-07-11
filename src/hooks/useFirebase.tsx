@@ -52,7 +52,7 @@ export const useFirebase = () => {
     if (!addedProductRef) throw new Error("Error adding product to DB");
     try {
       await fetch(
-        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price.toFixed(2)}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }
@@ -112,17 +112,17 @@ export const useFirebase = () => {
         await updateDoc(doc(db, "product", id), {
           ...toUpdate,
         });
-        const toUpdateKeys = Object.keys(toUpdate);
-        let url = `/.netlify/functions/stripeUpdateProduct?id=${id}`;
-        const labelIncl = toUpdateKeys.includes("label");
-        const priceIncl = toUpdateKeys.includes("price");
-        if (priceIncl || labelIncl) {
-          if (labelIncl) url += `&name=${toUpdate.label}`;
-          if (priceIncl) url += `&price=${toUpdate.price}`;
-          await fetch(url, {
-            method: "POST",
-          });
-        }
+        // const toUpdateKeys = Object.keys(toUpdate);
+        // let url = `/.netlify/functions/stripeUpdateProduct?id=${id}`;
+        // const labelIncl = toUpdateKeys.includes("label");
+        // const priceIncl = toUpdateKeys.includes("price");
+        // if (priceIncl || labelIncl) {
+        //   if (labelIncl) url += `&name=${toUpdate.label}`;
+        //   if (priceIncl) url += `&price=${toUpdate.price}`;
+        //   await fetch(url, {
+        //     method: "POST",
+        //   });
+        // }
       }
     } catch (err) {
       setFirebaseError(`Error updating product: id ${id}`);
