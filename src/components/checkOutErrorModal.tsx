@@ -1,6 +1,7 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 import { Link } from "react-router-dom";
+import { useCartContext } from "../context/CartContext";
 
 const style = {
   position: "absolute" as "absolute",
@@ -25,6 +26,7 @@ export function CheckOutErrorModal({
   setOpenErrorModal: Dispatch<SetStateAction<boolean>>;
   serverError: string;
 }) {
+  const { cartItems } = useCartContext();
 
   return (
     <Modal
@@ -37,11 +39,21 @@ export function CheckOutErrorModal({
           Sorry!
         </Typography>
         <div>
-          Something has gone wrong. You can help us resolve this issue by making
-          a screenshot of this error and emailing it to{" "}
-          <Link to="mailto:email@roundthefield.co.uk">us</Link>. We apologise
-          for the inconvenience and will contact you as soon as we have resolved
-          the issue. Thank you! Error: {serverError}
+          <p>
+            Something has gone wrong. You can help us resolve this issue by
+            making a screenshot of this error and emailing it to{" "}
+            <Link to="mailto:email@roundthefield.co.uk">us</Link>.
+          </p>
+          <p>
+            We apologise for the inconvenience and will contact you as soon as
+            we have resolved the issue. Thank you!
+          </p>
+          <p>Error: {serverError}</p>
+          <ul>
+            {cartItems.map((item) => (
+              <li>{item.label}</li>
+            ))}
+          </ul>
         </div>
         <br />
         <Box
