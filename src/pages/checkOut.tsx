@@ -23,7 +23,6 @@ import { z } from "zod";
 import { CheckOutErrorModal } from "../components/checkOutErrorModal";
 import { useDeliveryContext } from "../context/DeliveryContext";
 import { useFirebase } from "../hooks/useFirebase";
-import { useToast } from "../hooks/useToast";
 import { IUpdateProduct } from "../types/allTypes";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
 
@@ -76,7 +75,6 @@ export const CheckOut = () => {
   const { updateDetails } = useDeliveryContext();
   const { updateProductStockLevel } = useFirebase();
   const theme = useTheme();
-  const toast = useToast();
 
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [serverError, setServerError] = useState("");
