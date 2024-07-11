@@ -39,7 +39,7 @@ const handler = async (event: HandlerEvent, context: HandlerContext) => {
       ],
       success_url: "https://roundthefield.co.uk/afterstripe/success",
       // cancel_url: "https://roundthefield.co.uk/cart",
-      cancel_url: "https://roundthefield.co.uk//afterstripe/failed",
+      cancel_url: "https://roundthefield.co.uk/afterstripe/failed",
       customer_email: email,
     };
 
