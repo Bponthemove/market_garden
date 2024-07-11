@@ -20,8 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
+import { Toast } from "../components/Snackbar";
 import { useDeliveryContext } from "../context/DeliveryContext";
 import { useFirebase } from "../hooks/useFirebase";
+import { useToast } from "../hooks/useToast";
 import { IUpdateProduct } from "../types/allTypes";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
 
@@ -74,6 +76,7 @@ export const CheckOut = () => {
   const { updateDetails } = useDeliveryContext();
   const { updateProductStockLevel } = useFirebase();
   const theme = useTheme();
+  const toast = useToast();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // const navigate = useNavigate();
@@ -138,38 +141,43 @@ export const CheckOut = () => {
     // update stock levels
     cartItems.forEach((item) => mutateAsync(item));
 
-    await fetch(".netlify/functions/stripePayCart", {
-      method: "POST",
-      body: JSON.stringify({
-        shipping: cartTotal < 0,
-        discountInMoney,
-        couponId,
-        email,
-        items: cartItems.map((item) => ({
-          id: item.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      }),
-    })
-      .then((res) => res.json())
-      .then(async (session) => {
-        const stripe = await getStripe();
-
-        // set order nr for return page
-        setOrderNr(session.id);
-
-        return await stripe?.redirectToCheckout({ sessionId: session.id });
+    try {
+      await fetch(".netlify/functions/stripePayCart", {
+        method: "POST",
+        body: JSON.stringify({
+          shipping: cartTotal < 0,
+          discountInMoney,
+          couponId,
+          email,
+          items: cartItems.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }),
       })
-      .then((result) => {
-        if (result?.error) {
-          setOrderNr("");
-          console.error(result.error);
-        }
-      });
-    // ---- TEST ---- //
-    // setOrderNr('dfsfgdsg87fgfd')
-    // navigate("/afterstripe/success");
+        .then((res) => res.json())
+        .then(async (session) => {
+          const stripe = await getStripe();
+
+          // set order nr for return page
+          setOrderNr(session.id);
+
+          return await stripe?.redirectToCheckout({ sessionId: session.id });
+        })
+        .then((result) => {
+          if (result?.error) {
+            setOrderNr("");
+            console.error(result.error);
+          }
+        });
+      // ---- TEST ---- //
+      // setOrderNr('dfsfgdsg87fgfd')
+      // navigate("/afterstripe/success");
+    } catch (err) {
+      toast.error(`Error: ${err}`);
+      console.error(err)
+    }
   };
 
   return (
