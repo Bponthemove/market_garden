@@ -52,7 +52,7 @@ export const useFirebase = () => {
     if (!addedProductRef) throw new Error("Error adding product to DB");
     try {
       await fetch(
-        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price}&id=${addedProductRef.id}`,
+        `/.netlify/functions/stripeAddProduct?name=${label}&price=${price.toFixed(2)}&id=${addedProductRef.id}`,
         {
           method: "POST",
         }
