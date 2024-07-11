@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { BaseSyntheticEvent } from "react";
+import { BaseSyntheticEvent, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthContext } from "../context/AuthContext";
 import { useCartContext } from "../context/CartContext";
@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
-import { Toast } from "../components/Snackbar";
+import { CheckOutErrorModal } from "../components/checkOutErrorModal";
 import { useDeliveryContext } from "../context/DeliveryContext";
 import { useFirebase } from "../hooks/useFirebase";
 import { useToast } from "../hooks/useToast";
@@ -77,6 +77,9 @@ export const CheckOut = () => {
   const { updateProductStockLevel } = useFirebase();
   const theme = useTheme();
   const toast = useToast();
+
+  const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [serverError, setServerError] = useState("");
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // const navigate = useNavigate();
@@ -141,43 +144,43 @@ export const CheckOut = () => {
     // update stock levels
     cartItems.forEach((item) => mutateAsync(item));
 
-      await fetch(".netlify/functions/stripePayCart", {
-        method: "POST",
-        body: JSON.stringify({
-          shipping: cartTotal < 0,
-          discountInMoney,
-          couponId,
-          email,
-          items: cartItems.map((item) => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        }),
+    await fetch(".netlify/functions/stripePayCart", {
+      method: "POST",
+      body: JSON.stringify({
+        shipping: cartTotal < 0,
+        discountInMoney,
+        couponId,
+        email,
+        items: cartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      }),
+    })
+      .then((res) => res.json())
+      .then(async (session) => {
+        const stripe = await getStripe();
+
+        // set order nr for return page
+        setOrderNr(session.id);
+
+        return await stripe?.redirectToCheckout({ sessionId: session.id });
       })
-        .then((res) => res.json())
-        .then(async (session) => {
-          const stripe = await getStripe();
-
-          // set order nr for return page
-          setOrderNr(session.id);
-
-          return await stripe?.redirectToCheckout({ sessionId: session.id });
-        })
-        .then((result) => {
-          if (result?.error) {
-            setOrderNr("");
-            console.error(result.error);
-          }
-        })
-        .catch((err) => {
-          toast.error(`Error: ${err}`);
-          console.error(err)
-        })
-      // ---- TEST ---- //
-      // setOrderNr('dfsfgdsg87fgfd')
-      // navigate("/afterstripe/success");
-
+      .then((result) => {
+        if (result?.error) {
+          setOrderNr("");
+          console.error(result.error);
+        }
+      })
+      .catch((err) => {
+        setOpenErrorModal(true);
+        setServerError(err);
+        console.error(err);
+      });
+    // ---- TEST ---- //
+    // setOrderNr('dfsfgdsg87fgfd')
+    // navigate("/afterstripe/success");
   };
 
   return (
@@ -408,6 +411,11 @@ export const CheckOut = () => {
         </Grid>
       </Grid>
       <DevTool control={control} />
+      <CheckOutErrorModal
+        setOpenErrorModal={setOpenErrorModal}
+        openErrorModal={openErrorModal}
+        serverError={serverError}
+      />
     </>
   );
 };
