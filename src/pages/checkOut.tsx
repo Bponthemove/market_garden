@@ -173,7 +173,7 @@ export const CheckOut = () => {
       })
       .catch((err) => {
         setOpenErrorModal(true);
-        setServerError(err);
+        setServerError(`${err.type}: ${err.message}`);
         console.error(err);
       });
     // ---- TEST ---- //

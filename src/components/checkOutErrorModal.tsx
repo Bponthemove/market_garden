@@ -25,7 +25,6 @@ export function CheckOutErrorModal({
   setOpenErrorModal: Dispatch<SetStateAction<boolean>>;
   serverError: string;
 }) {
-  console.log(serverError);
 
   return (
     <Modal
