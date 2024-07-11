@@ -48,7 +48,7 @@ const handler: Handler = async (
       name,
       default_price_data: {
         currency: "gbp",
-        unit_amount_decimal: parseFloat(price!) * 100,
+        unit_amount_decimal: Math.ceil(parseFloat(price!) * 100),
       },
     });
     return {
