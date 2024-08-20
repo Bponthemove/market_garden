@@ -51,7 +51,7 @@ export function CheckOutErrorModal({
           <p>Error: {serverError}</p>
           <ul>
             {cartItems.map((item) => (
-              <li>{item.label}</li>
+              <li key={item.id} >{item.label}</li>
             ))}
           </ul>
         </div>

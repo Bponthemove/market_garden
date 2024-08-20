@@ -25,6 +25,7 @@ import { useDeliveryContext } from "../context/DeliveryContext";
 import { useFirebase } from "../hooks/useFirebase";
 import { IUpdateProduct } from "../types/allTypes";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
+import { useNavigate } from "react-router-dom";
 
 let stripePromise: Stripe | null;
 
@@ -69,7 +70,7 @@ const checkOutSchema = personDetailsSchema.extend({
 export type TCheckOut = z.infer<typeof checkOutSchema>;
 
 export const CheckOut = () => {
-  const { cartItems, cartTotal, discountInMoney } = useCartContext();
+  const { cartItems, cartTotal, discountInMoney, discount } = useCartContext();
   const { currentUser, couponId } = useAuthContext();
   const { setOrderNr } = useOrderContext();
   const { updateDetails } = useDeliveryContext();
@@ -80,7 +81,7 @@ export const CheckOut = () => {
   const [serverError, setServerError] = useState("");
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const defaultValues = {
     firstName: currentUser?.userDetails[0]?.firstName ?? "",
@@ -139,8 +140,16 @@ export const CheckOut = () => {
       deliverySpace,
     });
 
+    console.log({ discount });
+
     // update stock levels
     cartItems.forEach((item) => mutateAsync(item));
+
+    if (discount === 100) {
+      setOrderNr("a100%discountorder");
+      navigate(`/${import.meta.env.VITE_APP_SUCCESS_URL}`);
+      return;
+    }
 
     await fetch(".netlify/functions/stripePayCart", {
       method: "POST",

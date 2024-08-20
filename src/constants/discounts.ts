@@ -11,6 +11,10 @@ export const discounts = {
     id: import.meta.env.VITE_APP_DISCOUNT20,
     value: 20,
   },
+  "100": {
+    id: import.meta.env.VITE_APP_DISCOUNT100,
+    value: 100,
+  },
 };
 
 export const discountsAsArray = Object.values(discounts);
