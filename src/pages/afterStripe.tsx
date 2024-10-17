@@ -66,9 +66,9 @@ export const AfterStripe = () => {
             <Typography variant="body2">
               Any questions, please contact us on
               <span>
-                <Link to="mailto:email@roundthefield.co.uk">
+                <Link to="mailto:roundthefield@gmail.com">
                   <Typography variant="subtitle1">
-                    email@roundthefield.co.uk
+                    roundthefield@gmail.com
                   </Typography>
                 </Link>
               </span>
@@ -102,9 +102,9 @@ export const AfterStripe = () => {
             <Typography variant="body2">
               Any questions, please contact us on
               <span>
-                <Link to="mailto:email@roundthefield.co.uk">
+                <Link to="mailto:roundthefield@gmail.com">
                   <Typography variant="subtitle1">
-                    email@roundthefield.co.uk
+                    roundthefield@gmail.com
                   </Typography>
                 </Link>
               </span>

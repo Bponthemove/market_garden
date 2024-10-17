@@ -42,7 +42,7 @@ export function CheckOutErrorModal({
           <p>
             Something has gone wrong. You can help us resolve this issue by
             making a screenshot of this error and emailing it to{" "}
-            <Link to="mailto:email@roundthefield.co.uk">us</Link>.
+            <Link to="mailto:roundthefield@gmail.com">us</Link>.
           </p>
           <p>
             We apologise for the inconvenience and will contact you as soon as

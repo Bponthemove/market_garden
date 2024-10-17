@@ -146,7 +146,7 @@ export const CheckOut = () => {
     cartItems.forEach((item) => mutateAsync(item));
 
     if (discount === 100) {
-      setOrderNr("a100%discountorder");
+      setOrderNr("a 100% discount order");
       navigate(`/${import.meta.env.VITE_APP_SUCCESS_URL}`);
       return;
     }
