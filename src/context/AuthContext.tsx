@@ -62,6 +62,7 @@ export interface IAuthSignUp extends IAuthSignIn {
 const superUsers = [
   import.meta.env.VITE_APP_EMAIL_ADMIN_ONE,
   import.meta.env.VITE_APP_EMAIL_ADMIN_TWO,
+  import.meta.env.VITE_APP_EMAIL_ADMIN_THREE,
 ];
 
 const defaultUserDetails = [
