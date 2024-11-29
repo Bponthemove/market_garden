@@ -153,7 +153,7 @@ const Home = () => {
               }}
             >
               Just select the products from the shop to add to your crate,
-              proceed to checkout and order before 4pm to receive next day
+              proceed to checkout and order before 2pm to receive next day
               delivery between 7am to 12pm - Monday to Saturday (excluding bank
               holidays).
             </Typography>

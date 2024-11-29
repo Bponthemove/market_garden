@@ -1,9 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { categories } from "../../constants/categories";
+import { useEffect } from "react";
+import { useToast } from "../../hooks/useToast";
 
 const Shop = () => {
   const { pathname } = useLocation();
+  const toast = useToast();
+
+  useEffect(() => {
+    toast.error("Cut-off time for next day delivery is now 2pm", 5000);
+  }, []);
 
   return pathname === "/shop" ? (
     <Navigate to={"/shop/vegetables"} />

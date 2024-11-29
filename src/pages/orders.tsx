@@ -103,10 +103,10 @@ export function Orders() {
   };
 
   const findDeliveryDay = (timestamp: string) => {
-    const before4pm = new Date(timestamp).getHours() <= 15;
+    const before2pm = new Date(timestamp).getHours() <= 13;
 
     const deliveryTimestamp = new Date(
-      new Date(timestamp).getTime() + (before4pm ? tomorrow : dayAfterTomorrow)
+      new Date(timestamp).getTime() + (before2pm ? tomorrow : dayAfterTomorrow)
     );
 
     const deliveryDate =

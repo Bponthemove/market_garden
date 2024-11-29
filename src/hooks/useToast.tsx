@@ -5,6 +5,7 @@ import { Toast, ToastStyle } from '../components/Snackbar';
 export interface ToastMessage {
   message: string
   severity: AlertColor
+  autoHideDuration: number
   key: number
 }
 
@@ -35,6 +36,7 @@ export const ToastProvider: FC<{ children: ReactNode } & ToastStyle> = ({
           key={m.key}
           message={m}
           onExited={() => removeMessage(m.key)}
+          autoHideDuration={m.autoHideDuration}
           {...props}
         />
       ))}
@@ -45,23 +47,23 @@ export const ToastProvider: FC<{ children: ReactNode } & ToastStyle> = ({
 export const useToast = () => {
   const { addMessage } = useContext(ToastContext)
 
-  const show = (message: string, options: { severity: AlertColor }) => {
+  const show = (message: string, options: { severity: AlertColor, autoHideDuration: number }) => {
     addMessage({ message, ...options, key: new Date().getTime() })
   }
 
   return {
     show,
-    info(message: string) {
-      show(message, { severity: "info" })
+    info(message: string, autoHideDuration: number) {
+      show(message, { severity: "info", autoHideDuration: autoHideDuration ?? 1500})
     },
-    success(message: string) {
-      show(message, { severity: "success" })
+    success(message: string, autoHideDuration: number) {
+      show(message, { severity: "success", autoHideDuration: autoHideDuration ?? 1500})
     },
-    warning(message: string) {
-      show(message, { severity: "warning" })
+    warning(message: string, autoHideDuration: number) {
+      show(message, { severity: "warning", autoHideDuration: autoHideDuration ?? 1500})
     },
-    error(message: string) {
-      show(message, { severity: "error" })
+    error(message: string, autoHideDuration: number) {
+      show(message, { severity: "error", autoHideDuration: autoHideDuration ?? 1500})
     },
   }
 }
