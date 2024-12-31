@@ -81,6 +81,7 @@ export const useFirebase = () => {
   ): Promise<IGetProduct[] | undefined> => {
     const [queryKey] = context.queryKey;
     const productRef = collection(db, "product");
+    console.log({ productRef });
     const q = query(productRef, where("category", "==", queryKey));
     const querySnapShot = await getDocs(q);
     console.log({ querySnapShot });
