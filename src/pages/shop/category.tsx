@@ -37,7 +37,7 @@ export default function Category({ cat }: { cat: string }) {
       // @ts-ignore
       .filter((product) => product.stockLevel !== "0") || [];
 
-  console.group({ products });
+  console.group({ products, data });
 
   if (isLoading) {
     return <CircularProgress />;
