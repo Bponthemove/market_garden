@@ -16,10 +16,9 @@ export default function Category({ cat }: { cat: string }) {
   const [query, setQuery] = useState("");
   const [filteredOption, setFilteredOption] = useState(null);
   const { getProductsByCategory } = useFirebase();
-  const { data, isLoading, isError } = useQuery<IGetProduct[] | undefined>(
-    [cat],
-    getProductsByCategory
-  );
+  const { data, isLoading, isError, error } = useQuery<
+    IGetProduct[] | undefined
+  >([cat], getProductsByCategory);
 
   const notAvailable = {
     vegbox:
@@ -36,7 +35,7 @@ export default function Category({ cat }: { cat: string }) {
     data
       ?.filter((product) => product.stockLevel)
       // @ts-ignore
-      .filter((product) => product.stockLevel !== '0') || [];
+      .filter((product) => product.stockLevel !== "0") || [];
 
   console.group({ products });
 
@@ -45,6 +44,7 @@ export default function Category({ cat }: { cat: string }) {
   }
 
   if (isError) {
+    console.log("Error", error);
     return <Box>Error loading</Box>;
   }
 
