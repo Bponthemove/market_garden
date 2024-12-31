@@ -5,7 +5,7 @@ import { Toast, ToastStyle } from '../components/Snackbar';
 export interface ToastMessage {
   message: string
   severity: AlertColor
-  autoHideDuration: number
+  autoHideDuration?: number
   key: number
 }
 

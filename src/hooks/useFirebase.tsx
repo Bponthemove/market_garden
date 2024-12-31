@@ -67,12 +67,17 @@ export const useFirebase = () => {
   const getProductsForStock = async (
     context: QueryFunctionContext
   ): Promise<IGetProduct[] | undefined> => {
-    const productRef = collection(db, "product");
-    const querySnapShot = await getDocs(productRef);
-    return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    try {
+      const productRef = collection(db, "product");
+      const querySnapShot = await getDocs(productRef);
+      return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (err) {
+      console.log("Error get products for stock", err);
+      return [];
+    }
   };
 
   // read all products in category
@@ -80,15 +85,20 @@ export const useFirebase = () => {
     context: QueryFunctionContext
   ): Promise<IGetProduct[] | undefined> => {
     const [queryKey] = context.queryKey;
-    const productRef = collection(db, "product");
-    console.log({ productRef });
-    const q = query(productRef, where("category", "==", queryKey));
-    const querySnapShot = await getDocs(q);
-    console.log({ querySnapShot });
-    return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    try {
+      const productRef = collection(db, "product");
+      const q = query(productRef, where("category", "==", queryKey));
+      const querySnapShot = await getDocs(q);
+      return querySnapShot?.docs.map(
+        (doc: { id: string; data: () => any }) => ({
+          id: doc.id,
+          ...doc.data(),
+        })
+      );
+    } catch (err) {
+      console.log("Error get products by category", err);
+      return [];
+    }
   };
 
   //read product by id and category
