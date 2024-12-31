@@ -46,6 +46,10 @@ export default function Stock() {
     );
   }
 
+  if (products.length === 0) {
+    return <Box>No data was found</Box>;
+  }
+
   if (isError) {
     return (
       <Box>
@@ -55,13 +59,9 @@ export default function Stock() {
     );
   }
 
-  if (products.length === 0) {
-    return <Box>No data was found</Box>;
-  }
-
   return (
     <Box component="main" mt={4}>
-      <Box my={2} maxWidth='400px'>
+      <Box my={2} maxWidth="400px">
         <Autocomplete
           fullWidth
           options={products}
