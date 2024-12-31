@@ -46,10 +46,6 @@ export default function Stock() {
     );
   }
 
-  if (products.length === 0) {
-    return <Box>No data was found</Box>;
-  }
-
   if (isError) {
     return (
       <Box>

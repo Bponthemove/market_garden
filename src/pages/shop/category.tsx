@@ -21,7 +21,8 @@ export default function Category({ cat }: { cat: string }) {
   >([cat], getProductsByCategory);
 
   const notAvailable = {
-    vegbox: "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer.",
+    vegbox:
+      "Coming soon! We are working on subscription veg boxes to provide your household the very best produce the British seasons have to offer.",
     meat: "Coming soon! We are working with fantastic local organic farmers to offer a range of quality high welfare meats.",
     honey: "Local honey",
     herbalTeas:
@@ -36,7 +37,7 @@ export default function Category({ cat }: { cat: string }) {
       // @ts-ignore
       .filter((product) => product.stockLevel !== "0") || [];
 
-  // console.group({ products });
+  console.group({ products });
 
   if (isLoading) {
     return <CircularProgress />;
@@ -45,7 +46,9 @@ export default function Category({ cat }: { cat: string }) {
   if (products.length === 0) {
     return (
       <Box p={2}>
-        <Typography variant="body1">{notAvailable[cat] || "No items available"}</Typography>
+        <Typography variant="body1">
+          {notAvailable[cat] || "No items available"}
+        </Typography>
       </Box>
     );
   }
