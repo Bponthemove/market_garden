@@ -59,7 +59,7 @@ export const useFirebase = () => {
       );
     } catch (err) {
       console.error("Item not added to Stripe: " + err);
-      toast.error('error adding this item, contact Bram')
+      toast.error("error adding this item, contact Bram");
     }
   };
 
@@ -83,6 +83,7 @@ export const useFirebase = () => {
     const productRef = collection(db, "product");
     const q = query(productRef, where("category", "==", queryKey));
     const querySnapShot = await getDocs(q);
+    console.log({ querySnapShot });
     return querySnapShot?.docs.map((doc: { id: string; data: () => any }) => ({
       id: doc.id,
       ...doc.data(),
@@ -134,7 +135,7 @@ export const useFirebase = () => {
   const updateProductStockLevel = async (product: IUpdateProduct) => {
     setFirebaseLoading(true);
 
-    console.log({product})
+    console.log({ product });
 
     const { id, stockLevel } = product;
 
@@ -144,17 +145,17 @@ export const useFirebase = () => {
 
     let updatedStockLevel: string;
 
-    if (typeof(stockLevel) === 'string') {
-      console.log({stockLevel})
+    if (typeof stockLevel === "string") {
+      console.log({ stockLevel });
       updatedStockLevel = (parseInt(stockLevel) - substractQuantity).toString();
     } else {
-      console.log('else')
+      console.log("else");
       updatedStockLevel = (stockLevel - substractQuantity).toString();
     }
 
     try {
       if (id) {
-        console.log({id, updatedStockLevel})
+        console.log({ id, updatedStockLevel });
         await updateDoc(doc(db, "product", id), {
           stockLevel: updatedStockLevel,
         });
