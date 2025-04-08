@@ -29,7 +29,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
-    "firebase": "^9.18.0",
+    "firebase": "^11.6.0",
     "react": "^18.2.0",
     "react-cookie-consent": "^8.0.1",
     "react-csv": "^2.2.2",
@@ -75,8 +75,8 @@
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "file-loader": "^6.2.0",
-    "netlify-cli": "^16.9.3",
-    "vite": "^4.3.9",
+    "netlify-cli": "^19.1.6",
+    "vite": "^6.2.5",
     "vite-plugin-eslint": "^1.8.1"
   }
 }
