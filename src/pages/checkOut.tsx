@@ -26,6 +26,8 @@ import { useFirebase } from "../hooks/useFirebase";
 import { IUpdateProduct } from "../types/allTypes";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
 import { useNavigate } from "react-router-dom";
+import { outsideAreaPostcodes, postcodes } from "../constants/postcodes";
+import { useToast } from "../hooks/useToast";
 
 let stripePromise: Stripe | null;
 
@@ -76,6 +78,7 @@ export const CheckOut = () => {
   const { updateDetails } = useDeliveryContext();
   const { updateProductStockLevel } = useFirebase();
   const theme = useTheme();
+    const toast = useToast();
 
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -141,6 +144,17 @@ export const CheckOut = () => {
     });
 
     console.log({ discount });
+
+    // no checkout if outside postcode area
+    const firstHalf = postcode.slice(0, postcode.length === 7 ? 4 : 3);
+    const weDeliver =
+      outsideAreaPostcodes.includes(postcode) ||
+      postcodes.indexOf(firstHalf) >= 0;
+
+    if (!weDeliver) {
+      toast.error("We do not deliver to this postcode at the moment.");
+      return;
+    }
 
     // update stock levels
     cartItems.forEach((item) => mutateAsync(item));

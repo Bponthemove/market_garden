@@ -10,7 +10,6 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { ClosedNextDayModal } from "../components/closedModal";
 import { outsideAreaPostcodes, postcodes } from "../constants/postcodes";
-import { useIsVisible } from "../hooks/useIsVisible";
 
 const rootMarginImg = "200px";
 
@@ -65,13 +64,9 @@ const Home = () => {
   return (
     <>
       <ClosedNextDayModal />
-      <Box
-        width="100%"
-        display="flex"
-        justifyContent="center"
-      >
+      <Box width="100%" display="flex" justifyContent="center">
         <Box maxWidth="600px">
-          <Box flex="1" p={4}>
+          <Box flex="1" py={4}>
             <Typography
               variant="body1"
               pt={1}
@@ -90,13 +85,12 @@ const Home = () => {
                 controls
                 src="https://firebasestorage.googleapis.com/v0/b/round-the-field.appspot.com/o/appImages%2FRound%20the%20Field%20June%202024%20PORTRAIT.MOV?alt=media&token=f09482e0-88a5-4622-ad00-3f8346bb379e"
                 autoPlay
-                
                 muted
                 playsInline
               />
             </Card>
           </Box>
-          <Box flex="1" p={4}>
+          <Box flex="1" py={4}>
             <Typography
               variant="body1"
               pt={1}
@@ -106,10 +100,10 @@ const Home = () => {
               }}
             >
               Our market garden is hand worked, intensively planted, and
-              ecologically focused. Our dedication is to growing life-giving food,
-              building soil health, and offering food access for local people who
-              want to eat the best they can get. Low food miles, grown in local
-              soil by local people.
+              ecologically focused. Our dedication is to growing life-giving
+              food, building soil health, and offering food access for local
+              people who want to eat the best they can get. Low food miles,
+              grown in local soil by local people.
             </Typography>
           </Box>
           <Box
@@ -228,7 +222,7 @@ const Home = () => {
               }}
             />
           </Box>
-          <Box flex="1" p={4}>
+          <Box flex="1" py={4}>
             <Typography
               variant="body1"
               pt={1}
@@ -237,28 +231,25 @@ const Home = () => {
                 textJustify: "inter-word",
               }}
             >
-              We are a soil association accredited organic market garden. We never
-              use chemical pesticides or synthetic fertilizers, and are committed
-              to growing ethical, sustainable and healthy food. Our farm is based
-              in Bucklebury, West Berkshire.
+              We are a soil association accredited organic market garden. We
+              never use chemical pesticides or synthetic fertilizers, and are
+              committed to growing ethical, sustainable and healthy food. Our
+              farm is based in Bucklebury, West Berkshire.
             </Typography>
           </Box>
-          <Box 
-            flex="1" 
-            pb={4}
-            pr={4}
-            pl={4}
-          >
-              <Typography
-                variant="body1"
-                pt={1}
-                sx={{
-                  textAlign: "justify",
-                  textJustify: "inter-word",
-                }}
-              >
-                Our garden is truly human scale. We farm half an acre of garden without the use of a tractor, which means that everything we do takes a lot of thought and careful planning. 
-              </Typography>
+          <Box flex="1" pb={4}>
+            <Typography
+              variant="body1"
+              pt={1}
+              sx={{
+                textAlign: "justify",
+                textJustify: "inter-word",
+              }}
+            >
+              Our garden is truly human scale. We farm half an acre of garden
+              without the use of a tractor, which means that everything we do
+              takes a lot of thought and careful planning. 
+            </Typography>
           </Box>
           <Box
             sx={{
@@ -304,77 +295,74 @@ const Home = () => {
               }}
             />
           </Box>
-          <Box flex="1" p={4}>
-              <Typography 
-                variant="h5"
-                align="center"
-              >
-                <b>
-                  <u>How it works</u>
-                </b>
-              </Typography>
-              <Typography
-                variant="body1"
-                pt={1}
-                sx={{
-                  textAlign: "justify",
-                  textJustify: "inter-word",
-                }}
-              >
-                Just select the products from the shop to add to your crate,
-                proceed to checkout and order before 4pm to receive next day
-                delivery between 7am to 12pm - Monday to Saturday (excluding bank
-                holidays).
-              </Typography>
-              <br />
-              <Typography
-                variant="body1"
-                sx={{
-                  textAlign: "justify",
-                  textJustify: "inter-word",
-                }}
-              >
+          <Box flex="1" py={4}>
+            <Typography variant="h5" align="center">
+              <b>
+                <u>How it works</u>
+              </b>
+            </Typography>
+            <Typography
+              variant="body1"
+              pt={1}
+              sx={{
+                textAlign: "justify",
+                textJustify: "inter-word",
+              }}
+            >
+              Just select the products from the shop to add to your crate,
+              proceed to checkout and order before 4pm to receive next day
+              delivery between 7am to 12pm - Monday to Saturday (excluding bank
+              holidays).
+            </Typography>
+            <br />
+            <Typography
+              variant="body1"
+              sx={{
+                textAlign: "justify",
+                textJustify: "inter-word",
+              }}
+            >
+              {" "}
+              Next day delivery! Check below to see if we deliver to your
+              postcode. If you're a business and not in our postcode area,
+              please
+              <span>
                 {" "}
-                Next day delivery! Check below to see if we deliver to your
-                postcode. If you're a business and not in our postcode area,
-                please
-                <span>
-                  {" "}
-                  <Link href="/contact">contact us here</Link>
-                </span>{" "}
-                to arrange delivery.
-              </Typography>
-              <Box display="flex" gap={2} mt={2}>
-                <TextField
-                  variant="standard"
-                  onChange={handleValidatePostcode}
-                  error={postcode === ""}
-                  helperText={
-                    postcode || postcode === undefined
-                      ? ""
-                      : "Please enter a valid postcode, including spaces. "
-                  }
-                  label="Postcode"
-                  type="text"
-                  sx={({ palette: { primary } }) => ({
-                    "& .MuiInputLabel-root": { color: primary.main },
-                    "& .MuiInputLabel-root.Mui-focused": { color: primary.main },
-                    borderBottom: `1px solid ${primary.main}`,
-                  })}
-                  InputProps={{ disableUnderline: true }}
-                />
-                {postcode && (
-                  <Button
-                    variant="outlined"
-                    onClick={handleCheckPostcode}
-                    sx={{ border: "none" }}
-                  >
-                    Check
-                  </Button>
-                )}
-              </Box>
-              <br />
-              <Typography variant="body1">{deliver}</Typography>
+                <Link href="/contact">contact us here</Link>
+              </span>{" "}
+              to arrange delivery.
+            </Typography>
+            <Box display="flex" gap={2} mt={2}>
+              <TextField
+                variant="standard"
+                onChange={handleValidatePostcode}
+                error={postcode === ""}
+                helperText={
+                  postcode || postcode === undefined
+                    ? ""
+                    : "Please enter a valid postcode, including spaces. "
+                }
+                label="Postcode"
+                type="text"
+                sx={({ palette: { primary } }) => ({
+                  "& .MuiInputLabel-root": { color: primary.main },
+                  "& .MuiInputLabel-root.Mui-focused": { color: primary.main },
+                  borderBottom: `1px solid ${primary.main}`,
+                })}
+                InputProps={{ disableUnderline: true }}
+              />
+              {postcode && (
+                <Button
+                  variant="outlined"
+                  onClick={handleCheckPostcode}
+                  sx={{ border: "none" }}
+                >
+                  Check
+                </Button>
+              )}
+            </Box>
+            <br />
+            <Typography variant="body1">{deliver}</Typography>
           </Box>
         </Box>
       </Box>
