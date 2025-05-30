@@ -19,15 +19,15 @@ import { useOrderContext } from "../context/OrderContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { CheckOutErrorModal } from "../components/checkOutErrorModal";
+import { outsideAreaPostcodes, postcodes } from "../constants/postcodes";
 import { useDeliveryContext } from "../context/DeliveryContext";
 import { useFirebase } from "../hooks/useFirebase";
+import { useToast } from "../hooks/useToast";
 import { IUpdateProduct } from "../types/allTypes";
 import { nextDayDelivery } from "../utils/nextDayDelivery";
-import { useNavigate } from "react-router-dom";
-import { outsideAreaPostcodes, postcodes } from "../constants/postcodes";
-import { useToast } from "../hooks/useToast";
 
 let stripePromise: Stripe | null;
 
@@ -78,7 +78,7 @@ export const CheckOut = () => {
   const { updateDetails } = useDeliveryContext();
   const { updateProductStockLevel } = useFirebase();
   const theme = useTheme();
-    const toast = useToast();
+  const toast = useToast();
 
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -146,9 +146,13 @@ export const CheckOut = () => {
     console.log({ discount });
 
     // no checkout if outside postcode area
-    const firstHalf = postcode.slice(0, postcode.length === 7 ? 4 : 3);
+    const amendedPostcode = postcode.replace(/ /g, "").toLowerCase();
+    const firstHalf = amendedPostcode.slice(
+      0,
+      amendedPostcode.length === 7 ? 4 : 3
+    );
     const weDeliver =
-      outsideAreaPostcodes.includes(postcode) ||
+      outsideAreaPostcodes.includes(amendedPostcode) ||
       postcodes.indexOf(firstHalf) >= 0;
 
     if (!weDeliver) {
