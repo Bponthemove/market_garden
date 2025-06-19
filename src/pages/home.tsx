@@ -7,17 +7,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ClosedNextDayModal } from "../components/closedModal";
 import { outsideAreaPostcodes, postcodes } from "../constants/postcodes";
 
-const rootMarginImg = "200px";
+//const rootMarginImg = "200px";
 
 const Home = () => {
   const [postcode, setPostcode] = useState<string | undefined>();
   const [deliver, setDeliver] = useState<string>("");
-  const image1Ref = useRef();
-  const image2Ref = useRef();
+  //const image1Ref = useRef();
+  //const image2Ref = useRef();
 
   //const image1Load = useIsVisible(image1Ref, rootMarginImg);
   //const image2Load = useIsVisible(image2Ref, rootMarginImg);
@@ -114,7 +114,7 @@ const Home = () => {
             }}
           >
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -126,7 +126,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -138,7 +138,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -150,7 +150,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -162,7 +162,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -174,7 +174,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -186,7 +186,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -198,7 +198,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -210,7 +210,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -259,7 +259,7 @@ const Home = () => {
             }}
           >
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -271,7 +271,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
@@ -283,7 +283,7 @@ const Home = () => {
               }}
             />
             <Box
-              ref={image1Ref}
+              // ref={image1Ref}
               sx={{
                 flex: "0 32%",
                 height: "100px",
