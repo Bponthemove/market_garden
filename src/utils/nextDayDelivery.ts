@@ -1,7 +1,7 @@
 export function nextDayDelivery() {
   const now = new Date();
 
-  const after = now.getHours() > 15;
+  const after = now.getHours() > 13;
 
   const plusOneDay = now.getTime() + 24 * 60 * 60 * 1000;
   const plusTwoDays = now.getTime() + 48 * 60 * 60 * 1000;
