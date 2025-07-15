@@ -1,7 +1,7 @@
 export const categories = [
   {
     label: "Subscription Veg Box",
-    path: "/shop/vegbox",
+    path: "",
     cat: "vegbox",
   },
   {

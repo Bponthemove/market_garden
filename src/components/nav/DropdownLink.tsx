@@ -26,7 +26,7 @@ const DropdownLink = (props) => {
   ) => {
     setSelectedIndex(index);
     setAnchorEl(null);
-    navigate(path);
+    path ? navigate(path) : window.location.href = "https://vegbox.roundthefield.co.uk";
   };
 
   const handleClose = () => {
@@ -51,11 +51,11 @@ const DropdownLink = (props) => {
           "&.MuiButton-root": {
             minWidth: 0,
             borderRadius: 0,
-            lineHeight: 1.15
+            lineHeight: 1.15,
           },
         })}
       >
-        <Typography variant="body1" display='flex'>
+        <Typography variant="body1" display="flex">
           {props.path === "/profile" ? (
             <AccountCircleIcon />
           ) : props.path === "/admin" ? (
@@ -128,14 +128,14 @@ const DropdownLink = (props) => {
                 Stock Levels
               </MenuItem>,
               <MenuItem
-              key="ADMIN - USERS"
-              selected={3 === selectedIndex}
-              onClick={(event) =>
-                handleMenuItemClick(event, "/admin/users", 3)
-              }
-            >
-              Users
-            </MenuItem>,
+                key="ADMIN - USERS"
+                selected={3 === selectedIndex}
+                onClick={(event) =>
+                  handleMenuItemClick(event, "/admin/users", 3)
+                }
+              >
+                Users
+              </MenuItem>,
             ]
           : null}
       </Menu>
