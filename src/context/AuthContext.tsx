@@ -222,12 +222,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function resetPassword(email) {
+  async function resetPassword(email: string): Promise<void> {
     const auth = getAuth();
     try {
       await sendPasswordResetEmail(auth, email);
     } catch (error) {
       console.error(error);
+      throw error;
       // ..
     }
   }

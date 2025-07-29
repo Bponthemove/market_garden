@@ -75,17 +75,16 @@ export default function SignInForm({ initial }: { initial: boolean }) {
     }
   };
 
-  const handleOnSubmitRequiresRecentLogin = async (values: TAuthSignIn) => {
-    const response = await deleteThisUser(values);
-  };
+  const handleOnSubmitRequiresRecentLogin = async (values: TAuthSignIn) =>
+    await deleteThisUser(values);
 
-  const handlePasswordReset = () => {
-    if (dirtyEmail && !emailErrors) {
+  const handlePasswordReset = async () => {
+    try {
       const myEmail = getValues("email");
-      resetPassword(myEmail);
+      await resetPassword(myEmail);
       toast.info(`Please check ${myEmail} for a reset link`);
-    } else {
-      toast.error("Please enter your valid email address");
+    } catch (err) {
+      toast.error("There is no account for this email address. Make sure you use the correct email address.");
     }
   };
 
@@ -159,6 +158,7 @@ export default function SignInForm({ initial }: { initial: boolean }) {
           color="primary"
           variant="outlined"
           onClick={handlePasswordReset}
+          disabled={!dirtyEmail}
         >
           Reset Password
         </Button>
